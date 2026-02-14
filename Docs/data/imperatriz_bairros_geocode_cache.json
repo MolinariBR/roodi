@@ -1,0 +1,3442 @@
+{
+  "nominatim::Aeroporto": {
+    "status": "ok",
+    "lat": -5.5301267,
+    "lon": -47.4580081,
+    "query": "Aeroporto, Imperatriz, MA, Brasil",
+    "display_name": "Aeroporto de Imperatriz - Prefeito Renato Moreira, Rua São Raimundo, Jardim São Luís, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65915-565, Brasil",
+    "nominatim_type": "aerodrome",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Alto Bonito do Triângulo": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Alto da Boa Vista": {
+    "status": "ok",
+    "lat": -5.5063513,
+    "lon": -47.4689412,
+    "query": "Alto da Boa Vista, Imperatriz, MA, Brasil",
+    "display_name": "Alto da Boa Vista, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65910-170, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Asa Norte": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Bacuri": {
+    "status": "ok",
+    "lat": -5.5370423,
+    "lon": -47.4785873,
+    "query": "Bacuri, Imperatriz, MA, Brasil",
+    "display_name": "Bacuri, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65901-140, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Beira Rio": {
+    "status": "ok",
+    "lat": -5.5301704,
+    "lon": -47.4909181,
+    "query": "Beira Rio, Imperatriz, MA, Brasil",
+    "display_name": "Beira-Rio, Centro, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65900-430, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Boca da Mata": {
+    "status": "ok",
+    "lat": -5.4980531,
+    "lon": -47.4777867,
+    "query": "Boca da Mata, Imperatriz, MA, Brasil",
+    "display_name": "Boca da Mata, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Bom Jesus": {
+    "status": "ok",
+    "lat": -5.4983159,
+    "lon": -47.436298,
+    "query": "Bom Jesus, Imperatriz, MA, Brasil",
+    "display_name": "Bom Jesus, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65915-065, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Bom Sucesso": {
+    "status": "ok",
+    "lat": -5.497861,
+    "lon": -47.4873573,
+    "query": "Bom Sucesso, Imperatriz, MA, Brasil",
+    "display_name": "Bom Sucesso, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Brasil Novo": {
+    "status": "ok",
+    "lat": -5.4981393,
+    "lon": -47.458481,
+    "query": "Brasil Novo, Imperatriz, MA, Brasil",
+    "display_name": "Brasil Novo, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Caema": {
+    "status": "ok",
+    "lat": -5.560732,
+    "lon": -47.4427109,
+    "query": "Caema, Imperatriz, MA, Brasil",
+    "display_name": "Rua da Caema, Grande Vitória, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65918-369, Brasil",
+    "nominatim_type": "residential",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Camaçari": {
+    "status": "ok",
+    "lat": -5.4680289,
+    "lon": -47.4198829,
+    "query": "Camaçari, Imperatriz, MA, Brasil",
+    "display_name": "Camaçari, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-113, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Centro": {
+    "status": "ok",
+    "lat": -5.5272732,
+    "lon": -47.4794129,
+    "query": "Centro, Imperatriz, MA, Brasil",
+    "display_name": "Centro, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Centro Novo": {
+    "status": "ok",
+    "lat": -5.4376739,
+    "lon": -47.4603285,
+    "query": "Centro Novo, Imperatriz, MA, Brasil",
+    "display_name": "Centro Novo, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-340, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Cinco Irmãos": {
+    "status": "ok",
+    "lat": -5.5003868,
+    "lon": -47.4779602,
+    "query": "Cinco Irmãos, Imperatriz, MA, Brasil",
+    "display_name": "Cinco Irmãos, Boca da Mata, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65904-295, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Coco Grande": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Conjunto Habitar Brasil": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Conjunto Nova Vitória": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Distrito Industrial": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Entroncamento": {
+    "status": "ok",
+    "lat": -5.5238122,
+    "lon": -47.4720969,
+    "query": "Entroncamento, Imperatriz, MA, Brasil",
+    "display_name": "Entroncamento, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65913-443, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Imigrantes": {
+    "status": "ok",
+    "lat": -5.4816282,
+    "lon": -47.4800134,
+    "query": "Imigrantes, Imperatriz, MA, Brasil",
+    "display_name": "Imigrantes, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65905-338, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Itamar Guará": {
+    "status": "ok",
+    "lat": -5.5134077,
+    "lon": -47.4789319,
+    "query": "Itamar Guará, Imperatriz, MA, Brasil",
+    "display_name": "Rua Doutor Itamar Guara, Três Poderes, Jardim Três Poderes, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65903-083, Brasil",
+    "nominatim_type": "residential",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim América": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Andrea": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Camboriú": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Cinco Estrelas": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Democrata": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Europa": {
+    "status": "ok",
+    "lat": -6.341255,
+    "lon": -47.3795637,
+    "query": "Jardim Europa, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Europa, Porto Franco, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Lagoa": {
+    "status": "ok",
+    "lat": -5.1971539,
+    "lon": -45.6828421,
+    "query": "Jardim Lagoa, Imperatriz, MA, Brasil",
+    "display_name": "Jardim de Infância Criança Feliz - Lagoa do Coco, SN, MA-328, Axixa, Lagoa dos Cocos, Jenipapo dos Vieiras, Região Geográfica Imediata de Barra do Corda, Região Geográfica Intermediária de Imperatriz, Maranhão, 65962-000, Brasil",
+    "nominatim_type": "kindergarten",
+    "nominatim_class": null,
+    "score": 70,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Lopes": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Morada do Sol": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Oriental": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Planalto": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Pérola": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim São Francisco": {
+    "status": "ok",
+    "lat": -7.0214563,
+    "lon": -45.4808227,
+    "query": "Jardim São Francisco, Imperatriz, MA, Brasil",
+    "display_name": "Jardim de Infância Sol Nascente, SN, Rua Treze de Maio, São Raimundo das Mangabeiras, Região Geográfica Imediata de Balsas, Região Geográfica Intermediária de Imperatriz, Maranhão, 65840-000, Brasil",
+    "nominatim_type": "kindergarten",
+    "nominatim_class": null,
+    "score": 70,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim São Luís": {
+    "status": "ok",
+    "lat": -5.5256063,
+    "lon": -47.4671187,
+    "query": "Jardim São Luís, Imperatriz, MA, Brasil",
+    "display_name": "Jardim São Luís, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65913-410, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Tropical": {
+    "status": "ok",
+    "lat": -5.4970667,
+    "lon": -47.4683652,
+    "query": "Jardim Tropical, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Tropical, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65910-210, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Jardim Vitória": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Jardim das Oliveiras": {
+    "status": "ok",
+    "lat": -5.4862959,
+    "lon": -47.4462787,
+    "query": "Jardim das Oliveiras, Imperatriz, MA, Brasil",
+    "display_name": "Jardim das Oliveiras, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::João Paulo II": {
+    "status": "ok",
+    "lat": -5.4851238,
+    "lon": -47.4443639,
+    "query": "João Paulo II, Imperatriz, MA, Brasil",
+    "display_name": "Avenida João Paulo II, Jardim das Oliveiras, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-001, Brasil",
+    "nominatim_type": "unclassified",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Juçara": {
+    "status": "ok",
+    "lat": -5.5209513,
+    "lon": -47.4791554,
+    "query": "Juçara, Imperatriz, MA, Brasil",
+    "display_name": "Juçara, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Lagoa Verde": {
+    "status": "ok",
+    "lat": -5.4740882,
+    "lon": -47.4664307,
+    "query": "Lagoa Verde, Imperatriz, MA, Brasil",
+    "display_name": "Lagoa Verde, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Lagoinha": {
+    "status": "ok",
+    "lat": -5.4778083,
+    "lon": -47.4407067,
+    "query": "Lagoinha, Imperatriz, MA, Brasil",
+    "display_name": "Lagoinha, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-001, Brasil",
+    "nominatim_type": "hamlet",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Leandra": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Maranhão Novo": {
+    "status": "ok",
+    "lat": -5.5122846,
+    "lon": -47.4755548,
+    "query": "Maranhão Novo, Imperatriz, MA, Brasil",
+    "display_name": "Maranhão Novo, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Mata Verde": {
+    "status": "ok",
+    "lat": -7.3181011,
+    "lon": -47.4720066,
+    "query": "Mata Verde, Imperatriz, MA, Brasil",
+    "display_name": "Rua Mata Verde, Carolina, Região Geográfica Imediata de Balsas, Região Geográfica Intermediária de Imperatriz, Maranhão, 77795-000, Brasil",
+    "nominatim_type": "residential",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Mercadinho": {
+    "status": "ok",
+    "lat": -5.530707,
+    "lon": -47.477473,
+    "query": "Mercadinho, Imperatriz, MA, Brasil",
+    "display_name": "Mercadinho, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65901-250, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Morada do Bosque": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Mutirão": {
+    "status": "ok",
+    "lat": -5.4916091,
+    "lon": -47.4529799,
+    "query": "Mutirão, Imperatriz, MA, Brasil",
+    "display_name": "Mutirão, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65908-362, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Nova Imperatriz": {
+    "status": "ok",
+    "lat": -5.5140131,
+    "lon": -47.4875479,
+    "query": "Nova Imperatriz, Imperatriz, MA, Brasil",
+    "display_name": "Nova Imperatriz, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Novo Horizonte": {
+    "status": "ok",
+    "lat": -4.9214805,
+    "lon": -47.4407435,
+    "query": "Novo Horizonte, Imperatriz, MA, Brasil",
+    "display_name": "Novo Horizonte, Açailândia, Região Geográfica Imediata de Açailândia, Região Geográfica Intermediária de Imperatriz, Maranhão, 65930-000, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Ouro Verde": {
+    "status": "ok",
+    "lat": -5.4740027,
+    "lon": -47.4906779,
+    "query": "Ouro Verde, Imperatriz, MA, Brasil",
+    "display_name": "Ouro Verde, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Park Imperial": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Alvorada": {
+    "status": "ok",
+    "lat": -5.5269873,
+    "lon": -47.4419283,
+    "query": "Parque Alvorada, Imperatriz, MA, Brasil",
+    "display_name": "Conselho Comunitário do Parque Alvorada Dois, 201, Avenida Circular, Jardim São Luís, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65915-782, Brasil",
+    "nominatim_type": "kindergarten",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Alvorada II": {
+    "status": "ok",
+    "lat": -5.5269873,
+    "lon": -47.4419283,
+    "query": "Parque Alvorada II, Imperatriz, MA, Brasil",
+    "display_name": "Conselho Comunitário do Parque Alvorada Dois, 201, Avenida Circular, Jardim São Luís, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65915-782, Brasil",
+    "nominatim_type": "kindergarten",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Amazonas": {
+    "status": "ok",
+    "lat": -5.4976019,
+    "lon": -47.4518183,
+    "query": "Parque Amazonas, Imperatriz, MA, Brasil",
+    "display_name": "Parque Amazonas, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Anhangüera": {
+    "status": "ok",
+    "lat": -5.5526555,
+    "lon": -47.471377,
+    "query": "Parque Anhangüera, Imperatriz, MA, Brasil",
+    "display_name": "Parque Anhanguera, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Avenida": {
+    "status": "ok",
+    "lat": -5.4868059,
+    "lon": -47.435164,
+    "query": "Parque Avenida, Imperatriz, MA, Brasil",
+    "display_name": "Avenida do Parque, Teotônio Vilela, Camaçari, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-001, Brasil",
+    "nominatim_type": "residential",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Buriti": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Independência": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Planalto": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Sanharol": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Santa Lúcia": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque Sumaré": {
+    "status": "ok",
+    "lat": -5.4806433,
+    "lon": -47.5020833,
+    "query": "Parque Sumaré, Imperatriz, MA, Brasil",
+    "display_name": "Parque Sumaré, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65906-405, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Parque São José": {
+    "status": "ok",
+    "lat": -5.4892306,
+    "lon": -47.4890054,
+    "query": "Parque São José, Imperatriz, MA, Brasil",
+    "display_name": "Parque São José, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65905-385, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Parque Tocantins": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque da Lagoa": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque das Estrelas": {
+    "status": "ok",
+    "lat": -5.4974985,
+    "lon": -47.4621074,
+    "query": "Parque das Estrelas, Imperatriz, MA, Brasil",
+    "display_name": "Parque das Estrelas, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Parque das Flores": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque das Mangueiras": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque das Mansões": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Parque das Palmeiras": {
+    "status": "ok",
+    "lat": -5.5026022,
+    "lon": -47.4530271,
+    "query": "Parque das Palmeiras, Imperatriz, MA, Brasil",
+    "display_name": "Parque das Palmeiras, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Parque do Bosque": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Portal da Amazônia": {
+    "status": "ok",
+    "lat": -5.5427793,
+    "lon": -47.4538768,
+    "query": "Portal da Amazônia, Imperatriz, MA, Brasil",
+    "display_name": "Creche Municipal Portal Da Amazonia, Rua Piracicaba, Jardim São Luís, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65915-565, Brasil",
+    "nominatim_type": "school",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Recanto Universitário": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Califórnia": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Colina Park": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Dom Afonso Felippe Gregory": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Kubitschek": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Teotônio Vilela": {
+    "status": "ok",
+    "lat": -5.4838419,
+    "lon": -47.4315273,
+    "query": "Residencial Teotônio Vilela, Imperatriz, MA, Brasil",
+    "display_name": "Residencial Império Romano, Teotônio Vilela, Camaçari, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "residential",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Verona": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Verona III": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Verona IV": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Residencial Verona V": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Santa Inês": {
+    "status": "ok",
+    "lat": -5.5035798,
+    "lon": -47.4983686,
+    "query": "Santa Inês, Imperatriz, MA, Brasil",
+    "display_name": "Santa Ines, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Santa Luzia": {
+    "status": "ok",
+    "lat": -5.5829565,
+    "lon": -47.0003938,
+    "query": "Santa Luzia, Imperatriz, MA, Brasil",
+    "display_name": "Santa Luzia, Buritirana, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Santa Rita": {
+    "status": "ok",
+    "lat": -5.4991713,
+    "lon": -47.4913953,
+    "query": "Santa Rita, Imperatriz, MA, Brasil",
+    "display_name": "Santa Rita, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Santo Amaro": {
+    "status": "ok",
+    "lat": -5.3745561,
+    "lon": -47.5761969,
+    "query": "Santo Amaro, Imperatriz, MA, Brasil",
+    "display_name": "EM Santo Amaro, Estrada do Arroz, Olho d'Água dos Martins, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65900-010, Brasil",
+    "nominatim_type": "school",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Sol Nascente": {
+    "status": "ok",
+    "lat": -5.4895162,
+    "lon": -47.4919904,
+    "query": "Sol Nascente, Imperatriz, MA, Brasil",
+    "display_name": "Sol Nascente, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Super Quadra 602": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::São José do Egito": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::São Salvador": {
+    "status": "ok",
+    "lat": -7.27201,
+    "lon": -45.2154517,
+    "query": "São Salvador, Imperatriz, MA, Brasil",
+    "display_name": "São Salvador, Loreto, Região Geográfica Imediata de Balsas, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "hamlet",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Sítio Engenho Velho": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Três Poderes": {
+    "status": "ok",
+    "lat": -5.5161734,
+    "lon": -47.4778062,
+    "query": "Três Poderes, Imperatriz, MA, Brasil",
+    "display_name": "Três Poderes, Jardim Três Poderes, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65903-045, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::União": {
+    "status": "ok",
+    "lat": -5.5352959,
+    "lon": -47.4855366,
+    "query": "União, Imperatriz, MA, Brasil",
+    "display_name": "Praça União, Beira-Rio, Centro, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "park",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vale do Sol": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Airton Senna": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Bandeirantes": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Brasil": {
+    "status": "ok",
+    "lat": -5.5001363,
+    "lon": -47.4578588,
+    "query": "Vila Brasil, Imperatriz, MA, Brasil",
+    "display_name": "Vila Brasil, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65910-140, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Cafeteira": {
+    "status": "ok",
+    "lat": -5.4872154,
+    "lon": -47.4601588,
+    "query": "Vila Cafeteira, Imperatriz, MA, Brasil",
+    "display_name": "Vila Cafeteira, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Carajás": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Chico do Rádio": {
+    "status": "ok",
+    "lat": -5.4370081,
+    "lon": -47.4680153,
+    "query": "Vila Chico do Rádio, Imperatriz, MA, Brasil",
+    "display_name": "Vila Chico do Rádio, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-340, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Esmeralda": {
+    "status": "ok",
+    "lat": -5.4906992,
+    "lon": -47.4480544,
+    "query": "Vila Esmeralda, Imperatriz, MA, Brasil",
+    "display_name": "Vila Esmeralda, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Fiquene": {
+    "status": "ok",
+    "lat": -5.2551852,
+    "lon": -47.8204945,
+    "query": "Vila Fiquene, Imperatriz, MA, Brasil",
+    "display_name": "Vila Fiquene, Centro do Ciríaco, Cidelândia, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "quarter",
+    "nominatim_class": null,
+    "score": 100,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Independente": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Ipiranga": {
+    "status": "ok",
+    "lat": -5.4898136,
+    "lon": -47.4665206,
+    "query": "Vila Ipiranga, Imperatriz, MA, Brasil",
+    "display_name": "Vila Ipiranga, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Jardim": {
+    "status": "ok",
+    "lat": -4.8289855,
+    "lon": -47.2693268,
+    "query": "Vila Jardim, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Bela Vista, Açailândia, Região Geográfica Imediata de Açailândia, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 70,
+    "source": "nominatim"
+  },
+  "nominatim::Vila João Castelo": {
+    "status": "ok",
+    "lat": -5.4926057,
+    "lon": -47.4581526,
+    "query": "Vila João Castelo, Imperatriz, MA, Brasil",
+    "display_name": "Vila João Castelo, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65908-329, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Lobão": {
+    "status": "ok",
+    "lat": -5.5129298,
+    "lon": -47.4665701,
+    "query": "Vila Lobão, Imperatriz, MA, Brasil",
+    "display_name": "Vila Lobão, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Macedo": {
+    "status": "ok",
+    "lat": -5.4828029,
+    "lon": -47.4883604,
+    "query": "Vila Macedo, Imperatriz, MA, Brasil",
+    "display_name": "Vila Macedo, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Maderminas": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Maria": {
+    "status": "ok",
+    "lat": -5.582762,
+    "lon": -46.4523326,
+    "query": "Vila Maria, Imperatriz, MA, Brasil",
+    "display_name": "Maria Margarida Alves, Amarante do Maranhão, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 70,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Mariana": {
+    "status": "ok",
+    "lat": -5.4944921,
+    "lon": -47.4910494,
+    "query": "Vila Mariana, Imperatriz, MA, Brasil",
+    "display_name": "Vila Mariana, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65905-212, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Nova": {
+    "status": "ok",
+    "lat": -6.0942209,
+    "lon": -47.3836905,
+    "query": "Vila Nova, Imperatriz, MA, Brasil",
+    "display_name": "Vila Nova, Campestre do Maranhão, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Parati": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "nominatim::Vila Redenção": {
+    "status": "ok",
+    "lat": -5.5070775,
+    "lon": -47.4608088,
+    "query": "Vila Redenção, Imperatriz, MA, Brasil",
+    "display_name": "Vila Redenção, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "administrative",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Santa Luzia": {
+    "status": "ok",
+    "lat": -5.4862165,
+    "lon": -47.4672598,
+    "query": "Vila Santa Luzia, Imperatriz, MA, Brasil",
+    "display_name": "Vila Santa Luzia, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65907-230, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vila São João": {
+    "status": "ok",
+    "lat": -5.4257877,
+    "lon": -47.4717251,
+    "query": "Vila São João, Imperatriz, MA, Brasil",
+    "display_name": "Vila São João, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-490, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 110,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Verde": {
+    "status": "ok",
+    "lat": -5.431651,
+    "lon": -47.4718819,
+    "query": "Vila Verde, Imperatriz, MA, Brasil",
+    "display_name": "Lagoa Verde, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, 65909-490, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Vitória": {
+    "status": "ok",
+    "lat": -6.739272,
+    "lon": -47.4360251,
+    "query": "Vila Vitória, Imperatriz, MA, Brasil",
+    "display_name": "Vitória, Estreito, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "village",
+    "nominatim_class": null,
+    "score": 70,
+    "source": "nominatim"
+  },
+  "nominatim::Vila Zenira": {
+    "status": "ok",
+    "lat": -5.4869887,
+    "lon": -47.4542173,
+    "query": "Vila Zenira, Imperatriz, MA, Brasil",
+    "display_name": "Vila Zenira, Imperatriz, Região Geográfica Imediata de Imperatriz, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "suburb",
+    "nominatim_class": null,
+    "score": 120,
+    "source": "nominatim"
+  },
+  "nominatim::Vilinha": {
+    "status": "ok",
+    "lat": -4.4944388,
+    "lon": -46.8571143,
+    "query": "Vilinha, Imperatriz, MA, Brasil",
+    "display_name": "Praça da Vilinha, Bom Jesus das Selvas, Região Geográfica Imediata de Açailândia, Região Geográfica Intermediária de Imperatriz, Maranhão, Brasil",
+    "nominatim_type": "park",
+    "nominatim_class": null,
+    "score": 90,
+    "source": "nominatim"
+  },
+  "nominatim::Área Rural de Imperatriz": {
+    "status": "not_found",
+    "error": "No result",
+    "source": "nominatim"
+  },
+  "google::Aeroporto": {
+    "status": "ok",
+    "lat": -5.5317319,
+    "lon": -47.456074,
+    "query": "Bairro Aeroporto, Imperatriz, MA, Brasil",
+    "display_name": "Aeroporto de Imperatriz - Av. Moacyr Spósito Ribeiro, 1 - Aeroporto, Imperatriz - MA, 65913-415, Brasil",
+    "google_types": [
+      "airport",
+      "establishment",
+      "point_of_interest"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "BR-010, Rodovia",
+      "first_cep": "65913-417",
+      "street_count": 3,
+      "cep_count": 3
+    }
+  },
+  "google::Alto Bonito do Triângulo": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65908-371, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "14, Rua",
+      "first_cep": "65908-371",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Alto da Boa Vista": {
+    "status": "ok",
+    "lat": -5.5083821,
+    "lon": -47.4684023,
+    "query": "Alto da Boa Vista, Imperatriz, MA, Brasil",
+    "display_name": "Alto da Boa Vista, Imperatriz - MA, 65910-170, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Amazonas, Avenida",
+      "first_cep": "65910-624",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Asa Norte": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Asa Norte, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "B, Rua",
+      "first_cep": "65917-245",
+      "street_count": 15,
+      "cep_count": 15
+    }
+  },
+  "google::Bacuri": {
+    "status": "ok",
+    "lat": -5.541734099999999,
+    "lon": -47.4711066,
+    "query": "Bacuri, Imperatriz, MA, Brasil",
+    "display_name": "Bacuri, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aldeni Azevedo, Rua",
+      "first_cep": "65916-125",
+      "street_count": 20,
+      "cep_count": 19
+    }
+  },
+  "google::Beira Rio": {
+    "status": "ok",
+    "lat": -5.5446555,
+    "lon": -47.483808,
+    "query": "Beira Rio, Imperatriz, MA, Brasil",
+    "display_name": "Beira Rio, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Barao do Rio Branco, Rua",
+      "first_cep": "65900-190",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Boca da Mata": {
+    "status": "ok",
+    "lat": -5.4990704,
+    "lon": -47.477238,
+    "query": "Boca da Mata, Imperatriz, MA, Brasil",
+    "display_name": "Boca da Mata, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65917-035",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Bom Jesus": {
+    "status": "ok",
+    "lat": -5.4997288,
+    "lon": -47.4862615,
+    "query": "Bom Jesus, Imperatriz, MA, Brasil",
+    "display_name": "R. Bom Jesus, Imperatriz - MA, 65903-460, Brasil",
+    "google_types": [
+      "route"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bayma Junior, Avenida",
+      "first_cep": "65915-060",
+      "street_count": 8,
+      "cep_count": 8
+    }
+  },
+  "google::Bom Sucesso": {
+    "status": "ok",
+    "lat": -5.497714999999999,
+    "lon": -47.4873383,
+    "query": "Bom Sucesso, Imperatriz, MA, Brasil",
+    "display_name": "Bom Sucesso, Imperatriz - MA, 65919-030, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-145",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Brasil Novo": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Bairro Brasil Novo, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Anhanguera, Rua",
+      "first_cep": "65911-373",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Caema": {
+    "status": "ok",
+    "lat": -5.5395755,
+    "lon": -47.4843459,
+    "query": "Caema, Imperatriz, MA, Brasil",
+    "display_name": "Caema, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Antonio de Moraes, Rua",
+      "first_cep": "65900-778",
+      "street_count": 15,
+      "cep_count": 15
+    }
+  },
+  "google::Camaçari": {
+    "status": "ok",
+    "lat": -5.4694501,
+    "lon": -47.4202859,
+    "query": "Camaçari, Imperatriz, MA, Brasil",
+    "display_name": "Camaçari, Imperatriz - MA, 65922-000, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bebedouro, Avenida",
+      "first_cep": "65909-152",
+      "street_count": 15,
+      "cep_count": 15
+    }
+  },
+  "google::Centro": {
+    "status": "ok",
+    "lat": -5.523359399999999,
+    "lon": -47.4907295,
+    "query": "Centro, Imperatriz, MA, Brasil",
+    "display_name": "Centro, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65900-490",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Centro Novo": {
+    "status": "ok",
+    "lat": -5.4213911,
+    "lon": -47.42654479999999,
+    "query": "Centro Novo, Imperatriz, MA, Brasil",
+    "display_name": "Centro Novo, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bayma Junior, Avenida",
+      "first_cep": "65909-635",
+      "street_count": 10,
+      "cep_count": 10
+    }
+  },
+  "google::Cinco Irmãos": {
+    "status": "ok",
+    "lat": -5.5003665,
+    "lon": -47.4779804,
+    "query": "Cinco Irmãos, Imperatriz, MA, Brasil",
+    "display_name": "Cinco Irmãos, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Airton Sena, Rua",
+      "first_cep": "65904-326",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Coco Grande": {
+    "status": "ok",
+    "lat": -5.4826391,
+    "lon": -47.4721397,
+    "query": "Coco Grande, Imperatriz, MA, Brasil",
+    "display_name": "Coco Grande - Ouro Verde, Imperatriz - MA, 65906-190, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_2"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Boulevard Granville, Rua",
+      "first_cep": "65909-275",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Conjunto Habitar Brasil": {
+    "status": "ok",
+    "lat": -5.5445804,
+    "lon": -47.452104,
+    "query": "Conjunto Habitar Brasil, Imperatriz, MA, Brasil",
+    "display_name": "Conj. Habitar Brasil, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 110,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Acailandia, Rua",
+      "first_cep": "65918-535",
+      "street_count": 18,
+      "cep_count": 18
+    }
+  },
+  "google::Conjunto Nova Vitória": {
+    "status": "ok",
+    "lat": -5.564372,
+    "lon": -47.4429117,
+    "query": "Conjunto Nova Vitória, Imperatriz, MA, Brasil",
+    "display_name": "Conj. Nova Vitoria, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 110,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65918-378",
+      "street_count": 18,
+      "cep_count": 18
+    }
+  },
+  "google::Distrito Industrial": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Distrito Industrial, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "01, Avenida",
+      "first_cep": "65909-680",
+      "street_count": 6,
+      "cep_count": 6
+    }
+  },
+  "google::Entroncamento": {
+    "status": "ok",
+    "lat": -5.520290399999999,
+    "lon": -47.4729459,
+    "query": "Entroncamento, Imperatriz, MA, Brasil",
+    "display_name": "Entroncamento, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Adeladio Alves, Rua",
+      "first_cep": "65913-457",
+      "street_count": 20,
+      "cep_count": 19
+    }
+  },
+  "google::Imigrantes": {
+    "status": "ok",
+    "lat": -5.4827498,
+    "lon": -47.485823,
+    "query": "Imigrantes, Imperatriz, MA, Brasil",
+    "display_name": "Imigrantes, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Benedito dos Santos, Rua",
+      "first_cep": "65906-140",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Itamar Guará": {
+    "status": "ok",
+    "lat": -5.5117558,
+    "lon": -47.47677520000001,
+    "query": "Itamar Guará, Imperatriz, MA, Brasil",
+    "display_name": "R. Dr. Itamar Guará - Maranhão Novo, Imperatriz - MA, 65907-230, Brasil",
+    "google_types": [
+      "establishment",
+      "night_club",
+      "point_of_interest"
+    ],
+    "score": 113,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "01, Avenida",
+      "first_cep": "65901-760",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim América": {
+    "status": "ok",
+    "lat": -5.4935353,
+    "lon": -47.44025329999999,
+    "query": "Jardim América, Imperatriz, MA, Brasil",
+    "display_name": "Jardim América, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Argentina, Rua",
+      "first_cep": "65914-752",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Andrea": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Bairro Jardim Andrea, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bairon Felipe, Rua",
+      "first_cep": "65914-835",
+      "street_count": 8,
+      "cep_count": 8
+    }
+  },
+  "google::Jardim Camboriú": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65908-686, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Atlantica, Avenida",
+      "first_cep": "65908-686",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Cinco Estrelas": {
+    "status": "ok",
+    "lat": -5.5112907,
+    "lon": -47.45195080000001,
+    "query": "65914-384, Jardim Cinco Estrelas, Imperatriz, MA, Brasil",
+    "display_name": "R. Aldebaran - Jardim Cinco Estrelas, Imperatriz - MA, 65914-384, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aldebaran, Rua",
+      "first_cep": "65914-384",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Democrata": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Bairro Jardim Democrata, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "dos Democratas, Rua",
+      "first_cep": "65914-695",
+      "street_count": 6,
+      "cep_count": 6
+    }
+  },
+  "google::Jardim Europa": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Jardim Europa, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alemanha, Rua",
+      "first_cep": "65908-578",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Lagoa": {
+    "status": "ok",
+    "lat": -5.520974499999999,
+    "lon": -47.4894122,
+    "query": "65915-155, Jardim Lagoa, Imperatriz, MA, Brasil",
+    "display_name": "R. Amazonas - Jardim Lagoa, Imperatriz - MA, 65915-155, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Amazonas, Rua",
+      "first_cep": "65915-155",
+      "street_count": 11,
+      "cep_count": 11
+    }
+  },
+  "google::Jardim Lopes": {
+    "status": "ok",
+    "lat": -5.5163077,
+    "lon": -47.4619109,
+    "query": "Jardim Lopes, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Lopes, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65912-517",
+      "street_count": 7,
+      "cep_count": 7
+    }
+  },
+  "google::Jardim Morada do Sol": {
+    "status": "ok",
+    "lat": -5.528055699999999,
+    "lon": -47.4631897,
+    "query": "65913-380, Jardim Morada do Sol, Imperatriz, MA, Brasil",
+    "display_name": "R. Araponga - Jardim Morada do Sol, Imperatriz - MA, 65913-380, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Araponga, Rua",
+      "first_cep": "65913-380",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Jardim Oriental": {
+    "status": "ok",
+    "lat": -5.5196442,
+    "lon": -47.465589,
+    "query": "Jardim Oriental, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Oriental, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Benedito Leite, Rua",
+      "first_cep": "65913-263",
+      "street_count": 12,
+      "cep_count": 12
+    }
+  },
+  "google::Jardim Planalto": {
+    "status": "ok",
+    "lat": -5.5184644,
+    "lon": -47.4554831,
+    "query": "Jardim Planalto, Imperatriz, MA, Brasil",
+    "display_name": "Rua: Casemiro de Abreu, 550 - Jardim Planalto, Imperatriz - MA, 65914-190, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest",
+      "shoe_store",
+      "store"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Benedito Silvestre de Moraes, Rua",
+      "first_cep": "65910-700",
+      "street_count": 10,
+      "cep_count": 10
+    }
+  },
+  "google::Jardim Pérola": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65908-465, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Agata, Rua",
+      "first_cep": "65908-465",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim São Francisco": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Jardim São Francisco, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65904-169",
+      "street_count": 6,
+      "cep_count": 6
+    }
+  },
+  "google::Jardim São Luís": {
+    "status": "ok",
+    "lat": -5.521419100000001,
+    "lon": -47.46247940000001,
+    "query": "Jardim São Luís, Imperatriz, MA, Brasil",
+    "display_name": "Jardim São Luís - Jardim Oriental, Imperatriz - MA, 65913-253, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Antonio Guedes, Rua",
+      "first_cep": "65913-090",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Tropical": {
+    "status": "ok",
+    "lat": -5.498212199999999,
+    "lon": -47.4674282,
+    "query": "Jardim Tropical, Imperatriz, MA, Brasil",
+    "display_name": "Jardim Tropical, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A-1, Rua",
+      "first_cep": "65910-793",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Jardim Vitória": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Rua Celso de Carvalho, Jardim Vitória, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Celso de Carvalho, Rua",
+      "first_cep": null,
+      "street_count": 13,
+      "cep_count": 0
+    }
+  },
+  "google::Jardim das Oliveiras": {
+    "status": "ok",
+    "lat": -5.4834577,
+    "lon": -47.445459,
+    "query": "Jardim das Oliveiras, Imperatriz, MA, Brasil",
+    "display_name": "Jardim das Oliveiras, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Amancio Luis da Silva, Rua",
+      "first_cep": "65911-619",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::João Paulo II": {
+    "status": "ok",
+    "lat": -5.4834678,
+    "lon": -47.4461049,
+    "query": "João Paulo II, Imperatriz, MA, Brasil",
+    "display_name": "Av. João Paulo II, Imperatriz - MA, Brasil",
+    "google_types": [
+      "route"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alfa, Rua",
+      "first_cep": "65919-551",
+      "street_count": 10,
+      "cep_count": 10
+    }
+  },
+  "google::Juçara": {
+    "status": "ok",
+    "lat": -5.5213851,
+    "lon": -47.4796907,
+    "query": "Juçara, Imperatriz, MA, Brasil",
+    "display_name": "Juçara, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65919-170",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Lagoa Verde": {
+    "status": "ok",
+    "lat": -5.5256042,
+    "lon": -47.4608534,
+    "query": "Lagoa Verde, Imperatriz, MA, Brasil",
+    "display_name": "R. Castelo Branco - Povoado Lagoa Verde - Zona Rural, Imperatriz - MA, 65916-090, Brasil",
+    "google_types": [
+      "establishment",
+      "health",
+      "point_of_interest"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alto Bonito, Rua",
+      "first_cep": "65909-485",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Lagoinha": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65909-001, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Principal, Avenida",
+      "first_cep": "65909-001",
+      "street_count": 1,
+      "cep_count": 1
+    }
+  },
+  "google::Leandra": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Leandra, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65900-853",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Maranhão Novo": {
+    "status": "ok",
+    "lat": -5.505993399999999,
+    "lon": -47.4760116,
+    "query": "Maranhão Novo, Imperatriz, MA, Brasil",
+    "display_name": "Maranhão Novo, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 150,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aroldo Veloso, Rua",
+      "first_cep": "65903-085",
+      "street_count": 20,
+      "cep_count": 19
+    }
+  },
+  "google::Mata Verde": {
+    "status": "ok",
+    "lat": -5.4806788,
+    "lon": -47.502384,
+    "query": "Mata Verde, Imperatriz, MA, Brasil",
+    "display_name": "Mata Verde, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aracaju, Rua",
+      "first_cep": "65906-555",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Mercadinho": {
+    "status": "ok",
+    "lat": -5.5301056,
+    "lon": -47.4760116,
+    "query": "Mercadinho, Imperatriz, MA, Brasil",
+    "display_name": "Mercadinho, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65903-330",
+      "street_count": 19,
+      "cep_count": 16
+    }
+  },
+  "google::Morada do Bosque": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65914-613, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "das Rosas, Rua",
+      "first_cep": "65914-613",
+      "street_count": 2,
+      "cep_count": 2
+    }
+  },
+  "google::Mutirão": {
+    "status": "ok",
+    "lat": -5.4932384,
+    "lon": -47.4538457,
+    "query": "Mutirão, Imperatriz, MA, Brasil",
+    "display_name": "Av. Mutirão, Imperatriz - MA, 65908-362, Brasil",
+    "google_types": [
+      "route"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Boa Esperanca, Rua",
+      "first_cep": "65908-289",
+      "street_count": 19,
+      "cep_count": 19
+    }
+  },
+  "google::Nova Imperatriz": {
+    "status": "ok",
+    "lat": -5.5081796,
+    "lon": -47.4895028,
+    "query": "Nova Imperatriz, Imperatriz, MA, Brasil",
+    "display_name": "Nova Imperatriz, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65917-010",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Novo Horizonte": {
+    "status": "ok",
+    "lat": -5.499057899999999,
+    "lon": -47.4925734,
+    "query": "Novo Horizonte, Imperatriz, MA, Brasil",
+    "display_name": "Av. Industrial, 114-422 - Santa Rita, Imperatriz - MA, 65919-230, Brasil",
+    "google_types": [
+      "church",
+      "establishment",
+      "place_of_worship",
+      "point_of_interest"
+    ],
+    "score": 78,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-421",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Ouro Verde": {
+    "status": "ok",
+    "lat": -5.475145599999999,
+    "lon": -47.4907295,
+    "query": "Bairro Ouro Verde, Imperatriz, MA, Brasil",
+    "display_name": "Ouro Verde, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65906-435",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Park Imperial": {
+    "status": "ok",
+    "lat": -5.5311693,
+    "lon": -47.4474311,
+    "query": "65915-398, Imperatriz, MA, Brasil",
+    "display_name": "R. Bosque das Araras - Park Imperial, Imperatriz - MA, 65915-398, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bosque das Araras, Rua",
+      "first_cep": "65915-398",
+      "street_count": 17,
+      "cep_count": 17
+    }
+  },
+  "google::Parque Alvorada": {
+    "status": "ok",
+    "lat": -5.5323983,
+    "lon": -47.4563943,
+    "query": "Parque Alvorada, Imperatriz, MA, Brasil",
+    "display_name": "Parque Alvorada, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aguanambi, Rua",
+      "first_cep": "65919-500",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Alvorada II": {
+    "status": "ok",
+    "lat": -5.4966987,
+    "lon": -47.4357727,
+    "query": "Parque Alvorada II, Imperatriz, MA, Brasil",
+    "display_name": "Parque Alvorada II, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "1A, Rua",
+      "first_cep": "65915-870",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Amazonas": {
+    "status": "ok",
+    "lat": -5.4975685,
+    "lon": -47.460072,
+    "query": "Parque Amazonas, Imperatriz, MA, Brasil",
+    "display_name": "Parque Amazonas, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alenquer, Rua",
+      "first_cep": "65911-070",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Anhangüera": {
+    "status": "ok",
+    "lat": -5.5532388,
+    "lon": -47.4715613,
+    "query": "Parque Anhangüera, Imperatriz, MA, Brasil",
+    "display_name": "Parque Anhanguera, Imperatriz - MA, 65916-230, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Anhanguera, Parque",
+      "first_cep": "65916-240",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Avenida": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65915-300, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "01, Rua",
+      "first_cep": "65915-300",
+      "street_count": 10,
+      "cep_count": 10
+    }
+  },
+  "google::Parque Buriti": {
+    "status": "ok",
+    "lat": -5.4977882,
+    "lon": -47.49096609999999,
+    "query": "Parque Buriti, Imperatriz, MA, Brasil",
+    "display_name": "R. Santa Rita, 447 - Santa Rita, Imperatriz - MA, 65917-180, Brasil",
+    "google_types": [
+      "clothing_store",
+      "establishment",
+      "point_of_interest",
+      "store"
+    ],
+    "score": 78,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aluizio Azevedo, Rua",
+      "first_cep": "65916-690",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Independência": {
+    "status": "ok",
+    "lat": -5.4871116,
+    "lon": -47.512814,
+    "query": "Parque Independência, Imperatriz, MA, Brasil",
+    "display_name": "Parque da Independencia, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 80,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65906-210",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Parque Planalto": {
+    "status": "ok",
+    "lat": -5.4930452,
+    "lon": -47.477238,
+    "query": "Parque Planalto, Imperatriz, MA, Brasil",
+    "display_name": "Parque Planalto, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "America, Rua",
+      "first_cep": "65917-313",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Sanharol": {
+    "status": "ok",
+    "lat": -5.511877999999999,
+    "lon": -47.4514912,
+    "query": "Parque Sanharol, Imperatriz, MA, Brasil",
+    "display_name": "Parque Sanharol, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Almirante Barroso, Rua",
+      "first_cep": "65914-203",
+      "street_count": 17,
+      "cep_count": 17
+    }
+  },
+  "google::Parque Santa Lúcia": {
+    "status": "ok",
+    "lat": -5.5192485,
+    "lon": -47.44965260000001,
+    "query": "Parque Santa Lúcia, Imperatriz, MA, Brasil",
+    "display_name": "Parque Santa Lucia, Imperatriz - MA, 65912, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Araguaia, Rua",
+      "first_cep": "65912-343",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Sumaré": {
+    "status": "ok",
+    "lat": -5.480298299999999,
+    "lon": -47.5042786,
+    "query": "Parque Sumaré, Imperatriz, MA, Brasil",
+    "display_name": "Parque Sumaré - Mata Verde, Imperatriz - MA, 65906-558, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Cesar Augusto Santis, Rua",
+      "first_cep": "65906-476",
+      "street_count": 5,
+      "cep_count": 5
+    }
+  },
+  "google::Parque São José": {
+    "status": "ok",
+    "lat": -5.4867661,
+    "lon": -47.485823,
+    "query": "Parque São José, Imperatriz, MA, Brasil",
+    "display_name": "Parque São José, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-376",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque Tocantins": {
+    "status": "ok",
+    "lat": -5.492761,
+    "lon": -47.49410289999999,
+    "query": "Parque Tocantins, Imperatriz, MA, Brasil",
+    "display_name": "Parque Tocantins, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-256",
+      "street_count": 9,
+      "cep_count": 9
+    }
+  },
+  "google::Parque da Lagoa": {
+    "status": "ok",
+    "lat": -5.50117,
+    "lon": -47.4500319,
+    "query": "Parque da Lagoa, Imperatriz, MA, Brasil",
+    "display_name": "Av. Pedro Neiva de Santana, 600 - Parque da Lagoa, Imperatriz - MA, 65911-090, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Pedro Neiva de Santana, Avenida",
+      "first_cep": "65914-630",
+      "street_count": 1,
+      "cep_count": 1
+    }
+  },
+  "google::Parque das Estrelas": {
+    "status": "ok",
+    "lat": -5.503384899999999,
+    "lon": -47.4629938,
+    "query": "Parque das Estrelas, Imperatriz, MA, Brasil",
+    "display_name": "Parque das Estrelas, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Aimores, Rua",
+      "first_cep": "65911-321",
+      "street_count": 15,
+      "cep_count": 15
+    }
+  },
+  "google::Parque das Flores": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Rua Acucena, Parque das Flores, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Acucena, Rua",
+      "first_cep": "65918-635",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque das Mangueiras": {
+    "status": "ok",
+    "lat": -5.5140924,
+    "lon": -47.4481028,
+    "query": "Parque das Mangueiras, Imperatriz, MA, Brasil",
+    "display_name": "Parque das Mangueiras, Imperatriz - MA, 65912, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Dom Vital, Rua",
+      "first_cep": "65914-260",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Parque das Mansões": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Parque das Mansões, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Araguaia, Avenida",
+      "first_cep": "65917-642",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque das Palmeiras": {
+    "status": "ok",
+    "lat": -5.5009406,
+    "lon": -47.4527169,
+    "query": "Parque das Palmeiras, Imperatriz, MA, Brasil",
+    "display_name": "Parque das Palmeiras, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Anajas, Rua",
+      "first_cep": "65911-769",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Parque do Bosque": {
+    "status": "ok",
+    "lat": -5.5095906,
+    "lon": -47.45144459999999,
+    "query": "Parque do Bosque, Imperatriz, MA, Brasil",
+    "display_name": "Av. das Constelações, 5 - Parque do Bosque, Imperatriz - MA, 65913-420, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65914-514",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Portal da Amazônia": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65917-530, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bem-Te-Vi, Rua",
+      "first_cep": "65917-530",
+      "street_count": 10,
+      "cep_count": 10
+    }
+  },
+  "google::Recanto Universitário": {
+    "status": "ok",
+    "lat": -5.514496299999999,
+    "lon": -47.4343551,
+    "query": "Recanto Universitário, Imperatriz, MA, Brasil",
+    "display_name": "Av. Urbano Rocha, S/N - Recanto Universitário, Imperatriz - MA, 65914-070, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "02, Rua",
+      "first_cep": "65914-081",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Califórnia": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Rua Andarai Norte, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Andarai Norte, Rua",
+      "first_cep": "65908-845",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Colina Park": {
+    "status": "ok",
+    "lat": -5.5644608,
+    "lon": -47.4542405,
+    "query": "Residencial Colina Park, Imperatriz, MA, Brasil",
+    "display_name": "Res. Colina Park, Imperatriz - MA, 65902-048, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 110,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Coletora 01, Rua",
+      "first_cep": "65902-018",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Dom Afonso Felippe Gregory": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65915-240, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Principal, Avenida",
+      "first_cep": "65915-240",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Residencial Kubitschek": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Rua Antonio Ladeira, Residencial Kubitschek, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Antonio Ladeira, Rua",
+      "first_cep": "65914-350",
+      "street_count": 14,
+      "cep_count": 14
+    }
+  },
+  "google::Residencial Teotônio Vilela": {
+    "status": "ok",
+    "lat": -5.5051594,
+    "lon": -47.4303374,
+    "query": "Residencial Teotônio Vilela, Imperatriz, MA, Brasil",
+    "display_name": "Res. Teotônio Vilela, Imperatriz - MA, 65915-217, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 110,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Leste Oeste 01, Rua",
+      "first_cep": "65915-201",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Verona": {
+    "status": "ok",
+    "lat": -5.4874358,
+    "lon": -47.43576179999999,
+    "query": "Residencial Verona, Imperatriz, MA, Brasil",
+    "display_name": "Res. Verona, Imperatriz - MA, 65913-606, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 110,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Avenida",
+      "first_cep": "65913-633",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Verona III": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65913-668, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "das Alfazemas, Rua",
+      "first_cep": "65913-668",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Verona IV": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65913-695, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "das Acacias, Rua",
+      "first_cep": "65913-695",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Residencial Verona V": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65913-651, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Avenida",
+      "first_cep": "65913-651",
+      "street_count": 2,
+      "cep_count": 2
+    }
+  },
+  "google::Santa Inês": {
+    "status": "ok",
+    "lat": -5.5218393,
+    "lon": -47.4402685,
+    "query": "Santa Inês, Imperatriz, MA, Brasil",
+    "display_name": "R. Santa Inês - Parque Vitoria, Imperatriz - MA, 65914-145, Brasil",
+    "google_types": [
+      "route"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Ametista, Rua",
+      "first_cep": "65919-462",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Santa Luzia": {
+    "status": "ok",
+    "lat": -5.4862822,
+    "lon": -47.4683556,
+    "query": "Santa Luzia, Imperatriz, MA, Brasil",
+    "display_name": "Santa Luzia - Vila Ipiranga, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Cinco, Rua",
+      "first_cep": "65916-530",
+      "street_count": 17,
+      "cep_count": 16
+    }
+  },
+  "google::Santa Rita": {
+    "status": "ok",
+    "lat": -5.4999286,
+    "lon": -47.4870496,
+    "query": "Santa Rita, Imperatriz, MA, Brasil",
+    "display_name": "Santa Rita, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65919-161",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Santo Amaro": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Santo Amaro, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Cinco, Rua",
+      "first_cep": "65905-588",
+      "street_count": 9,
+      "cep_count": 9
+    }
+  },
+  "google::Sol Nascente": {
+    "status": "ok",
+    "lat": -5.4892902,
+    "lon": -47.4915536,
+    "query": "65905-525, Sol Nascente, Imperatriz, MA, Brasil",
+    "display_name": "Av. Voluntários da Pátria, 18 - Sol Nascente, Imperatriz - MA, 65906-150, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest",
+      "store"
+    ],
+    "score": 133,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "D, Rua",
+      "first_cep": "65905-525",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Super Quadra 602": {
+    "status": "ok",
+    "lat": -5.5320244,
+    "lon": -47.4692673,
+    "query": "Super Quadra 602, Imperatriz, MA, Brasil",
+    "display_name": "Super Quadra 602, Imperatriz - MA, 65913, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "BR-010, Rodovia",
+      "first_cep": "65913-293",
+      "street_count": 15,
+      "cep_count": 15
+    }
+  },
+  "google::São José do Egito": {
+    "status": "ok",
+    "lat": -5.542751099999999,
+    "lon": -47.4745308,
+    "query": "São José do Egito, Imperatriz, MA, Brasil",
+    "display_name": "São José do Egito, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alvorada, Rua",
+      "first_cep": "65901-165",
+      "street_count": 19,
+      "cep_count": 17
+    }
+  },
+  "google::São Salvador": {
+    "status": "ok",
+    "lat": -5.5441929,
+    "lon": -47.4704935,
+    "query": "São Salvador, Imperatriz, MA, Brasil",
+    "display_name": "São Salvador, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Atalaia, Conjunto",
+      "first_cep": "65916-210",
+      "street_count": 5,
+      "cep_count": 5
+    }
+  },
+  "google::Sítio Engenho Velho": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Sítio Engenho Velho, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-530",
+      "street_count": 5,
+      "cep_count": 5
+    }
+  },
+  "google::Três Poderes": {
+    "status": "ok",
+    "lat": -5.5173519,
+    "lon": -47.4761669,
+    "query": "Três Poderes, Imperatriz, MA, Brasil",
+    "display_name": "Tres Poderes, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65903-255",
+      "street_count": 19,
+      "cep_count": 19
+    }
+  },
+  "google::União": {
+    "status": "ok",
+    "lat": -5.4989035,
+    "lon": -47.4510991,
+    "query": "União, Imperatriz, MA, Brasil",
+    "display_name": "R. União, Imperatriz - MA, 65911-140, Brasil",
+    "google_types": [
+      "route"
+    ],
+    "score": 98,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Benedito Leite, Rua",
+      "first_cep": "65900-720",
+      "street_count": 11,
+      "cep_count": 11
+    }
+  },
+  "google::Vale do Sol": {
+    "status": "ok",
+    "lat": -5.508360499999999,
+    "lon": -47.4607616,
+    "query": "65901-680, Imperatriz, MA, Brasil",
+    "display_name": "R. Alm. Barroso - Vale do Sol, Imperatriz - MA, 65901-680, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Almirante Barroso, Rua",
+      "first_cep": "65901-680",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Airton Senna": {
+    "status": "ok",
+    "lat": -5.5189211,
+    "lon": -47.4412056,
+    "query": "65914-020, Vila Airton Senna, Imperatriz, MA, Brasil",
+    "display_name": "R. Afonso Pena - Vila Airton Senna, Imperatriz - MA, 65914-020, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Afonso Pena, Rua",
+      "first_cep": "65914-020",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Vila Bandeirantes": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65905-603, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65905-603",
+      "street_count": 6,
+      "cep_count": 6
+    }
+  },
+  "google::Vila Brasil": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Vila Brasil, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Brasil, Avenida",
+      "first_cep": "65911-400",
+      "street_count": 9,
+      "cep_count": 9
+    }
+  },
+  "google::Vila Cafeteira": {
+    "status": "ok",
+    "lat": -5.4913306,
+    "lon": -47.4576202,
+    "query": "Vila Cafeteira, Imperatriz, MA, Brasil",
+    "display_name": "Vila Cafeteira, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Acailandia, Rua",
+      "first_cep": "65911-540",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Vila Carajás": {
+    "status": "ok",
+    "lat": -5.513651599999999,
+    "lon": -47.4888895,
+    "query": "Vila Carajás, Imperatriz, MA, Brasil",
+    "display_name": "Vila Carajas, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alagoas, Rua",
+      "first_cep": "65907-280",
+      "street_count": 7,
+      "cep_count": 7
+    }
+  },
+  "google::Vila Chico do Rádio": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65909-370, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Bom Futuro, Rua",
+      "first_cep": "65909-370",
+      "street_count": 17,
+      "cep_count": 17
+    }
+  },
+  "google::Vila Esmeralda": {
+    "status": "ok",
+    "lat": -5.4926951,
+    "lon": -47.4502654,
+    "query": "Vila Esmeralda, Imperatriz, MA, Brasil",
+    "display_name": "Vila Esmeralda, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65911-802",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Fiquene": {
+    "status": "ok",
+    "lat": -5.5177232,
+    "lon": -47.4380098,
+    "query": "Vila Fiquene, Imperatriz, MA, Brasil",
+    "display_name": "Vila Fiquene, Imperatriz - MA, 65912, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Coronel Lisboa, Rua",
+      "first_cep": "65912-600",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Independente": {
+    "status": "ok",
+    "lat": -5.519856499999999,
+    "lon": -47.4388564,
+    "query": "Vila Independente, Imperatriz, MA, Brasil",
+    "display_name": "Vila Independente - Vila Fiquene, Imperatriz - MA, 65912-650, Brasil",
+    "google_types": [
+      "neighborhood",
+      "political"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Afonso Pena, Rua",
+      "first_cep": "65914-106",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Ipiranga": {
+    "status": "ok",
+    "lat": -5.489069,
+    "lon": -47.4662021,
+    "query": "Vila Ipiranga, Imperatriz, MA, Brasil",
+    "display_name": "Vila Ipiranga, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65908-003",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Jardim": {
+    "status": "ok",
+    "lat": -5.5425882,
+    "lon": -47.445899,
+    "query": "65912-700, Imperatriz, MA, Brasil",
+    "display_name": "R. projetada 01 - Vila Jardim, Imperatriz - MA, 65912-700, Brasil",
+    "google_types": [
+      "postal_code"
+    ],
+    "score": 125,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Projetada 01, Rua",
+      "first_cep": "65912-700",
+      "street_count": 9,
+      "cep_count": 9
+    }
+  },
+  "google::Vila João Castelo": {
+    "status": "ok",
+    "lat": -5.4943941,
+    "lon": -47.4590429,
+    "query": "Vila João Castelo, Imperatriz, MA, Brasil",
+    "display_name": "Vila João Castelo, Imperatriz - MA, 65911-500, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Antonio Maia, Rua",
+      "first_cep": "65908-329",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Vila Lobão": {
+    "status": "ok",
+    "lat": -5.5131688,
+    "lon": -47.4662021,
+    "query": "Vila Lobão, Imperatriz, MA, Brasil",
+    "display_name": "Vila Lobão, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65910-273",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Macedo": {
+    "status": "ok",
+    "lat": -5.4827498,
+    "lon": -47.485823,
+    "query": "Vila Macedo, Imperatriz, MA, Brasil",
+    "display_name": "Vila Macedo, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Castelo Branco, Rua",
+      "first_cep": "65904-700",
+      "street_count": 12,
+      "cep_count": 12
+    }
+  },
+  "google::Vila Maderminas": {
+    "status": "ok",
+    "lat": -5.487519,
+    "lon": -47.4767015,
+    "query": "Vila Maderminas, Imperatriz, MA, Brasil",
+    "display_name": "Tv. Gama - Vila Maderminas, Imperatriz - MA, 65904-612, Brasil",
+    "google_types": [
+      "establishment",
+      "point_of_interest"
+    ],
+    "score": 128,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alfa, Rua",
+      "first_cep": "65904-627",
+      "street_count": 12,
+      "cep_count": 12
+    }
+  },
+  "google::Vila Maria": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65906-330, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65906-330",
+      "street_count": 12,
+      "cep_count": 12
+    }
+  },
+  "google::Vila Mariana": {
+    "status": "ok",
+    "lat": -5.4936047,
+    "lon": -47.4922628,
+    "query": "Vila Mariana, Imperatriz, MA, Brasil",
+    "display_name": "Vila Mariana, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Antonio Mourao, Rua",
+      "first_cep": "65905-203",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Vila Nova": {
+    "status": "ok",
+    "lat": -5.5214554,
+    "lon": -47.4576202,
+    "query": "Bairro Vila Nova, Imperatriz, MA, Brasil",
+    "display_name": "Vila Nova, Imperatriz - MA, 65912, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Alvaro Pereira, Rua",
+      "first_cep": "65912-140",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Parati": {
+    "status": "ok",
+    "lat": -5.5154288,
+    "lon": -47.4576202,
+    "query": "Vila Parati, Imperatriz, MA, Brasil",
+    "display_name": "Vila Parati, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65913-535",
+      "street_count": 16,
+      "cep_count": 16
+    }
+  },
+  "google::Vila Redenção": {
+    "status": "ok",
+    "lat": -5.5042373,
+    "lon": -47.4674282,
+    "query": "Vila Redenção, Imperatriz, MA, Brasil",
+    "display_name": "Vila Redencao, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "A, Rua",
+      "first_cep": "65910-300",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Santa Luzia": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "65908-155, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "B, Rua",
+      "first_cep": "65908-155",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila São João": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Vila São João, Imperatriz, Maranhao, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "BR-010, Rodovia",
+      "first_cep": "65909-610",
+      "street_count": 4,
+      "cep_count": 4
+    }
+  },
+  "google::Vila Verde": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Vila Verde, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Afonso Pena, Rua",
+      "first_cep": "65911-462",
+      "street_count": 6,
+      "cep_count": 6
+    }
+  },
+  "google::Vila Vitória": {
+    "status": "ok",
+    "lat": -5.5587747,
+    "lon": -47.4478141,
+    "query": "Vila Vitória, Imperatriz, MA, Brasil",
+    "display_name": "Vila Vitória, Imperatriz - MA, 65915, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Castelo Branco, Avenida",
+      "first_cep": "65918-003",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Vila Zenira": {
+    "status": "ok",
+    "lat": -5.483300799999999,
+    "lon": -47.4576202,
+    "query": "Vila Zenira, Imperatriz, MA, Brasil",
+    "display_name": "Vila Zenira, Imperatriz - MA, 65911, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Brasil, Rua",
+      "first_cep": "65908-211",
+      "street_count": 13,
+      "cep_count": 13
+    }
+  },
+  "google::Vilinha": {
+    "status": "ok",
+    "lat": -5.5484768,
+    "lon": -47.4563943,
+    "query": "Vilinha, Imperatriz, MA, Brasil",
+    "display_name": "Vilinha, Imperatriz - MA, Brasil",
+    "google_types": [
+      "political",
+      "sublocality",
+      "sublocality_level_1"
+    ],
+    "score": 135,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Adlayne Costa, Rua",
+      "first_cep": "65915-558",
+      "street_count": 20,
+      "cep_count": 20
+    }
+  },
+  "google::Área Rural de Imperatriz": {
+    "status": "ok",
+    "lat": -5.5237579,
+    "lon": -47.4762224,
+    "query": "Área Rural de Imperatriz, Imperatriz, MA, Brasil",
+    "display_name": "Imperatriz - Camaçari, Imperatriz - MA, Brasil",
+    "google_types": [
+      "locality",
+      "political"
+    ],
+    "score": 95,
+    "source": "google",
+    "ruacep_context": {
+      "first_street": "Rural, Area",
+      "first_cep": "65919-899",
+      "street_count": 1,
+      "cep_count": 1
+    }
+  }
+}

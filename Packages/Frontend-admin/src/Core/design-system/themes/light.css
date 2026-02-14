@@ -1,0 +1,29 @@
+@import "../tokens/color.tokens.css";
+@import "../tokens/spacing.tokens.css";
+@import "../tokens/typography.tokens.css";
+@import "../tokens/radius.tokens.css";
+@import "../tokens/shadow.tokens.css";
+@import "../tokens/motion.tokens.css";
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-bg: var(--palette-slate-100);
+  --color-fg: var(--palette-slate-900);
+  --color-muted: var(--palette-slate-700);
+  --color-border: rgba(38, 56, 64, 0.16);
+
+  --color-surface-1: var(--palette-white);
+  --color-surface-2: var(--palette-slate-200);
+  --color-surface-3: #dde6eb;
+
+  --color-primary: var(--palette-cyan-500);
+  --color-primary-soft: var(--palette-cyan-100);
+  --color-primary-foreground: var(--palette-black-950);
+
+  --color-success: var(--palette-green-500);
+  --color-warning: var(--palette-amber-500);
+  --color-danger: var(--palette-red-500);
+  --color-info: var(--palette-blue-500);
+}

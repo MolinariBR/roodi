@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Notificações</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<a aria-label="Voltar para Home" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Rider/Home.html" id="contextBackLink">
+<span class="material-symbols-outlined text-icon-md">arrow_back</span>
+</a>
+<div class="text-center">
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Central</p>
+<h1 class="text-white text-sm font-bold mt-0.5">Notificações</h1>
+</div>
+<button aria-label="Marcar todas como lidas" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" type="button">
+<span class="material-symbols-outlined text-icon-md">done_all</span>
+</button>
+</header>
+
+<main class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-9 space-y-5">
+<section class="glass-card rounded-card p-4 border border-white/10">
+<div class="grid grid-cols-3 gap-2">
+<div class="glass-panel rounded-xl py-2 text-center">
+<p class="text-base font-bold text-white">12</p>
+<p class="text-2xs text-slate-400 uppercase tracking-widest font-semibold">Total</p>
+</div>
+<div class="glass-panel rounded-xl py-2 text-center">
+<p class="text-base font-bold text-white">4</p>
+<p class="text-2xs text-slate-400 uppercase tracking-widest font-semibold">Novas</p>
+</div>
+<div class="glass-panel rounded-xl py-2 text-center">
+<p class="text-base font-bold text-white">8</p>
+<p class="text-2xs text-slate-400 uppercase tracking-widest font-semibold">Lidas</p>
+</div>
+</div>
+</section>
+
+<section class="space-y-2">
+<div class="ds-section-head">
+<h2 class="ds-section-title">Hoje</h2>
+<button class="ds-section-action" type="button">Marcar lidas</button>
+</div>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">inventory_2</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Pedido pronto para retirada</h3>
+<p class="ds-list-subtitle">Burger King, 5th Avenue</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">Agora</p>
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">Nova</p>
+</div>
+</article>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-cyan-500/10 border border-cyan-500/20">
+<span class="material-symbols-outlined text-cyan-400">route</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Rota atualizada</h3>
+<p class="ds-list-subtitle">ETA ajustado para 12 min</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">3 min</p>
+<p class="ds-list-side-meta text-cyan-300 bg-cyan-500/10">Nova</p>
+</div>
+</article>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-300">payments</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Pagamento confirmado</h3>
+<p class="ds-list-subtitle">Crédito de R$ 14,50</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">18 min</p>
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Lida</p>
+</div>
+</article>
+</section>
+
+<section class="space-y-2">
+<div class="ds-section-head">
+<h2 class="ds-section-title">Anteriormente</h2>
+<button class="ds-section-action" type="button">Limpar</button>
+</div>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-violet-500/10 border border-violet-500/20">
+<span class="material-symbols-outlined text-violet-300">local_shipping</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Entrega finalizada</h3>
+<p class="ds-list-subtitle">Cliente confirmou recebimento</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">Ontem</p>
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Lida</p>
+</div>
+</article>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-blue-500/10 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-300">support_agent</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Suporte respondeu seu chamado</h3>
+<p class="ds-list-subtitle">Atualização em ticket #4832</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">2 dias</p>
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Lida</p>
+</div>
+</article>
+</section>
+</main>
+</div>
+<script>
+      (function () {
+        const backLink = document.getElementById('contextBackLink');
+        if (!backLink) return;
+
+        const from = new URLSearchParams(window.location.search).get('from') || '';
+        const routeByOrigin = {
+          rider_home: '../Rider/Home.html',
+          rider_orders: '../Rider/Orders.html',
+          rider_profile: '../Rider/Profile.html',
+          commerce_home: '../Commerce/Home.html',
+          commerce_history: '../Commerce/History.html',
+          commerce_create_call: '../Commerce/CreateCall.html',
+          commerce_tracking: '../Commerce/Tracking.html',
+          commerce_clients: '../Commerce/Clients.html',
+          commerce_credits: '../Commerce/Credits.html',
+          commerce_profile: '../Commerce/Profile.html',
+          commerce_products: '../Commerce/Products.html',
+        };
+
+        const target = routeByOrigin[from] || '../Rider/Home.html';
+        backLink.href = target;
+        if (from.startsWith('commerce_')) {
+          backLink.setAttribute('aria-label', 'Voltar para empresa');
+        }
+      })();
+    </script>
+</body></html>

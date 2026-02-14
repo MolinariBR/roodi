@@ -1,0 +1,1054 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model audit_logs {
+  id            BigInt     @id @default(autoincrement())
+  request_id    String?
+  actor_user_id String?    @db.Uuid
+  actor_role    user_role?
+  action        String
+  entity_type   String
+  entity_id     String?
+  before_data   Json?
+  after_data    Json?
+  metadata      Json?
+  ip_address    String?    @db.Inet
+  user_agent    String?
+  created_at    DateTime   @default(now()) @db.Timestamptz(6)
+  users         users?     @relation(fields: [actor_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([actor_user_id, created_at(sort: Desc)], map: "idx_audit_logs_actor")
+  @@index([entity_type, entity_id, created_at(sort: Desc)], map: "idx_audit_logs_entity")
+  @@index([request_id], map: "idx_audit_logs_request")
+}
+
+model auth_otp_attempts {
+  id                  BigInt              @id @default(autoincrement())
+  challenge_id        String              @db.Uuid
+  attempted_code      String?
+  success             Boolean
+  ip_address          String?             @db.Inet
+  user_agent          String?
+  attempted_at        DateTime            @default(now()) @db.Timestamptz(6)
+  auth_otp_challenges auth_otp_challenges @relation(fields: [challenge_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([challenge_id, attempted_at(sort: Desc)], map: "idx_auth_otp_attempts_challenge")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model auth_otp_challenges {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String?             @db.Uuid
+  email             String
+  otp_hash          String
+  challenge_type    String              @default("password_reset")
+  max_attempts      Int                 @default(5) @db.SmallInt
+  attempts          Int                 @default(0) @db.SmallInt
+  resend_count      Int                 @default(0) @db.SmallInt
+  expires_at        DateTime            @db.Timestamptz(6)
+  verified_at       DateTime?           @db.Timestamptz(6)
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  auth_otp_attempts auth_otp_attempts[]
+  users             users?              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([email, created_at(sort: Desc)], map: "idx_auth_otp_email")
+  @@index([expires_at], map: "idx_auth_otp_expires")
+}
+
+model auth_refresh_tokens {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  jti            String    @unique(map: "uq_auth_refresh_jti")
+  token_hash     String
+  issued_at      DateTime  @default(now()) @db.Timestamptz(6)
+  expires_at     DateTime  @db.Timestamptz(6)
+  revoked_at     DateTime? @db.Timestamptz(6)
+  revoked_reason String?
+  user_agent     String?
+  ip_address     String?   @db.Inet
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  users          users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, expires_at(sort: Desc)], map: "idx_auth_refresh_user_expires")
+}
+
+model commerce_clients {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commerce_user_id String    @db.Uuid
+  name             String
+  phone_number     String
+  email            String?
+  cep              String?
+  state            String?
+  city             String?
+  neighborhood     String?
+  street           String?
+  number           String?
+  complement       String?
+  notes            String?
+  last_order_at    DateTime? @db.Timestamptz(6)
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime  @default(now()) @db.Timestamptz(6)
+  users            users     @relation(fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders           orders[]
+
+  @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_commerce_clients_owner")
+  @@index([commerce_user_id, name, phone_number], map: "idx_commerce_clients_search")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model commerce_products {
+  id                      String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commerce_user_id        String                    @db.Uuid
+  name                    String
+  description             String?
+  price_brl               Decimal                   @db.Decimal(10, 2)
+  stock                   Int?
+  sold_count              Int                       @default(0)
+  status                  product_status            @default(active)
+  created_at              DateTime                  @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime                  @default(now()) @db.Timestamptz(6)
+  users                   users                     @relation(fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  order_product_snapshots order_product_snapshots[]
+
+  @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_commerce_products_owner")
+  @@index([commerce_user_id, status], map: "idx_commerce_products_status")
+}
+
+model commerce_profiles {
+  user_id       String   @id @db.Uuid
+  commerce_code String   @unique(map: "uq_commerce_profiles_code")
+  trade_name    String
+  legal_name    String?
+  tax_id        String?
+  rank_level    String?
+  rating        Decimal? @default(0) @db.Decimal(4, 2)
+  is_open       Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model credits_ledger {
+  id                                             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commerce_user_id                               String            @db.Uuid
+  order_id                                       String?           @db.Uuid
+  entry_type                                     credit_entry_type
+  amount_brl                                     Decimal           @db.Decimal(12, 2)
+  balance_after_brl                              Decimal           @db.Decimal(12, 2)
+  reference_type                                 String?
+  reference_id                                   String?           @db.Uuid
+  reason                                         String?
+  created_by_user_id                             String?           @db.Uuid
+  created_at                                     DateTime          @default(now()) @db.Timestamptz(6)
+  users_credits_ledger_commerce_user_idTousers   users             @relation("credits_ledger_commerce_user_idTousers", fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_credits_ledger_created_by_user_idTousers users?            @relation("credits_ledger_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders                                         orders?           @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_credits_ledger_commerce_time")
+  @@index([order_id], map: "idx_credits_ledger_order")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model credits_wallets {
+  commerce_user_id String   @id @db.Uuid
+  balance_brl      Decimal  @default(0) @db.Decimal(12, 2)
+  reserved_brl     Decimal  @default(0) @db.Decimal(12, 2)
+  updated_at       DateTime @default(now()) @db.Timestamptz(6)
+  users            users    @relation(fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model dispatch_batches {
+  id                                                                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id                                                          String            @db.Uuid
+  zone_label                                                        String?
+  batch_number                                                      Int
+  top_limit                                                         Int               @db.SmallInt
+  opened_at                                                         DateTime          @db.Timestamptz(6)
+  closed_at                                                         DateTime?         @db.Timestamptz(6)
+  winner_offer_id                                                   String?           @db.Uuid
+  created_at                                                        DateTime          @default(now()) @db.Timestamptz(6)
+  orders                                                            orders            @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  dispatch_offers_dispatch_batches_winner_offer_idTodispatch_offers dispatch_offers?  @relation("dispatch_batches_winner_offer_idTodispatch_offers", fields: [winner_offer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dispatch_batches_winner_offer")
+  dispatch_offers_dispatch_offers_batch_idTodispatch_batches        dispatch_offers[] @relation("dispatch_offers_batch_idTodispatch_batches")
+
+  @@unique([order_id, batch_number], map: "uq_dispatch_batch_order_number")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model dispatch_offers {
+  id                                                                 String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  batch_id                                                           String                  @db.Uuid
+  order_id                                                           String                  @db.Uuid
+  rider_user_id                                                      String                  @db.Uuid
+  position_in_queue                                                  Int?
+  offered_at                                                         DateTime                @db.Timestamptz(6)
+  expires_at                                                         DateTime                @db.Timestamptz(6)
+  decision                                                           dispatch_offer_decision @default(pending)
+  decision_reason                                                    String?
+  decided_at                                                         DateTime?               @db.Timestamptz(6)
+  created_at                                                         DateTime                @default(now()) @db.Timestamptz(6)
+  dispatch_batches_dispatch_batches_winner_offer_idTodispatch_offers dispatch_batches[]      @relation("dispatch_batches_winner_offer_idTodispatch_offers")
+  dispatch_batches_dispatch_offers_batch_idTodispatch_batches        dispatch_batches        @relation("dispatch_offers_batch_idTodispatch_batches", fields: [batch_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders                                                             orders                  @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                                                              users                   @relation(fields: [rider_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([order_id, offered_at(sort: Desc)], map: "idx_dispatch_offers_order")
+  @@index([rider_user_id, offered_at(sort: Desc)], map: "idx_dispatch_offers_rider")
+}
+
+model legal_documents {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  doc_type           legal_document_type
+  version            String
+  content            String
+  is_active          Boolean             @default(false)
+  updated_by_user_id String?             @db.Uuid
+  updated_at         DateTime            @default(now()) @db.Timestamptz(6)
+  created_at         DateTime            @default(now()) @db.Timestamptz(6)
+  users              users?              @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([doc_type, version], map: "uq_legal_documents_version")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model locality_bairro_matrix {
+  id                                                                              BigInt           @id @default(autoincrement())
+  origin_bairro_id                                                                String           @db.Uuid
+  destination_bairro_id                                                           String           @db.Uuid
+  distance_m                                                                      Int
+  duration_s                                                                      Int
+  source_provider                                                                 String           @default("local_bairro_matrix")
+  source_metadata                                                                 Json?
+  updated_at                                                                      DateTime         @default(now()) @db.Timestamptz(6)
+  locality_bairros_locality_bairro_matrix_destination_bairro_idTolocality_bairros locality_bairros @relation("locality_bairro_matrix_destination_bairro_idTolocality_bairros", fields: [destination_bairro_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  locality_bairros_locality_bairro_matrix_origin_bairro_idTolocality_bairros      locality_bairros @relation("locality_bairro_matrix_origin_bairro_idTolocality_bairros", fields: [origin_bairro_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([origin_bairro_id, destination_bairro_id], map: "uq_locality_matrix_pair")
+  @@index([destination_bairro_id], map: "idx_locality_matrix_destination")
+  @@index([origin_bairro_id], map: "idx_locality_matrix_origin")
+}
+
+model locality_bairros {
+  id                                                                                    String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  city                                                                                  String
+  state                                                                                 String
+  name                                                                                  String
+  normalized_name                                                                       String
+  is_active                                                                             Boolean                  @default(true)
+  created_at                                                                            DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at                                                                            DateTime                 @default(now()) @db.Timestamptz(6)
+  locality_bairro_matrix_locality_bairro_matrix_destination_bairro_idTolocality_bairros locality_bairro_matrix[] @relation("locality_bairro_matrix_destination_bairro_idTolocality_bairros")
+  locality_bairro_matrix_locality_bairro_matrix_origin_bairro_idTolocality_bairros      locality_bairro_matrix[] @relation("locality_bairro_matrix_origin_bairro_idTolocality_bairros")
+  orders_orders_destination_bairro_idTolocality_bairros                                 orders[]                 @relation("orders_destination_bairro_idTolocality_bairros")
+  orders_orders_origin_bairro_idTolocality_bairros                                      orders[]                 @relation("orders_origin_bairro_idTolocality_bairros")
+  quotes_quotes_destination_bairro_idTolocality_bairros                                 quotes[]                 @relation("quotes_destination_bairro_idTolocality_bairros")
+  quotes_quotes_origin_bairro_idTolocality_bairros                                      quotes[]                 @relation("quotes_origin_bairro_idTolocality_bairros")
+
+  @@unique([city, state, normalized_name], map: "uq_locality_bairro")
+}
+
+model notification_templates {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  event_key          String
+  channel            notification_channel
+  title_template     String
+  body_template      String
+  template_version   Int                  @default(1)
+  active             Boolean              @default(true)
+  updated_by_user_id String?              @db.Uuid
+  created_at         DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime             @default(now()) @db.Timestamptz(6)
+  users              users?               @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([event_key, channel, template_version], map: "uq_notification_template_version")
+}
+
+model notifications {
+  id         String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String               @db.Uuid
+  event_key  String?
+  channel    notification_channel @default(in_app)
+  title      String
+  body       String
+  payload    Json?
+  read_at    DateTime?            @db.Timestamptz(6)
+  created_at DateTime             @default(now()) @db.Timestamptz(6)
+  users      users                @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, created_at(sort: Desc)], map: "idx_notifications_user_created")
+  @@index([user_id, read_at], map: "idx_notifications_user_read")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model order_confirmation_codes {
+  id                         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id                   String    @unique @db.Uuid
+  code_hash                  String
+  code_last4                 String?
+  generated_at               DateTime  @default(now()) @db.Timestamptz(6)
+  expires_at                 DateTime  @db.Timestamptz(6)
+  attempts_count             Int       @default(0) @db.SmallInt
+  max_attempts               Int       @default(5) @db.SmallInt
+  validated_at               DateTime? @db.Timestamptz(6)
+  validated_by_rider_user_id String?   @db.Uuid
+  created_at                 DateTime  @default(now()) @db.Timestamptz(6)
+  orders                     orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                      users?    @relation(fields: [validated_by_rider_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([order_id], map: "idx_order_confirmation_order")
+}
+
+model order_events {
+  id            String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id      String              @db.Uuid
+  event_type    tracking_event_type
+  actor_user_id String?             @db.Uuid
+  actor_role    user_role?
+  note          String?
+  payload       Json?
+  occurred_at   DateTime            @db.Timestamptz(6)
+  created_at    DateTime            @default(now()) @db.Timestamptz(6)
+  users         users?              @relation(fields: [actor_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders        orders              @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([order_id, occurred_at], map: "idx_order_events_order_time")
+  @@index([event_type, occurred_at(sort: Desc)], map: "idx_order_events_type_time")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model order_financials {
+  order_id                String    @id @db.Uuid
+  freight_platform_brl    Decimal   @db.Decimal(12, 2)
+  rider_repass_brl        Decimal   @db.Decimal(12, 2)
+  platform_commission_brl Decimal   @db.Decimal(12, 2)
+  charged_at              DateTime? @db.Timestamptz(6)
+  repass_status           String    @default("pending")
+  repass_paid_at          DateTime? @db.Timestamptz(6)
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime  @default(now()) @db.Timestamptz(6)
+  orders                  orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model order_product_snapshots {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id          String             @db.Uuid
+  product_id        String?            @db.Uuid
+  product_name      String
+  quantity          Int                @default(1)
+  unit_price_brl    Decimal            @db.Decimal(10, 2)
+  total_price_brl   Decimal            @db.Decimal(10, 2)
+  created_at        DateTime           @default(now()) @db.Timestamptz(6)
+  orders            orders             @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  commerce_products commerce_products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([order_id], map: "idx_order_product_snapshots_order")
+}
+
+model order_status_transitions {
+  from_status order_status
+  to_status   order_status
+
+  @@id([from_status, to_status])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model orders {
+  id                                                              String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_code                                                      String                    @unique(map: "uq_orders_code")
+  commerce_user_id                                                String                    @db.Uuid
+  rider_user_id                                                   String?                   @db.Uuid
+  client_id                                                       String?                   @db.Uuid
+  quote_id                                                        String?                   @db.Uuid
+  status                                                          order_status
+  urgency                                                         urgency_type
+  origin_bairro_id                                                String?                   @db.Uuid
+  destination_bairro_id                                           String?                   @db.Uuid
+  recipient_name                                                  String?
+  recipient_phone                                                 String?
+  destination_cep                                                 String?
+  destination_state                                               String?
+  destination_city                                                String?
+  destination_neighborhood                                        String?
+  destination_street                                              String?
+  destination_number                                              String?
+  destination_complement                                          String?
+  notes                                                           String?
+  distance_m                                                      Int?
+  duration_s                                                      Int?
+  eta_min                                                         Int?
+  zone                                                            Int?                      @db.SmallInt
+  base_zone_brl                                                   Decimal?                  @db.Decimal(10, 2)
+  urgency_brl                                                     Decimal?                  @db.Decimal(10, 2)
+  sunday_brl                                                      Decimal?                  @db.Decimal(10, 2)
+  holiday_brl                                                     Decimal?                  @db.Decimal(10, 2)
+  rain_brl                                                        Decimal?                  @db.Decimal(10, 2)
+  peak_brl                                                        Decimal?                  @db.Decimal(10, 2)
+  total_brl                                                       Decimal?                  @db.Decimal(10, 2)
+  confirmation_code_required                                      Boolean                   @default(true)
+  confirmation_code_status                                        order_confirmation_status @default(not_generated)
+  accepted_at                                                     DateTime?                 @db.Timestamptz(6)
+  completed_at                                                    DateTime?                 @db.Timestamptz(6)
+  canceled_at                                                     DateTime?                 @db.Timestamptz(6)
+  cancel_reason                                                   String?
+  created_at                                                      DateTime                  @default(now()) @db.Timestamptz(6)
+  updated_at                                                      DateTime                  @default(now()) @db.Timestamptz(6)
+  credits_ledger                                                  credits_ledger[]
+  dispatch_batches                                                dispatch_batches[]
+  dispatch_offers                                                 dispatch_offers[]
+  order_confirmation_codes                                        order_confirmation_codes?
+  order_events                                                    order_events[]
+  order_financials                                                order_financials?
+  order_product_snapshots                                         order_product_snapshots[]
+  commerce_clients                                                commerce_clients?         @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_orders_commerce_user_idTousers                            users                     @relation("orders_commerce_user_idTousers", fields: [commerce_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  locality_bairros_orders_destination_bairro_idTolocality_bairros locality_bairros?         @relation("orders_destination_bairro_idTolocality_bairros", fields: [destination_bairro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  locality_bairros_orders_origin_bairro_idTolocality_bairros      locality_bairros?         @relation("orders_origin_bairro_idTolocality_bairros", fields: [origin_bairro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  quotes                                                          quotes?                   @relation(fields: [quote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_orders_rider_user_idTousers                               users?                    @relation("orders_rider_user_idTousers", fields: [rider_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rider_ledger                                                    rider_ledger[]
+  support_tickets                                                 support_tickets[]
+
+  @@index([commerce_user_id, status, created_at(sort: Desc)], map: "idx_orders_commerce_status_created")
+  @@index([rider_user_id, status, created_at(sort: Desc)], map: "idx_orders_rider_status_created")
+  @@index([status, created_at(sort: Desc)], map: "idx_orders_status_created")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model payment_intents {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commerce_user_id     String                 @db.Uuid
+  provider             payment_provider       @default(infinitepay)
+  purpose              String                 @default("credit_purchase")
+  status               payment_status         @default(pending)
+  amount_brl           Decimal                @db.Decimal(12, 2)
+  amount_cents         Int
+  provider_handle      String
+  order_nsu            String                 @unique(map: "uq_payment_intents_order_nsu")
+  checkout_url         String?
+  redirect_url         String?
+  webhook_url          String?
+  request_payload      Json?
+  response_payload     Json?
+  expires_at           DateTime?              @db.Timestamptz(6)
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime               @default(now()) @db.Timestamptz(6)
+  users                users                  @relation(fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  payment_transactions payment_transactions[]
+
+  @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_payment_intents_commerce")
+  @@index([status, created_at(sort: Desc)], map: "idx_payment_intents_status")
+}
+
+model payment_transactions {
+  id                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  payment_intent_id String                  @db.Uuid
+  provider          payment_provider
+  status            payment_status
+  invoice_slug      String?
+  transaction_nsu   String?
+  capture_method    payment_capture_method?
+  amount_cents      Int
+  paid_amount_cents Int?
+  installments      Int?
+  receipt_url       String?
+  provider_payload  Json?
+  approved_at       DateTime?               @db.Timestamptz(6)
+  created_at        DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime                @default(now()) @db.Timestamptz(6)
+  payment_intents   payment_intents         @relation(fields: [payment_intent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider, transaction_nsu], map: "uq_payment_transactions_nsu")
+  @@index([payment_intent_id], map: "idx_payment_transactions_intent")
+  @@index([status, created_at(sort: Desc)], map: "idx_payment_transactions_status")
+}
+
+model payment_webhook_events {
+  id                BigInt           @id @default(autoincrement())
+  provider          payment_provider
+  event_key         String           @default("payment.approved")
+  invoice_slug      String?
+  transaction_nsu   String?
+  order_nsu         String?
+  idempotency_key   String           @unique(map: "uq_payment_webhook_idempotency")
+  payload           Json
+  processing_status String           @default("received")
+  error_message     String?
+  received_at       DateTime         @default(now()) @db.Timestamptz(6)
+  processed_at      DateTime?        @db.Timestamptz(6)
+
+  @@index([order_nsu, received_at(sort: Desc)], map: "idx_payment_webhook_order_nsu")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model pricing_conditional_rules {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_version_id       String                @db.Uuid
+  condition_key         String
+  addon_brl             Decimal               @db.Decimal(10, 2)
+  created_at            DateTime              @default(now()) @db.Timestamptz(6)
+  pricing_rule_versions pricing_rule_versions @relation(fields: [rule_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([rule_version_id, condition_key], map: "uq_pricing_conditional_by_version")
+}
+
+model pricing_holidays {
+  holiday_date DateTime @id @db.Date
+  description  String?
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime @default(now()) @db.Timestamptz(6)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model pricing_peak_windows {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_version_id       String                @db.Uuid
+  start_hour            Int                   @db.SmallInt
+  end_hour              Int                   @db.SmallInt
+  created_at            DateTime              @default(now()) @db.Timestamptz(6)
+  pricing_rule_versions pricing_rule_versions @relation(fields: [rule_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model pricing_rule_versions {
+  id                        String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  version_code              String                      @unique(map: "uq_pricing_rule_version_code")
+  is_active                 Boolean                     @default(false)
+  effective_from            DateTime                    @db.Timestamptz(6)
+  effective_to              DateTime?                   @db.Timestamptz(6)
+  minimum_charge_brl        Decimal                     @db.Decimal(10, 2)
+  max_distance_km           Decimal                     @db.Decimal(5, 2)
+  notes                     String?
+  created_by_user_id        String?                     @db.Uuid
+  created_at                DateTime                    @default(now()) @db.Timestamptz(6)
+  pricing_conditional_rules pricing_conditional_rules[]
+  pricing_peak_windows      pricing_peak_windows[]
+  users                     users?                      @relation(fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pricing_urgency_rules     pricing_urgency_rules[]
+  pricing_zone_rules        pricing_zone_rules[]
+}
+
+model pricing_urgency_rules {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_version_id       String                @db.Uuid
+  urgency               urgency_type
+  addon_brl             Decimal               @db.Decimal(10, 2)
+  created_at            DateTime              @default(now()) @db.Timestamptz(6)
+  pricing_rule_versions pricing_rule_versions @relation(fields: [rule_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([rule_version_id, urgency], map: "uq_pricing_urgency_by_version")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model pricing_zone_rules {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_version_id       String                @db.Uuid
+  zone                  Int                   @db.SmallInt
+  min_km                Decimal               @db.Decimal(5, 2)
+  max_km                Decimal               @db.Decimal(5, 2)
+  base_value_brl        Decimal               @db.Decimal(10, 2)
+  created_at            DateTime              @default(now()) @db.Timestamptz(6)
+  pricing_rule_versions pricing_rule_versions @relation(fields: [rule_version_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([rule_version_id, zone], map: "uq_pricing_zone_by_version")
+}
+
+model public_leads {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_type  lead_type
+  name       String
+  contact    String
+  message    String?
+  source     String?
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model quote_provider_attempts {
+  id              BigInt   @id @default(autoincrement())
+  quote_id        String   @db.Uuid
+  domain_key      String
+  provider_id     String
+  attempt_no      Int      @db.SmallInt
+  success         Boolean
+  latency_ms      Int?
+  error_code      String?
+  response_sample Json?
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  quotes          quotes   @relation(fields: [quote_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([quote_id, domain_key, provider_id, attempt_no], map: "uq_quote_attempt")
+  @@index([quote_id, domain_key, attempt_no], map: "idx_quote_attempts_quote")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model quotes {
+  id                                                              String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  commerce_user_id                                                String                    @db.Uuid
+  origin_bairro_id                                                String                    @db.Uuid
+  destination_bairro_id                                           String                    @db.Uuid
+  urgency                                                         urgency_type
+  requested_at_iso                                                DateTime                  @db.Timestamptz(6)
+  distance_m                                                      Int?
+  duration_s                                                      Int?
+  eta_min                                                         Int?
+  zone                                                            Int?                      @db.SmallInt
+  base_zone_brl                                                   Decimal?                  @db.Decimal(10, 2)
+  urgency_brl                                                     Decimal?                  @db.Decimal(10, 2)
+  sunday_brl                                                      Decimal?                  @db.Decimal(10, 2)
+  holiday_brl                                                     Decimal?                  @db.Decimal(10, 2)
+  rain_brl                                                        Decimal?                  @db.Decimal(10, 2)
+  peak_brl                                                        Decimal?                  @db.Decimal(10, 2)
+  total_brl                                                       Decimal?                  @db.Decimal(10, 2)
+  is_raining                                                      Boolean?
+  climate_source                                                  String?
+  climate_confidence                                              String?
+  distance_time_provider                                          String?
+  climate_provider                                                String?
+  fallback_used                                                   Boolean?
+  distance_time_latency_ms                                        Int?
+  climate_latency_ms                                              Int?
+  success                                                         Boolean                   @default(true)
+  error_code                                                      String?
+  error_message                                                   String?
+  expires_at                                                      DateTime?                 @db.Timestamptz(6)
+  created_at                                                      DateTime                  @default(now()) @db.Timestamptz(6)
+  orders                                                          orders[]
+  quote_provider_attempts                                         quote_provider_attempts[]
+  users                                                           users                     @relation(fields: [commerce_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  locality_bairros_quotes_destination_bairro_idTolocality_bairros locality_bairros          @relation("quotes_destination_bairro_idTolocality_bairros", fields: [destination_bairro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  locality_bairros_quotes_origin_bairro_idTolocality_bairros      locality_bairros          @relation("quotes_origin_bairro_idTolocality_bairros", fields: [origin_bairro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_quotes_commerce_created")
+  @@index([origin_bairro_id, destination_bairro_id], map: "idx_quotes_origin_destination")
+}
+
+model rider_documents {
+  id                                                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rider_user_id                                     String              @db.Uuid
+  document_type                                     rider_document_type
+  document_number                                   String?
+  file_url                                          String?
+  validation_status                                 String              @default("pending")
+  validated_by_user_id                              String?             @db.Uuid
+  validated_at                                      DateTime?           @db.Timestamptz(6)
+  created_at                                        DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at                                        DateTime            @default(now()) @db.Timestamptz(6)
+  users_rider_documents_rider_user_idTousers        users               @relation("rider_documents_rider_user_idTousers", fields: [rider_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_rider_documents_validated_by_user_idTousers users?              @relation("rider_documents_validated_by_user_idTousers", fields: [validated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([rider_user_id, document_type], map: "idx_rider_documents_user_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model rider_ledger {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rider_user_id     String   @db.Uuid
+  order_id          String?  @db.Uuid
+  entry_type        String
+  amount_brl        Decimal  @db.Decimal(12, 2)
+  balance_after_brl Decimal  @db.Decimal(12, 2)
+  reference_type    String?
+  reference_id      String?  @db.Uuid
+  reason            String?
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  orders            orders?  @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users             users    @relation(fields: [rider_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([rider_user_id, created_at(sort: Desc)], map: "idx_rider_ledger_rider_time")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model rider_profiles {
+  user_id               String    @id @db.Uuid
+  rider_code            String    @unique(map: "uq_rider_profiles_code")
+  rank_level            String?
+  rating                Decimal?  @default(0) @db.Decimal(4, 2)
+  completed_deliveries  Int       @default(0)
+  online_minutes_total  Int       @default(0)
+  is_online             Boolean   @default(false)
+  cooldown_until        DateTime? @db.Timestamptz(6)
+  last_status_change_at DateTime? @db.Timestamptz(6)
+  created_at            DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime  @default(now()) @db.Timestamptz(6)
+  users                 users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model rider_vehicles {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rider_user_id     String             @db.Uuid
+  vehicle_type      rider_vehicle_type
+  brand             String?
+  model             String?
+  vehicle_year      Int?
+  plate             String?
+  validation_status String             @default("pending")
+  is_primary        Boolean            @default(true)
+  created_at        DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime           @default(now()) @db.Timestamptz(6)
+  users             users              @relation(fields: [rider_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([rider_user_id, is_primary(sort: Desc)], map: "idx_rider_vehicles_user")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model rider_wallets {
+  rider_user_id String   @id @db.Uuid
+  balance_brl   Decimal  @default(0) @db.Decimal(12, 2)
+  pending_brl   Decimal  @default(0) @db.Decimal(12, 2)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  users         users    @relation(fields: [rider_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model support_faqs {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  question           String
+  answer             String
+  category           String?
+  sort_order         Int      @default(0)
+  active             Boolean  @default(true)
+  updated_by_user_id String?  @db.Uuid
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model support_ticket_messages {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ticket_id       String          @db.Uuid
+  author_user_id  String          @db.Uuid
+  message         String
+  internal_note   Boolean         @default(false)
+  created_at      DateTime        @default(now()) @db.Timestamptz(6)
+  users           users           @relation(fields: [author_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  support_tickets support_tickets @relation(fields: [ticket_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ticket_id, created_at], map: "idx_support_ticket_messages_ticket")
+}
+
+model support_tickets {
+  id                                               String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_by_user_id                               String                    @db.Uuid
+  order_id                                         String?                   @db.Uuid
+  subject                                          String
+  description                                      String
+  status                                           ticket_status             @default(open)
+  priority                                         ticket_priority           @default(medium)
+  assigned_to_user_id                              String?                   @db.Uuid
+  resolved_at                                      DateTime?                 @db.Timestamptz(6)
+  created_at                                       DateTime                  @default(now()) @db.Timestamptz(6)
+  updated_at                                       DateTime                  @default(now()) @db.Timestamptz(6)
+  support_ticket_messages                          support_ticket_messages[]
+  users_support_tickets_assigned_to_user_idTousers users?                    @relation("support_tickets_assigned_to_user_idTousers", fields: [assigned_to_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_support_tickets_created_by_user_idTousers  users                     @relation("support_tickets_created_by_user_idTousers", fields: [created_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders                                           orders?                   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([created_by_user_id, created_at(sort: Desc)], map: "idx_support_tickets_creator")
+  @@index([status, priority, created_at(sort: Desc)], map: "idx_support_tickets_status")
+}
+
+model system_flags {
+  flag_key           String   @id
+  enabled            Boolean
+  description        String?
+  updated_by_user_id String?  @db.Uuid
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users?   @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model system_runtime_history {
+  id                        BigInt    @id @default(autoincrement())
+  maintenance_enabled       Boolean
+  maintenance_message       String?
+  expected_back_at          DateTime? @db.Timestamptz(6)
+  min_supported_app_version String?
+  force_update_enabled      Boolean
+  updated_by_user_id        String?   @db.Uuid
+  created_at                DateTime  @default(now()) @db.Timestamptz(6)
+  users                     users?    @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model system_runtime_state {
+  singleton_id              Int       @id @default(1) @db.SmallInt
+  maintenance_enabled       Boolean   @default(false)
+  maintenance_message       String?
+  expected_back_at          DateTime? @db.Timestamptz(6)
+  min_supported_app_version String?
+  force_update_enabled      Boolean   @default(false)
+  updated_by_user_id        String?   @db.Uuid
+  updated_at                DateTime  @default(now()) @db.Timestamptz(6)
+  users                     users?    @relation(fields: [updated_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user_addresses {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String   @db.Uuid
+  address_type String
+  cep          String?
+  state        String?
+  city         String?
+  neighborhood String?
+  street       String?
+  number       String?
+  complement   String?
+  is_primary   Boolean  @default(false)
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime @default(now()) @db.Timestamptz(6)
+  users        users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, address_type], map: "idx_user_addresses_user")
+}
+
+model user_bank_accounts {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String             @db.Uuid
+  bank_name    String?
+  agency       String?
+  account      String?
+  account_type bank_account_type?
+  pix_key      String?
+  is_primary   Boolean            @default(true)
+  created_at   DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime           @default(now()) @db.Timestamptz(6)
+  users        users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id, is_primary(sort: Desc)], map: "idx_user_bank_accounts_user")
+}
+
+model user_identities {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String                 @db.Uuid
+  provider         auth_identity_provider
+  provider_user_id String
+  provider_email   String?
+  created_at       DateTime               @default(now()) @db.Timestamptz(6)
+  users            users                  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, provider], map: "uq_user_identity_per_user")
+  @@unique([provider, provider_user_id], map: "uq_user_identity_provider")
+}
+
+model user_notification_settings {
+  user_id     String   @id @db.Uuid
+  delivery    Boolean  @default(true)
+  payment     Boolean  @default(true)
+  promotions  Boolean  @default(false)
+  app_updates Boolean  @default(true)
+  security    Boolean  @default(true)
+  support     Boolean  @default(true)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                                          String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role                                                        user_role
+  status                                                      user_status                 @default(active)
+  name                                                        String
+  email                                                       String                      @unique(map: "uq_users_email")
+  password_hash                                               String?
+  phone_number                                                String?
+  whatsapp                                                    String?
+  profile_picture_url                                         String?
+  last_login_at                                               DateTime?                   @db.Timestamptz(6)
+  created_at                                                  DateTime                    @default(now()) @db.Timestamptz(6)
+  updated_at                                                  DateTime                    @default(now()) @db.Timestamptz(6)
+  audit_logs                                                  audit_logs[]
+  auth_otp_challenges                                         auth_otp_challenges[]
+  auth_refresh_tokens                                         auth_refresh_tokens[]
+  commerce_clients                                            commerce_clients[]
+  commerce_products                                           commerce_products[]
+  commerce_profiles                                           commerce_profiles?
+  credits_ledger_credits_ledger_commerce_user_idTousers       credits_ledger[]            @relation("credits_ledger_commerce_user_idTousers")
+  credits_ledger_credits_ledger_created_by_user_idTousers     credits_ledger[]            @relation("credits_ledger_created_by_user_idTousers")
+  credits_wallets                                             credits_wallets?
+  dispatch_offers                                             dispatch_offers[]
+  legal_documents                                             legal_documents[]
+  notification_templates                                      notification_templates[]
+  notifications                                               notifications[]
+  order_confirmation_codes                                    order_confirmation_codes[]
+  order_events                                                order_events[]
+  orders_orders_commerce_user_idTousers                       orders[]                    @relation("orders_commerce_user_idTousers")
+  orders_orders_rider_user_idTousers                          orders[]                    @relation("orders_rider_user_idTousers")
+  payment_intents                                             payment_intents[]
+  pricing_rule_versions                                       pricing_rule_versions[]
+  quotes                                                      quotes[]
+  rider_documents_rider_documents_rider_user_idTousers        rider_documents[]           @relation("rider_documents_rider_user_idTousers")
+  rider_documents_rider_documents_validated_by_user_idTousers rider_documents[]           @relation("rider_documents_validated_by_user_idTousers")
+  rider_ledger                                                rider_ledger[]
+  rider_profiles                                              rider_profiles?
+  rider_vehicles                                              rider_vehicles[]
+  rider_wallets                                               rider_wallets?
+  support_faqs                                                support_faqs[]
+  support_ticket_messages                                     support_ticket_messages[]
+  support_tickets_support_tickets_assigned_to_user_idTousers  support_tickets[]           @relation("support_tickets_assigned_to_user_idTousers")
+  support_tickets_support_tickets_created_by_user_idTousers   support_tickets[]           @relation("support_tickets_created_by_user_idTousers")
+  system_flags                                                system_flags[]
+  system_runtime_history                                      system_runtime_history[]
+  system_runtime_state                                        system_runtime_state[]
+  user_addresses                                              user_addresses[]
+  user_bank_accounts                                          user_bank_accounts[]
+  user_identities                                             user_identities[]
+  user_notification_settings                                  user_notification_settings?
+}
+
+enum auth_identity_provider {
+  local
+  google
+  facebook
+  apple
+}
+
+enum bank_account_type {
+  corrente
+  poupanca
+}
+
+enum credit_entry_type {
+  credit
+  debit
+  reservation
+  release
+  adjustment
+}
+
+enum dispatch_offer_decision {
+  pending
+  accepted
+  rejected
+  no_response
+  expired
+}
+
+enum lead_type {
+  commerce
+  rider
+  partnership
+  other
+}
+
+enum legal_document_type {
+  termos
+  privacidade
+  cookies
+}
+
+enum notification_channel {
+  in_app
+  push
+}
+
+enum order_confirmation_status {
+  not_generated
+  generated
+  validated
+}
+
+enum order_status {
+  created
+  searching_rider
+  rider_assigned
+  to_merchant
+  at_merchant
+  waiting_order
+  to_customer
+  at_customer
+  finishing_delivery
+  completed
+  canceled
+}
+
+enum payment_capture_method {
+  pix
+  credit_card
+}
+
+enum payment_provider {
+  infinitepay
+}
+
+enum payment_status {
+  pending
+  approved
+  failed
+  canceled
+}
+
+enum product_status {
+  active
+  paused
+  hidden
+}
+
+enum rider_document_type {
+  rg
+  cnh
+  cpf
+  residence_proof
+  vehicle_proof
+}
+
+enum rider_vehicle_type {
+  bicicleta
+  moto
+  carro
+}
+
+enum ticket_priority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum ticket_status {
+  open
+  in_progress
+  resolved
+  closed
+}
+
+enum tracking_event_type {
+  order_created
+  rider_assigned
+  rider_accepted
+  rider_to_merchant
+  rider_at_merchant
+  waiting_order
+  rider_to_customer
+  rider_at_customer
+  finishing_delivery
+  completed
+  canceled
+}
+
+enum urgency_type {
+  padrao
+  urgente
+  agendado
+}
+
+enum user_role {
+  admin
+  commerce
+  rider
+}
+
+enum user_status {
+  active
+  suspended
+  blocked
+  pending_verification
+}

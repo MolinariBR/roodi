@@ -1,0 +1,18 @@
+:root {
+  --palette-cyan-500: #19b3e6;
+  --palette-cyan-100: #d7f2fb;
+  --palette-green-500: #22c55e;
+  --palette-amber-500: #f59e0b;
+  --palette-red-500: #ef4444;
+  --palette-blue-500: #0ea5e9;
+  --palette-white: #ffffff;
+  --palette-black-950: #0d1117;
+  --palette-black-900: #111d21;
+  --palette-black-800: #182226;
+  --palette-black-700: #25343b;
+  --palette-slate-100: #f4f6f7;
+  --palette-slate-200: #e9eef2;
+  --palette-slate-500: #8aa0ad;
+  --palette-slate-700: #5a717f;
+  --palette-slate-900: #263840;
+}

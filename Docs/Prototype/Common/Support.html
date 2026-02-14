@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Suporte</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<a aria-label="Voltar para perfil" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Rider/Profile.html" id="contextBackLink">
+<span class="material-symbols-outlined text-icon-md">arrow_back</span>
+</a>
+<div class="text-center">
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Central</p>
+<h1 class="text-sm font-bold text-white mt-0.5">Suporte</h1>
+</div>
+<a aria-label="Reportar falha" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" data-preserve-from="true" href="./Error.html">
+<span class="material-symbols-outlined text-icon-md">report</span>
+</a>
+</header>
+
+<main class="relative z-10 flex-1 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-9 space-y-5">
+<section class="glass-card rounded-card p-1 border border-white/10">
+<div class="rounded-panel bg-black/35 border border-white/5 p-4 sm:p-5 space-y-4">
+<div class="flex items-start gap-3">
+<div class="ds-list-icon bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">support_agent</span>
+</div>
+<div class="min-w-0">
+<h2 class="ds-support-hero-title">Como podemos ajudar?</h2>
+<p class="ds-support-hero-copy">Escolha um canal rapido ou consulte as respostas mais comuns.</p>
+</div>
+</div>
+
+<div class="ds-profile-metrics">
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">5 min</p>
+<p class="ds-profile-metric-label">Resposta media</p>
+</div>
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">24/7</p>
+<p class="ds-profile-metric-label">Atendimento</p>
+</div>
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">97%</p>
+<p class="ds-profile-metric-label">Resolvidos</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="space-y-2">
+<div class="ds-section-head">
+<h2 class="ds-section-title">Canais de contato</h2>
+<span class="ds-chip ds-support-chip-online">Online</span>
+</div>
+
+<div class="space-y-3">
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="#">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">chat</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Chat no app</h3>
+<p class="ds-list-subtitle">Mais rapido para casos urgentes</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">Agora</p>
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">5 min</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="#">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-blue-500/10 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-400">mail</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">E-mail</h3>
+<p class="ds-list-subtitle">Resposta em ate 1 hora</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">1h</p>
+<p class="ds-list-side-meta text-blue-300 bg-blue-500/10">Fila</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="#">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-orange-500/10 border border-orange-500/20">
+<span class="material-symbols-outlined text-orange-400">call</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Ligacao</h3>
+<p class="ds-list-subtitle">Para bloqueio e seguranca</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">Urgente</p>
+<p class="ds-list-side-meta text-orange-300 bg-orange-500/10">24/7</p>
+</div>
+</a>
+</div>
+</section>
+
+<section class="space-y-2">
+<div class="ds-section-head">
+<h2 class="ds-section-title">Perguntas frequentes</h2>
+<a class="ds-section-action" href="#">Ver tudo</a>
+</div>
+<div class="space-y-2">
+<article class="glass-card ds-support-faq-card">
+<h3 class="ds-support-faq-title">Como redefinir minha senha?</h3>
+<p class="ds-support-faq-text">Use a tela "Esqueci a senha", confirme seu e-mail e valide o codigo OTP.</p>
+</article>
+<article class="glass-card ds-support-faq-card">
+<h3 class="ds-support-faq-title">Meu pedido nao apareceu para rider, e agora?</h3>
+<p class="ds-support-faq-text">Revise endereco, credito e status de conexao. Se persistir, abra chamado imediato.</p>
+</article>
+<article class="glass-card ds-support-faq-card">
+<h3 class="ds-support-faq-title">Como atualizar dados da conta?</h3>
+<p class="ds-support-faq-text">Acesse o perfil e atualize telefone, banco e documentos no menu de conta.</p>
+</article>
+</div>
+</section>
+
+<section class="glass-card rounded-card p-4 border border-white/10 space-y-4">
+<div class="flex items-start justify-between gap-3">
+<div>
+<h2 class="text-white font-bold text-base">Abrir chamado</h2>
+<p class="ds-support-callout-copy">Envie detalhes do problema e acompanhe o status em historico.</p>
+</div>
+<span class="ds-chip ds-support-chip-priority">Prioridade</span>
+</div>
+<div class="grid grid-cols-10 gap-2.5">
+<a class="col-span-7 ds-support-action-primary" data-preserve-from="true" href="./Error.html">
+Novo chamado
+<span class="material-symbols-outlined text-icon-md">add_circle</span>
+</a>
+<a class="col-span-3 ds-support-action-secondary" data-preserve-from="true" href="./Update.html">Status</a>
+</div>
+</section>
+</main>
+
+<div class="relative z-10 pb-7 text-center text-2xs uppercase tracking-widest text-slate-500 font-semibold">Roodi support center</div>
+</div>
+<script>
+      (function () {
+        const from = new URLSearchParams(window.location.search).get('from') || '';
+        const backLink = document.getElementById('contextBackLink');
+        if (!backLink) return;
+        const routeByOrigin = {
+          rider_profile: '../Rider/Profile.html',
+          commerce_profile: '../Commerce/Profile.html',
+          rider_home: '../Rider/Home.html',
+          rider_orders: '../Rider/Orders.html',
+          commerce_home: '../Commerce/Home.html',
+          commerce_history: '../Commerce/History.html',
+          commerce_create_call: '../Commerce/CreateCall.html',
+          commerce_tracking: '../Commerce/Tracking.html',
+          commerce_clients: '../Commerce/Clients.html',
+          commerce_credits: '../Commerce/Credits.html',
+          commerce_products: '../Commerce/Products.html',
+        };
+
+        const target = routeByOrigin[from] || '../Rider/Profile.html';
+        backLink.href = target;
+        if (from.startsWith('commerce_')) {
+          backLink.setAttribute('aria-label', 'Voltar para empresa');
+        }
+
+        if (!from) return;
+        const preserveLinks = document.querySelectorAll('[data-preserve-from="true"]');
+        preserveLinks.forEach((link) => {
+          const currentHref = link.getAttribute('href');
+          if (!currentHref) return;
+          const separator = currentHref.includes('?') ? '&' : '?';
+          link.setAttribute('href', `${currentHref}${separator}from=${encodeURIComponent(from)}`);
+        });
+      })();
+    </script>
+</body></html>

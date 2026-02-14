@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil do Comerciante</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-black">
+<div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<button aria-label="Abrir menu" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" id="menuToggle" type="button">
+<span class="material-symbols-outlined text-icon-md">menu</span>
+</button>
+<div class="text-center">
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Comerciante</p>
+<h1 class="text-sm font-bold text-white mt-0.5">Perfil</h1>
+</div>
+<div class="relative">
+<a aria-label="Notificacoes" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Common/Notifications.html?from=commerce_profile">
+<span class="material-symbols-outlined text-icon-md">notifications</span>
+</a>
+<span class="absolute top-1.5 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-black"></span>
+</div>
+</header>
+
+<main class="flex-1 relative w-full h-full z-10 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-8 sm:pb-10 space-y-6 sm:space-y-7">
+<section class="glass-card rounded-card p-1 border border-white/10 relative overflow-hidden">
+<div class="relative bg-black/35 border border-white/5 rounded-panel p-4 sm:p-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-bold bg-emerald-500/20 text-emerald-300">LOJA ABERTA</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-bold bg-white/10 text-slate-300">NIVEL PRO</span>
+</div>
+
+<div class="flex items-start justify-between gap-3 mb-4">
+<div class="flex items-center gap-3 min-w-0">
+<div class="h-14 w-14 rounded-2xl border border-white/15 bg-white/5 inline-flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-cyan-300 text-icon-lg">storefront</span>
+</div>
+<div class="min-w-0">
+<h2 class="text-base sm:text-lg font-bold text-white leading-tight truncate">Padaria Central</h2>
+<p class="text-2xs text-slate-400 uppercase tracking-widest mt-0.5">ID #COM-1298</p>
+</div>
+</div>
+<div class="text-right shrink-0">
+<p class="text-lg sm:text-xl font-bold text-white leading-none">4.8</p>
+<p class="text-2xs text-slate-400 uppercase font-bold tracking-wide mt-1">Avaliacao</p>
+</div>
+</div>
+
+<div class="grid grid-cols-2 gap-3 text-sm">
+<div class="glass-panel rounded-xl px-3 py-2.5">
+<p class="text-slate-400 text-2xs uppercase tracking-wide font-bold">CNPJ</p>
+<p class="text-white font-semibold mt-1">12.345.678/0001-90</p>
+</div>
+<div class="glass-panel rounded-xl px-3 py-2.5">
+<p class="text-slate-400 text-2xs uppercase tracking-wide font-bold">Base operacao</p>
+<p class="text-white font-semibold mt-1">Rua Aurora, 78</p>
+</div>
+</div>
+
+<div class="ds-profile-metrics mt-4">
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">23</p>
+<p class="ds-profile-metric-label">Chamados hoje</p>
+</div>
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">R$ 11</p>
+<p class="ds-profile-metric-label">Taxa media</p>
+</div>
+<div class="ds-profile-metric-card">
+<p class="ds-profile-metric-value">5min</p>
+<p class="ds-profile-metric-label">Despacho</p>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Operacao</h2>
+<a class="ds-section-action" href="./CreateCall.html">Novo chamado</a>
+</div>
+<div class="space-y-3">
+<a class="glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" href="./CreateCall.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">two_wheeler</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Chamar Rider</h3>
+<p class="ds-list-subtitle">Criar novo chamado de coleta</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-300">pause_circle</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Pausar Loja</h3>
+<p class="ds-list-subtitle">Suspender novos chamados temporariamente</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">Ativa</p>
+</div>
+</button>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Preferencias de Despacho</h2>
+</div>
+<div class="space-y-3">
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-blue-500/10 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-300">pin_drop</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Raio de atendimento</h3>
+<p class="ds-list-subtitle">Ate 4 km</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Editar</p>
+</div>
+</button>
+
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-violet-500/10 border border-violet-500/20">
+<span class="material-symbols-outlined text-violet-300">speed</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Prioridade de coleta</h3>
+<p class="ds-list-subtitle">Padrao</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Alterar</p>
+</div>
+</button>
+
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">campaign</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Notificacao sonora</h3>
+<p class="ds-list-subtitle">Ativada</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">ON</p>
+</div>
+</button>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Conta e Gestao</h2>
+</div>
+<div class="space-y-3">
+<a class="glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" href="./Clients.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-cyan-500/10 border border-cyan-500/20">
+<span class="material-symbols-outlined text-cyan-300">groups</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Clientes da Empresa</h3>
+<p class="ds-list-subtitle">Contatos e enderecos cadastrados</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" href="./Credits.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">account_balance_wallet</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Compra de Creditos</h3>
+<p class="ds-list-subtitle">Saldo para chamados</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" href="./Products.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-300">inventory_2</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Produtos</h3>
+<p class="ds-list-subtitle">Catalogo, estoque e disponibilidade</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-orange-500/10 border border-orange-500/20">
+<span class="material-symbols-outlined text-orange-300">badge</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Dados do Comerciante</h3>
+<p class="ds-list-subtitle">Documentacao e cadastro</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</button>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Suporte e Seguranca</h2>
+</div>
+<div class="space-y-3">
+<a class="glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" href="../Common/Support.html?from=commerce_profile">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">help</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Central de Ajuda</h3>
+<p class="ds-list-subtitle">Suporte e atendimento</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<button class="w-full text-left glass-card ds-list-card hover:bg-white/5 transition-colors border border-white/10" type="button">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-red-500/10 border border-red-500/20">
+<span class="material-symbols-outlined text-red-300">gpp_good</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Privacidade e Seguranca</h3>
+<p class="ds-list-subtitle">Acesso e protecao da conta</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</button>
+</div>
+</section>
+
+<section>
+<button class="w-full py-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-bold hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-300 transition-colors" type="button">
+Sair da Conta
+</button>
+</section>
+</main>
+
+<div class="hidden absolute left-4 sm:left-6 top-24 sm:top-28 z-50 w-52 rounded-xl border border-white/10 bg-black/95 p-2" id="floatingMenu">
+<nav class="space-y-1">
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Home.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">home</span>
+<span>Inicio</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./History.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">receipt_long</span>
+<span>Pedidos</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white" href="./Profile.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-200">person</span>
+<span>Perfil</span>
+</a>
+</nav>
+</div>
+</div>
+
+<script src="./home-menu.js"></script>
+</body></html>

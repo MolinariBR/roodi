@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Painel da Empresa</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-black">
+<div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<button aria-label="Abrir menu" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" id="menuToggle" type="button">
+<span class="material-symbols-outlined text-icon-md">menu</span>
+</button>
+<div class="text-center">
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Comerciante</p>
+<h1 class="text-sm font-bold text-white mt-0.5">Painel da Empresa</h1>
+</div>
+<div class="relative">
+<a aria-label="Notificações" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Common/Notifications.html?from=commerce_home">
+<span class="material-symbols-outlined text-icon-md">notifications</span>
+</a>
+<span class="absolute top-1.5 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-black"></span>
+</div>
+</header>
+
+<main class="flex-1 relative w-full h-full z-10 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-8 sm:pb-10 space-y-6 sm:space-y-7">
+<section class="glass-card rounded-card p-1 border border-white/10 relative overflow-hidden">
+<div class="relative bg-black/35 border border-white/5 rounded-panel p-4 sm:p-6 space-y-4">
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="ds-chip ds-chip-success">Loja aberta</span>
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Chamado de rider</p>
+</div>
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Agora</p>
+</div>
+
+<article class="glass-card ds-list-card border border-white/10">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">two_wheeler</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Pronto para envio</h3>
+<p class="ds-list-subtitle">Chamado #5891 • Amanda Silva</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">1.8 km</p>
+<p class="ds-list-side-meta text-cyan-300 bg-cyan-500/10">Distância</p>
+</div>
+</article>
+
+<div class="space-y-2">
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Destino</span>
+<span class="text-white font-semibold text-right">Rua das Flores, 210</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Destinatário</span>
+<span class="text-white font-semibold text-right">Amanda Silva</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Taxa de entrega</span>
+<span class="text-white font-semibold text-right">R$ 12,00</span>
+</div>
+</div>
+
+<div class="grid grid-cols-10 gap-3">
+<button class="col-span-3 ds-auth-social-btn" type="button">Cancelar</button>
+<a class="col-span-7 ds-auth-submit-btn" href="./CreateCall.html">
+Chamar Rider
+<span class="material-symbols-outlined text-icon-md">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Chamados de Rider</h2>
+<a class="ds-section-action" href="./History.html">Ver todos</a>
+</div>
+<div class="space-y-3">
+<article class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-300">schedule</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Chamado #5887</h3>
+<p class="ds-list-subtitle">Aguardando aceite • 2.4 km</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">R$ 10,50</p>
+<p class="ds-list-side-meta text-amber-300 bg-amber-500/10">8 min</p>
+</div>
+</article>
+
+<article class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-blue-500/10 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-300">directions_bike</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Chamado #5879</h3>
+<p class="ds-list-subtitle">Rider a caminho • Joao R.</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">R$ 12,00</p>
+<p class="ds-list-side-meta text-cyan-300 bg-cyan-500/10">Coleta</p>
+</div>
+</article>
+
+<article class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">check_circle</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Chamado #5874</h3>
+<p class="ds-list-subtitle">Entrega concluida • 14:32</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">R$ 9,80</p>
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">Finalizado</p>
+</div>
+</article>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Operação de Hoje</h2>
+<button class="ds-section-action" type="button">Relatório</button>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-emerald-500/10 text-emerald-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">payments</span>
+</div>
+<p class="ds-kpi-label-inline">Taxa entrega</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">R$ 368</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-blue-500/10 text-blue-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">receipt</span>
+</div>
+<p class="ds-kpi-label-inline">Chamados</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">29</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-orange-500/10 text-orange-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">timer</span>
+</div>
+<p class="ds-kpi-label-inline">Despacho</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">5<span class="text-xs sm:text-sm font-normal ml-0.5">min</span></p>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Atalhos da Empresa</h2>
+</div>
+<div class="space-y-3">
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="./Clients.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-blue-500/10 border border-blue-500/20">
+<span class="material-symbols-outlined text-blue-300">groups</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Clientes Salvos</h3>
+<p class="ds-list-subtitle">Contato e endereço já cadastrados</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="./Credits.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-emerald-500/10 border border-emerald-500/20">
+<span class="material-symbols-outlined text-emerald-400">account_balance_wallet</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Comprar Créditos</h3>
+<p class="ds-list-subtitle">Saldo para chamadas de rider</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+
+<a class="glass-card ds-list-card border border-white/10 hover:bg-white/5 transition-colors" href="./Products.html">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-300">inventory_2</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Produtos</h3>
+<p class="ds-list-subtitle">Catalogo e disponibilidade de itens</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-meta text-slate-300 bg-white/5">Abrir</p>
+</div>
+</a>
+</div>
+</section>
+</main>
+
+<div class="hidden absolute left-4 sm:left-6 top-24 sm:top-28 z-50 w-52 rounded-xl border border-white/10 bg-black/95 p-2" id="floatingMenu">
+<nav class="space-y-1">
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Home.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">home</span>
+<span>Início</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./History.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">receipt_long</span>
+<span>Pedidos</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Profile.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">person</span>
+<span>Perfil</span>
+</a>
+</nav>
+</div>
+
+</div>
+<script src="./home-menu.js"></script>
+</body></html>

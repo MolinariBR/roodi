@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Erro</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<main class="relative z-10 flex flex-1 items-center justify-center px-4 sm:px-6 py-8 sm:py-10">
+<section class="w-full max-w-sm mx-auto">
+<div class="ds-status-hero">
+<div class="ds-status-icon ds-status-icon-danger">
+<span class="material-symbols-outlined text-icon-lg">error</span>
+</div>
+<div class="min-w-0">
+<h1 class="ds-status-title">Nao foi possivel continuar</h1>
+<p class="ds-status-copy">Encontramos um problema ao carregar esta tela. Verifique sua conexao e tente novamente.</p>
+</div>
+</div>
+
+<div class="ds-status-panel">
+<div class="ds-status-row">
+<div>
+<p class="ds-status-label">Codigo do erro</p>
+<p class="ds-status-value">ERR-503-SERVICE</p>
+</div>
+<span class="ds-status-chip ds-status-chip-warning">Temporario</span>
+</div>
+</div>
+
+<div class="grid grid-cols-10 gap-3">
+<button class="col-span-7 ds-auth-submit-btn" type="button">
+Tentar novamente
+<span class="material-symbols-outlined text-icon-md">refresh</span>
+</button>
+<a class="col-span-3 ds-auth-social-btn" href="./Support.html" id="errorSupportLink">Suporte</a>
+</div>
+</section>
+</main>
+
+<div class="relative z-10 pb-7 text-center text-2xs uppercase tracking-widest text-slate-500 font-semibold">Roodi status</div>
+</div>
+<script>
+      (function () {
+        const supportLink = document.getElementById('errorSupportLink');
+        if (!supportLink) return;
+
+        const from = new URLSearchParams(window.location.search).get('from') || '';
+        if (!from) return;
+
+        supportLink.href = `./Support.html?from=${encodeURIComponent(from)}`;
+      })();
+    </script>
+</body></html>

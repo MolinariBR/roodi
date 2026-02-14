@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Historico de Chamados</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-black">
+<div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<button aria-label="Abrir menu" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" id="menuToggle" type="button">
+<span class="material-symbols-outlined text-icon-md">menu</span>
+</button>
+<div class="text-center">
+<p class="text-2xs text-slate-400 font-semibold uppercase tracking-widest">Comerciante</p>
+<h1 class="text-sm font-bold text-white mt-0.5">Historico de Chamados</h1>
+</div>
+<div class="relative">
+<a aria-label="Notificacoes" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Common/Notifications.html?from=commerce_history">
+<span class="material-symbols-outlined text-icon-md">notifications</span>
+</a>
+<span class="absolute top-1.5 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-black"></span>
+</div>
+</header>
+
+<main class="flex-1 relative w-full h-full z-10 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-8 sm:pb-10 space-y-6 sm:space-y-7">
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Resumo Diario</h2>
+<button class="ds-section-action" type="button">Exportar</button>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-cyan-500/10 text-cyan-300">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">today</span>
+</div>
+<p class="ds-kpi-label-inline">Hoje</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">18</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-emerald-500/10 text-emerald-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">check_circle</span>
+</div>
+<p class="ds-kpi-label-inline">Concluidos</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">15</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-red-500/10 text-red-300">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">cancel</span>
+</div>
+<p class="ds-kpi-label-inline">Cancelados</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">2</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="glass-card rounded-panel border border-white/10 p-4 sm:p-5 space-y-3">
+<div class="ds-section-head !mb-0 px-0">
+<h2 class="ds-section-title">Filtros</h2>
+<button class="ds-section-action" type="button">Limpar</button>
+</div>
+<div class="flex gap-2 overflow-x-auto no-scrollbar">
+<button class="filter-chip is-active" type="button">Hoje</button>
+<button class="filter-chip" type="button">7 dias</button>
+<button class="filter-chip" type="button">Concluidos</button>
+<button class="filter-chip" type="button">Em rota</button>
+<button class="filter-chip" type="button">Cancelados</button>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Chamados</h2>
+<a class="ds-section-action" href="./CreateCall.html">Novo</a>
+</div>
+<div class="space-y-3">
+<article class="glass-card border border-cyan-500/25 rounded-panel p-4 space-y-3">
+<div class="flex items-start justify-between gap-3">
+<div class="min-w-0">
+<p class="ds-list-subtitle">Chamado #5891</p>
+<h3 class="ds-list-title mt-1">Em rota para destinatario</h3>
+</div>
+<p class="ds-list-side-meta text-cyan-300 bg-cyan-500/10">Ao vivo</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Destinatario</span>
+<span class="text-white font-semibold text-right">Amanda Silva</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Destino</span>
+<span class="text-white font-semibold text-right">Rua das Flores, 210</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Taxa</span>
+<span class="text-white font-semibold text-right">R$ 12,00</span>
+</div>
+</div>
+<a class="ds-auth-submit-btn w-full" href="./Tracking.html">
+Acompanhar tracking
+<span class="material-symbols-outlined text-icon-sm">arrow_forward</span>
+</a>
+</article>
+
+<article class="glass-card border border-white/10 rounded-panel p-4 space-y-3">
+<div class="flex items-start justify-between gap-3">
+<div class="min-w-0">
+<p class="ds-list-subtitle">Chamado #5888</p>
+<h3 class="ds-list-title mt-1">Entrega concluida</h3>
+</div>
+<p class="ds-list-side-meta text-emerald-300 bg-emerald-500/10">Concluido</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Destinatario</span>
+<span class="text-white font-semibold text-right">Rafael Costa</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Horario</span>
+<span class="text-white font-semibold text-right">13:45</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Taxa</span>
+<span class="text-white font-semibold text-right">R$ 9,80</span>
+</div>
+</div>
+</article>
+
+<article class="glass-card border border-white/10 rounded-panel p-4 space-y-3">
+<div class="flex items-start justify-between gap-3">
+<div class="min-w-0">
+<p class="ds-list-subtitle">Chamado #5883</p>
+<h3 class="ds-list-title mt-1">Cancelado pela loja</h3>
+</div>
+<p class="ds-list-side-meta text-red-300 bg-red-500/10">Cancelado</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Motivo</span>
+<span class="text-white font-semibold text-right">Cliente ausente</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Horario</span>
+<span class="text-white font-semibold text-right">12:51</span>
+</div>
+<div class="flex items-center justify-between text-sm gap-3">
+<span class="text-slate-300">Taxa</span>
+<span class="text-white font-semibold text-right">R$ 0,00</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+
+<div class="hidden absolute left-4 sm:left-6 top-24 sm:top-28 z-50 w-52 rounded-xl border border-white/10 bg-black/95 p-2" id="floatingMenu">
+<nav class="space-y-1">
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Home.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">home</span>
+<span>Inicio</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm font-semibold text-white" href="./History.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-200">receipt_long</span>
+<span>Pedidos</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Profile.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">person</span>
+<span>Perfil</span>
+</a>
+</nav>
+</div>
+</div>
+
+<script src="./home-menu.js"></script>
+</body></html>

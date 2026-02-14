@@ -1,0 +1,3062 @@
+openapi: 3.1.0
+info:
+  title: Roodi API
+  version: 1.0.0
+  summary: Contrato HTTP oficial do backend do projeto Roodi
+  description: |
+    Este contrato consolida os endpoints e payloads do projeto com base nas documentacoes internas:
+    - 01PROJETO, 02STACK, 03REGRAS, 04FLUXOS, 07STRUCTURE, 08PAGES, 09MODULOS
+    - API-INFINITY-PAY para integracao de pagamentos
+
+    Premissas de negocio refletidas neste contrato:
+    1) Sem geolocalizacao em tempo real no app.
+    2) Sem mapa offline no fluxo principal.
+    3) Tracking por estados/eventos.
+    4) Regra de preco admin_only.
+    5) Distancia/tempo por matriz de bairros + fallback deterministico.
+
+servers:
+  - url: https://api.roodi.app
+    description: Producao
+  - url: http://localhost:3333
+    description: Desenvolvimento local
+
+tags:
+  - name: System
+    description: Estado global da plataforma, feature flags e manutencao
+  - name: Auth
+    description: Cadastro, login, sessao JWT/refresh e recuperacao por OTP
+  - name: Me
+    description: Perfil e preferencias do usuario autenticado
+  - name: Notifications
+    description: Central de notificacoes in-app
+  - name: Support
+    description: FAQ e chamados
+  - name: Commerce
+    description: Operacao do contexto comerciante no app mobile
+  - name: Rider
+    description: Operacao do contexto rider no app mobile
+  - name: Admin
+    description: Operacao administrativa da plataforma
+  - name: Payments
+    description: Integracao financeira e conciliacao
+  - name: Public
+    description: Endpoints publicos para landing e integracoes externas
+
+security:
+  - bearerAuth: []
+
+paths:
+  /v1/system/status:
+    get:
+      tags: [System]
+      summary: Consultar status global da plataforma
+      operationId: getSystemStatus
+      security: []
+      responses:
+        '200':
+          description: Status atual do sistema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatusResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Cadastrar usuario (rider ou commerce)
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegisterRequest'
+      responses:
+        '201':
+          description: Cadastro realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Autenticar usuario
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLoginRequest'
+      responses:
+        '200':
+          description: Login com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Renovar access token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token renovado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Encerrar sessao
+      operationId: logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      responses:
+        '204':
+          description: Sessao encerrada
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/password/forgot:
+    post:
+      tags: [Auth]
+      summary: Solicitar OTP de recuperacao de senha
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '202':
+          description: Solicitacao aceita
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpChallengeResponse'
+
+  /v1/auth/password/otp/verify:
+    post:
+      tags: [Auth]
+      summary: Verificar OTP
+      operationId: verifyOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '200':
+          description: OTP valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpVerifyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /v1/auth/password/reset:
+    post:
+      tags: [Auth]
+      summary: Redefinir senha com OTP verificado
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '204':
+          description: Senha redefinida
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /v1/me:
+    get:
+      tags: [Me]
+      summary: Consultar perfil autenticado
+      operationId: getMe
+      responses:
+        '200':
+          description: Perfil do usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+    patch:
+      tags: [Me]
+      summary: Atualizar perfil autenticado
+      operationId: updateMe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdateRequest'
+      responses:
+        '200':
+          description: Perfil atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /v1/me/settings/notifications:
+    get:
+      tags: [Me]
+      summary: Consultar preferencias de notificacao
+      operationId: getMyNotificationSettings
+      responses:
+        '200':
+          description: Preferencias atuais
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+    patch:
+      tags: [Me]
+      summary: Atualizar preferencias de notificacao
+      operationId: updateMyNotificationSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettingsUpdateRequest'
+      responses:
+        '200':
+          description: Preferencias atualizadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+
+  /v1/notifications:
+    get:
+      tags: [Notifications]
+      summary: Listar notificacoes
+      operationId: listNotifications
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, unread, read]
+            default: all
+      responses:
+        '200':
+          description: Lista paginada de notificacoes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+
+  /v1/notifications/{notificationId}/read:
+    patch:
+      tags: [Notifications]
+      summary: Marcar notificacao como lida
+      operationId: markNotificationRead
+      parameters:
+        - $ref: '#/components/parameters/NotificationIdParam'
+      responses:
+        '200':
+          description: Notificacao atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationItem'
+
+  /v1/notifications/mark-all-read:
+    post:
+      tags: [Notifications]
+      summary: Marcar todas as notificacoes como lidas
+      operationId: markAllNotificationsRead
+      responses:
+        '204':
+          description: Todas marcadas como lidas
+
+  /v1/support/faqs:
+    get:
+      tags: [Support]
+      summary: Listar FAQ
+      operationId: listFaqs
+      responses:
+        '200':
+          description: Lista de FAQ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaqListResponse'
+
+  /v1/support/tickets:
+    get:
+      tags: [Support]
+      summary: Listar chamados do usuario autenticado
+      operationId: listSupportTickets
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Lista de chamados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketListResponse'
+    post:
+      tags: [Support]
+      summary: Abrir chamado
+      operationId: createSupportTicket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportTicketCreateRequest'
+      responses:
+        '201':
+          description: Chamado criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicket'
+
+  /v1/support/tickets/{ticketId}:
+    get:
+      tags: [Support]
+      summary: Consultar chamado
+      operationId: getSupportTicket
+      parameters:
+        - $ref: '#/components/parameters/TicketIdParam'
+      responses:
+        '200':
+          description: Detalhe do chamado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicket'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/commerce/dashboard:
+    get:
+      tags: [Commerce]
+      summary: Consultar painel do comerciante
+      operationId: getCommerceDashboard
+      responses:
+        '200':
+          description: Dados de painel e resumo operacional
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommerceDashboardResponse'
+
+  /v1/commerce/quotes:
+    post:
+      tags: [Commerce]
+      summary: Simular cotacao de frete
+      operationId: createQuote
+      description: |
+        Cotacao oficial de frete com base em bairro, urgencia e horario.
+        A estrategia de resolucao de distancia/tempo segue matriz local + fallback deterministico.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequest'
+      responses:
+        '200':
+          description: Cotacao calculada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+        '422':
+          description: Nao foi possivel cotar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                distanceUnavailable:
+                  value:
+                    success: false
+                    error:
+                      code: DISTANCE_TIME_UNAVAILABLE
+                      message: Could not resolve distance and duration from configured providers.
+                outOfCoverage:
+                  value:
+                    success: false
+                    error:
+                      code: OUT_OF_COVERAGE
+                      message: Distance above platform coverage.
+
+  /v1/commerce/orders:
+    get:
+      tags: [Commerce]
+      summary: Listar chamados do comerciante
+      operationId: listCommerceOrders
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+    post:
+      tags: [Commerce]
+      summary: Criar chamado de entrega
+      operationId: createCommerceOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Chamado criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '402':
+          description: Saldo insuficiente para reserva
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                insufficientCredits:
+                  value:
+                    success: false
+                    error:
+                      code: INSUFFICIENT_CREDITS
+                      message: Commerce does not have enough credits.
+
+  /v1/commerce/orders/{orderId}:
+    get:
+      tags: [Commerce]
+      summary: Consultar chamado
+      operationId: getCommerceOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Detalhes do chamado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/commerce/orders/{orderId}/cancel:
+    post:
+      tags: [Commerce]
+      summary: Solicitar cancelamento de chamado
+      operationId: cancelCommerceOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequest'
+      responses:
+        '200':
+          description: Cancelamento processado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          description: Estado invalido para cancelamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/commerce/orders/{orderId}/tracking:
+    get:
+      tags: [Commerce]
+      summary: Consultar timeline de tracking
+      operationId: getCommerceOrderTracking
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Timeline de eventos da entrega
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingTimelineResponse'
+
+  /v1/commerce/orders/{orderId}/confirmation-code:
+    get:
+      tags: [Commerce]
+      summary: Obter codigo de confirmacao da entrega
+      operationId: getOrderConfirmationCode
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Codigo de confirmacao associado ao pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmationCodeResponse'
+
+  /v1/commerce/clients:
+    get:
+      tags: [Commerce]
+      summary: Listar clientes do comerciante
+      operationId: listCommerceClients
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientListResponse'
+    post:
+      tags: [Commerce]
+      summary: Cadastrar cliente
+      operationId: createCommerceClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpsertRequest'
+      responses:
+        '201':
+          description: Cliente criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+
+  /v1/commerce/clients/{clientId}:
+    patch:
+      tags: [Commerce]
+      summary: Atualizar cliente
+      operationId: updateCommerceClient
+      parameters:
+        - $ref: '#/components/parameters/ClientIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpsertRequest'
+      responses:
+        '200':
+          description: Cliente atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+
+  /v1/commerce/products:
+    get:
+      tags: [Commerce]
+      summary: Listar produtos do comerciante
+      operationId: listCommerceProducts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ProductStatus'
+      responses:
+        '200':
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+    post:
+      tags: [Commerce]
+      summary: Cadastrar produto
+      operationId: createCommerceProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpsertRequest'
+      responses:
+        '201':
+          description: Produto criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /v1/commerce/products/{productId}:
+    patch:
+      tags: [Commerce]
+      summary: Atualizar produto
+      operationId: updateCommerceProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpsertRequest'
+      responses:
+        '200':
+          description: Produto atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /v1/commerce/products/{productId}/status:
+    post:
+      tags: [Commerce]
+      summary: Alterar status de produto
+      operationId: updateCommerceProductStatus
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductStatusUpdateRequest'
+      responses:
+        '200':
+          description: Status atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /v1/commerce/credits/balance:
+    get:
+      tags: [Commerce]
+      summary: Consultar saldo de creditos
+      operationId: getCreditsBalance
+      responses:
+        '200':
+          description: Saldo atual
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditsBalanceResponse'
+
+  /v1/commerce/credits/ledger:
+    get:
+      tags: [Commerce]
+      summary: Consultar extrato de creditos
+      operationId: listCreditsLedger
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Extrato de creditos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditsLedgerListResponse'
+
+  /v1/commerce/credits/purchase-intents:
+    post:
+      tags: [Commerce]
+      summary: Criar intencao de compra de creditos
+      operationId: createCreditPurchaseIntent
+      description: |
+        Cria uma intencao de compra e gera link de checkout via integracao InfinitePay.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCreditPurchaseIntentRequest'
+      responses:
+        '201':
+          description: Link de checkout gerado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCreditPurchaseIntentResponse'
+
+  /v1/commerce/payments/{paymentId}/check:
+    post:
+      tags: [Commerce, Payments]
+      summary: Consultar status de pagamento da compra de creditos
+      operationId: checkCommercePayment
+      parameters:
+        - $ref: '#/components/parameters/PaymentIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCheckRequest'
+      responses:
+        '200':
+          description: Status do pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentCheckResponse'
+
+  /v1/rider/dashboard:
+    get:
+      tags: [Rider]
+      summary: Consultar painel do rider
+      operationId: getRiderDashboard
+      responses:
+        '200':
+          description: Painel com status atual e indicadores
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderDashboardResponse'
+
+  /v1/rider/availability:
+    post:
+      tags: [Rider]
+      summary: Alterar disponibilidade (online/offline)
+      operationId: setRiderAvailability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderAvailabilityRequest'
+      responses:
+        '200':
+          description: Disponibilidade atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderAvailabilityResponse'
+
+  /v1/rider/offers/current:
+    get:
+      tags: [Rider]
+      summary: Consultar oferta atual
+      operationId: getCurrentRiderOffer
+      responses:
+        '200':
+          description: Oferta encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderOfferResponse'
+        '204':
+          description: Sem oferta ativa
+
+  /v1/rider/offers/{offerId}/accept:
+    post:
+      tags: [Rider]
+      summary: Aceitar oferta
+      operationId: acceptRiderOffer
+      parameters:
+        - $ref: '#/components/parameters/OfferIdParam'
+      responses:
+        '200':
+          description: Oferta aceita
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          description: Oferta expirada ou indisponivel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/rider/offers/{offerId}/reject:
+    post:
+      tags: [Rider]
+      summary: Recusar oferta
+      operationId: rejectRiderOffer
+      parameters:
+        - $ref: '#/components/parameters/OfferIdParam'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderOfferRejectRequest'
+      responses:
+        '204':
+          description: Oferta recusada
+
+  /v1/rider/orders/active:
+    get:
+      tags: [Rider]
+      summary: Consultar corrida ativa
+      operationId: getRiderActiveOrder
+      responses:
+        '200':
+          description: Corrida ativa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '204':
+          description: Sem corrida ativa
+
+  /v1/rider/orders/history:
+    get:
+      tags: [Rider]
+      summary: Listar historico de corridas
+      operationId: listRiderOrderHistory
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Historico de corridas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+
+  /v1/rider/orders/{orderId}:
+    get:
+      tags: [Rider]
+      summary: Consultar corrida por id
+      operationId: getRiderOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Detalhe da corrida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /v1/rider/orders/{orderId}/events:
+    post:
+      tags: [Rider]
+      summary: Registrar evento de transicao da corrida
+      operationId: appendRiderOrderEvent
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderOrderEventRequest'
+      responses:
+        '200':
+          description: Evento registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingEvent'
+        '409':
+          description: Transicao invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/rider/orders/{orderId}/complete:
+    post:
+      tags: [Rider]
+      summary: Finalizar corrida com codigo de confirmacao
+      operationId: completeRiderOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderOrderCompleteRequest'
+      responses:
+        '200':
+          description: Corrida finalizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '422':
+          description: Codigo invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Consultar dashboard administrativo
+      operationId: getAdminDashboard
+      description: Requer role admin
+      responses:
+        '200':
+          description: Indicadores executivos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboardResponse'
+
+  /v1/admin/users:
+    get:
+      tags: [Admin]
+      summary: Listar usuarios
+      operationId: listAdminUsers
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: role
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/UserRole'
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserListResponse'
+
+  /v1/admin/users/{userId}/status:
+    patch:
+      tags: [Admin]
+      summary: Alterar status de usuario
+      operationId: updateAdminUserStatus
+      parameters:
+        - $ref: '#/components/parameters/UserIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserStatusUpdateRequest'
+      responses:
+        '200':
+          description: Status atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+
+  /v1/admin/orders:
+    get:
+      tags: [Admin]
+      summary: Listar pedidos para auditoria
+      operationId: listAdminOrders
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+
+  /v1/admin/orders/{orderId}:
+    get:
+      tags: [Admin]
+      summary: Consultar pedido por id
+      operationId: getAdminOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Detalhes do pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /v1/admin/tracking/orders/{orderId}:
+    get:
+      tags: [Admin]
+      summary: Consultar timeline de tracking de um pedido
+      operationId: getAdminOrderTracking
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Timeline completa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingTimelineResponse'
+
+  /v1/admin/pricing/rules:
+    get:
+      tags: [Admin]
+      summary: Consultar regras de precificacao
+      operationId: getPricingRules
+      responses:
+        '200':
+          description: Regras vigentes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingRules'
+    put:
+      tags: [Admin]
+      summary: Atualizar regras de precificacao
+      operationId: updatePricingRules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PricingRulesUpdateRequest'
+      responses:
+        '200':
+          description: Regras atualizadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingRules'
+
+  /v1/admin/credits/ledger:
+    get:
+      tags: [Admin]
+      summary: Listar extrato global de creditos
+      operationId: listAdminCreditsLedger
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Extrato global
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditsLedgerListResponse'
+
+  /v1/admin/credits/adjustments:
+    post:
+      tags: [Admin]
+      summary: Ajustar saldo de creditos manualmente
+      operationId: createCreditAdjustment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreditAdjustmentRequest'
+      responses:
+        '201':
+          description: Ajuste realizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCreditAdjustmentResponse'
+
+  /v1/admin/payments/transactions:
+    get:
+      tags: [Admin, Payments]
+      summary: Listar transacoes de pagamento
+      operationId: listAdminPaymentTransactions
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PaymentStatus'
+      responses:
+        '200':
+          description: Lista de transacoes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPaymentTransactionListResponse'
+
+  /v1/admin/payments/transactions/{transactionId}:
+    get:
+      tags: [Admin, Payments]
+      summary: Consultar transacao de pagamento
+      operationId: getAdminPaymentTransaction
+      parameters:
+        - $ref: '#/components/parameters/TransactionIdParam'
+      responses:
+        '200':
+          description: Detalhe da transacao
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPaymentTransaction'
+
+  /v1/admin/support/tickets:
+    get:
+      tags: [Admin, Support]
+      summary: Listar chamados para operacao de suporte
+      operationId: listAdminSupportTickets
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Lista de chamados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketListResponse'
+
+  /v1/admin/support/tickets/{ticketId}:
+    patch:
+      tags: [Admin, Support]
+      summary: Atualizar chamado (status, responsavel, observacao)
+      operationId: updateAdminSupportTicket
+      parameters:
+        - $ref: '#/components/parameters/TicketIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSupportTicketUpdateRequest'
+      responses:
+        '200':
+          description: Chamado atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicket'
+
+  /v1/admin/notifications/templates:
+    get:
+      tags: [Admin, Notifications]
+      summary: Listar templates de notificacao
+      operationId: listNotificationTemplates
+      responses:
+        '200':
+          description: Lista de templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplateListResponse'
+
+  /v1/admin/notifications/templates/{templateId}:
+    put:
+      tags: [Admin, Notifications]
+      summary: Atualizar template de notificacao
+      operationId: updateNotificationTemplate
+      parameters:
+        - $ref: '#/components/parameters/TemplateIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateUpdateRequest'
+      responses:
+        '200':
+          description: Template atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+
+  /v1/admin/system/flags:
+    get:
+      tags: [Admin, System]
+      summary: Listar feature flags
+      operationId: listSystemFlags
+      responses:
+        '200':
+          description: Flags ativas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemFlagListResponse'
+
+  /v1/admin/system/flags/{flagKey}:
+    put:
+      tags: [Admin, System]
+      summary: Atualizar feature flag
+      operationId: updateSystemFlag
+      parameters:
+        - $ref: '#/components/parameters/FlagKeyParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemFlagUpdateRequest'
+      responses:
+        '200':
+          description: Flag atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemFlag'
+
+  /v1/admin/system/maintenance:
+    get:
+      tags: [Admin, System]
+      summary: Consultar modo de manutencao
+      operationId: getMaintenanceStatus
+      responses:
+        '200':
+          description: Status de manutencao
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemMaintenanceStatus'
+    put:
+      tags: [Admin, System]
+      summary: Ativar/desativar manutencao
+      operationId: setMaintenanceStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemMaintenanceUpdateRequest'
+      responses:
+        '200':
+          description: Status atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemMaintenanceStatus'
+
+  /v1/public/leads:
+    post:
+      tags: [Public]
+      summary: Registrar lead da landing page
+      operationId: createPublicLead
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLeadRequest'
+      responses:
+        '201':
+          description: Lead registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLeadResponse'
+
+  /v1/public/legal/{documentType}:
+    get:
+      tags: [Public]
+      summary: Obter documento legal publico
+      operationId: getLegalDocument
+      security: []
+      parameters:
+        - name: documentType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [termos, privacidade, cookies]
+      responses:
+        '200':
+          description: Documento legal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalDocumentResponse'
+
+  /v1/payments/infinitepay/webhook:
+    post:
+      tags: [Payments]
+      summary: Receber webhook de pagamento aprovado da InfinitePay
+      operationId: receiveInfinitePayWebhook
+      security: []
+      description: |
+        Endpoint publico para notificacoes de pagamento aprovado.
+        A integracao deve responder rapidamente (preferencialmente < 1s).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InfinitePayWebhookPayload'
+      responses:
+        '200':
+          description: Evento processado
+        '400':
+          description: Payload invalido (provider pode reenviar)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    OrderIdParam:
+      name: orderId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    OfferIdParam:
+      name: offerId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ClientIdParam:
+      name: clientId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ProductIdParam:
+      name: productId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TicketIdParam:
+      name: ticketId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    NotificationIdParam:
+      name: notificationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    UserIdParam:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    PaymentIdParam:
+      name: paymentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TransactionIdParam:
+      name: transactionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TemplateIdParam:
+      name: templateId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    FlagKeyParam:
+      name: flagKey
+      in: path
+      required: true
+      schema:
+        type: string
+
+  responses:
+    BadRequest:
+      description: Requisicao invalida
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Nao autenticado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Sem permissao
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Recurso nao encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflito de negocio
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: Servico temporariamente indisponivel
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    UserRole:
+      type: string
+      enum: [rider, commerce, admin]
+
+    UserStatus:
+      type: string
+      enum: [active, suspended, blocked]
+
+    Urgency:
+      type: string
+      enum: [padrao, urgente, agendado]
+
+    OrderStatus:
+      type: string
+      enum:
+        - created
+        - searching_rider
+        - rider_assigned
+        - to_merchant
+        - at_merchant
+        - waiting_order
+        - to_customer
+        - at_customer
+        - finishing_delivery
+        - completed
+        - canceled
+
+    TrackingEventType:
+      type: string
+      enum:
+        - order_created
+        - rider_assigned
+        - rider_accepted
+        - rider_to_merchant
+        - rider_at_merchant
+        - waiting_order
+        - rider_to_customer
+        - rider_at_customer
+        - finishing_delivery
+        - completed
+        - canceled
+
+    PaymentStatus:
+      type: string
+      enum: [pending, approved, failed, canceled]
+
+    PaymentCaptureMethod:
+      type: string
+      enum: [pix, credit_card]
+
+    ProductStatus:
+      type: string
+      enum: [active, paused, hidden]
+
+    SupportTicketStatus:
+      type: string
+      enum: [open, in_progress, resolved, closed]
+
+    ApiPagination:
+      type: object
+      required: [page, limit, total, total_pages]
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+        total_pages:
+          type: integer
+          minimum: 0
+
+    ErrorResponse:
+      type: object
+      required: [success, error]
+      properties:
+        success:
+          type: boolean
+          const: false
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            request_id:
+              type: string
+
+    SystemStatusResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [status, maintenance_mode, app_version, api_version, timestamp]
+          properties:
+            status:
+              type: string
+              enum: [ok, degraded, maintenance]
+            maintenance_mode:
+              type: boolean
+            maintenance_message:
+              type: string
+            app_version:
+              type: string
+            api_version:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+
+    AuthRegisterRequest:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        role:
+          $ref: '#/components/schemas/UserRole'
+        phone_number:
+          type: string
+
+    AuthLoginRequest:
+      type: object
+      required: [email, password, role]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+
+    AuthTokenResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [access_token, refresh_token, expires_in, user]
+          properties:
+            access_token:
+              type: string
+            refresh_token:
+              type: string
+            expires_in:
+              type: integer
+              description: Tempo em segundos para expiracao do access token
+            token_type:
+              type: string
+              default: Bearer
+            user:
+              $ref: '#/components/schemas/UserSummary'
+
+    RefreshTokenRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+
+    LogoutRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+
+    OtpChallengeResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [challenge_id, expires_at, resend_in_seconds]
+          properties:
+            challenge_id:
+              type: string
+              format: uuid
+            expires_at:
+              type: string
+              format: date-time
+            resend_in_seconds:
+              type: integer
+              minimum: 0
+
+    VerifyOtpRequest:
+      type: object
+      required: [challenge_id, otp]
+      properties:
+        challenge_id:
+          type: string
+          format: uuid
+        otp:
+          type: string
+          minLength: 4
+          maxLength: 8
+
+    OtpVerifyResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [reset_token, expires_at]
+          properties:
+            reset_token:
+              type: string
+            expires_at:
+              type: string
+              format: date-time
+
+    ResetPasswordRequest:
+      type: object
+      required: [reset_token, new_password]
+      properties:
+        reset_token:
+          type: string
+        new_password:
+          type: string
+          minLength: 8
+
+    UserSummary:
+      type: object
+      required: [id, name, email, role, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          $ref: '#/components/schemas/UserRole'
+        status:
+          $ref: '#/components/schemas/UserStatus'
+
+    UserProfileResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          $ref: '#/components/schemas/UserProfile'
+
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/UserSummary'
+        - type: object
+          properties:
+            phone_number:
+              type: string
+            whatsapp:
+              type: string
+            rank_level:
+              type: string
+            rating:
+              type: number
+              format: float
+            rider_id:
+              type: string
+            commerce_id:
+              type: string
+            address_home:
+              $ref: '#/components/schemas/Address'
+            address_base:
+              $ref: '#/components/schemas/Address'
+            bank_account:
+              $ref: '#/components/schemas/BankAccount'
+            vehicle:
+              $ref: '#/components/schemas/Vehicle'
+
+    UserProfileUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phone_number:
+          type: string
+        whatsapp:
+          type: string
+        address_home:
+          $ref: '#/components/schemas/Address'
+        address_base:
+          $ref: '#/components/schemas/Address'
+        bank_account:
+          $ref: '#/components/schemas/BankAccount'
+        vehicle:
+          $ref: '#/components/schemas/Vehicle'
+
+    Address:
+      type: object
+      properties:
+        cep:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        neighborhood:
+          type: string
+        street:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+
+    BankAccount:
+      type: object
+      properties:
+        bank:
+          type: string
+        agency:
+          type: string
+        account:
+          type: string
+        account_type:
+          type: string
+          enum: [corrente, poupanca]
+        pix_key:
+          type: string
+
+    Vehicle:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [bicicleta, moto, carro]
+        brand:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        plate:
+          type: string
+
+    NotificationSettings:
+      type: object
+      required: [delivery, payment, promotions, app_updates, security, support]
+      properties:
+        delivery:
+          type: boolean
+        payment:
+          type: boolean
+        promotions:
+          type: boolean
+        app_updates:
+          type: boolean
+        security:
+          type: boolean
+        support:
+          type: boolean
+
+    NotificationSettingsUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/NotificationSettings'
+
+    NotificationItem:
+      type: object
+      required: [id, title, body, read, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        body:
+          type: string
+        read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+
+    NotificationListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationItem'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    FaqItem:
+      type: object
+      required: [id, question, answer]
+      properties:
+        id:
+          type: string
+          format: uuid
+        question:
+          type: string
+        answer:
+          type: string
+
+    FaqListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FaqItem'
+
+    SupportTicketCreateRequest:
+      type: object
+      required: [subject, description, priority]
+      properties:
+        subject:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        order_id:
+          type: string
+          format: uuid
+
+    SupportTicket:
+      type: object
+      required: [id, subject, description, status, priority, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/SupportTicketStatus'
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
+          $ref: '#/components/schemas/UserSummary'
+        assigned_to:
+          $ref: '#/components/schemas/UserSummary'
+
+    SupportTicketListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportTicket'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    CommerceDashboardResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          properties:
+            kpis:
+              type: object
+              properties:
+                today_orders:
+                  type: integer
+                active_orders:
+                  type: integer
+                today_spent_brl:
+                  type: number
+                  format: float
+                credits_balance_brl:
+                  type: number
+                  format: float
+            active_order:
+              $ref: '#/components/schemas/OrderSummary'
+
+    QuoteRequest:
+      type: object
+      required: [origin_bairro, destination_bairro, urgency, requested_at_iso]
+      properties:
+        origin_bairro:
+          type: string
+        destination_bairro:
+          type: string
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+        requested_at_iso:
+          type: string
+          format: date-time
+        is_holiday:
+          type: boolean
+        is_sunday:
+          type: boolean
+        is_peak:
+          type: boolean
+        order_id:
+          type: string
+          format: uuid
+        commerce_id:
+          type: string
+          format: uuid
+
+    QuoteResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required:
+            - quote_id
+            - currency
+            - origin_bairro
+            - destination_bairro
+            - distance_m
+            - duration_s
+            - eta_min
+            - zone
+            - price
+            - climate
+            - provider_trace
+          properties:
+            quote_id:
+              type: string
+              format: uuid
+            currency:
+              type: string
+              enum: [BRL]
+            origin_bairro:
+              type: string
+            destination_bairro:
+              type: string
+            distance_m:
+              type: integer
+            duration_s:
+              type: integer
+            eta_min:
+              type: integer
+            zone:
+              type: integer
+            price:
+              $ref: '#/components/schemas/PriceBreakdown'
+            climate:
+              $ref: '#/components/schemas/QuoteClimate'
+            provider_trace:
+              $ref: '#/components/schemas/ProviderTrace'
+
+    PriceBreakdown:
+      type: object
+      required:
+        - base_zone_brl
+        - urgency_brl
+        - sunday_brl
+        - holiday_brl
+        - rain_brl
+        - peak_brl
+        - total_brl
+      properties:
+        base_zone_brl:
+          type: number
+          format: float
+        urgency_brl:
+          type: number
+          format: float
+        sunday_brl:
+          type: number
+          format: float
+        holiday_brl:
+          type: number
+          format: float
+        rain_brl:
+          type: number
+          format: float
+        peak_brl:
+          type: number
+          format: float
+        total_brl:
+          type: number
+          format: float
+
+    QuoteClimate:
+      type: object
+      required: [is_raining, source, confidence]
+      properties:
+        is_raining:
+          type: boolean
+        source:
+          type: string
+        confidence:
+          type: string
+          enum: [high, medium, low]
+
+    ProviderTrace:
+      type: object
+      required: [distance_time_provider, climate_provider, fallback_used]
+      properties:
+        distance_time_provider:
+          type: string
+        climate_provider:
+          type: string
+        fallback_used:
+          type: boolean
+        latency_ms:
+          type: object
+          properties:
+            distance_time:
+              type: integer
+            climate:
+              type: integer
+
+    CreateOrderRequest:
+      type: object
+      required: [quote_id, urgency, destination]
+      properties:
+        quote_id:
+          type: string
+          format: uuid
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+        client_id:
+          type: string
+          format: uuid
+        destination:
+          $ref: '#/components/schemas/Address'
+        recipient_name:
+          type: string
+        recipient_phone:
+          type: string
+        notes:
+          type: string
+
+    OrderSummary:
+      type: object
+      required: [id, status, total_brl, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        total_brl:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+
+    Order:
+      allOf:
+        - $ref: '#/components/schemas/OrderSummary'
+        - type: object
+          properties:
+            commerce_id:
+              type: string
+              format: uuid
+            rider_id:
+              type: string
+              format: uuid
+            quote_id:
+              type: string
+              format: uuid
+            urgency:
+              $ref: '#/components/schemas/Urgency'
+            distance_m:
+              type: integer
+            duration_s:
+              type: integer
+            eta_min:
+              type: integer
+            zone:
+              type: integer
+            price:
+              $ref: '#/components/schemas/PriceBreakdown'
+            confirmation_code_required:
+              type: boolean
+            confirmation_code_status:
+              type: string
+              enum: [not_generated, generated, validated]
+            destination:
+              $ref: '#/components/schemas/Address'
+
+    OrderListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    CancelOrderRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+        details:
+          type: string
+
+    TrackingEvent:
+      type: object
+      required: [id, order_id, event_type, occurred_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        event_type:
+          $ref: '#/components/schemas/TrackingEventType'
+        occurred_at:
+          type: string
+          format: date-time
+        actor_role:
+          $ref: '#/components/schemas/UserRole'
+        note:
+          type: string
+
+    TrackingTimelineResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingEvent'
+
+    ConfirmationCodeResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [order_id, code, generated_at, expires_at]
+          properties:
+            order_id:
+              type: string
+              format: uuid
+            code:
+              type: string
+            generated_at:
+              type: string
+              format: date-time
+            expires_at:
+              type: string
+              format: date-time
+
+    Client:
+      type: object
+      required: [id, name, phone_number, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+        created_at:
+          type: string
+          format: date-time
+
+    ClientUpsertRequest:
+      type: object
+      required: [name, phone_number, address]
+      properties:
+        name:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+
+    ClientListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    Product:
+      type: object
+      required: [id, name, price_brl, status, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        price_brl:
+          type: number
+          format: float
+        stock:
+          type: integer
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        created_at:
+          type: string
+          format: date-time
+
+    ProductUpsertRequest:
+      type: object
+      required: [name, price_brl]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price_brl:
+          type: number
+          format: float
+        stock:
+          type: integer
+
+    ProductStatusUpdateRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+
+    ProductListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    CreditsBalanceResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [balance_brl, reserved_brl, available_brl, updated_at]
+          properties:
+            balance_brl:
+              type: number
+              format: float
+            reserved_brl:
+              type: number
+              format: float
+            available_brl:
+              type: number
+              format: float
+            updated_at:
+              type: string
+              format: date-time
+
+    CreditsLedgerEntry:
+      type: object
+      required: [id, type, amount_brl, balance_after_brl, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [credit, debit, reservation, release, adjustment]
+        amount_brl:
+          type: number
+          format: float
+        balance_after_brl:
+          type: number
+          format: float
+        order_id:
+          type: string
+          format: uuid
+        reference:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    CreditsLedgerListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditsLedgerEntry'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    CreateCreditPurchaseIntentRequest:
+      type: object
+      required: [amount_brl]
+      properties:
+        amount_brl:
+          type: number
+          format: float
+          minimum: 1
+        redirect_url:
+          type: string
+          format: uri
+        webhook_url:
+          type: string
+          format: uri
+
+    CreateCreditPurchaseIntentResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [payment_id, provider, checkout_url, order_nsu]
+          properties:
+            payment_id:
+              type: string
+              format: uuid
+            provider:
+              type: string
+              enum: [infinitepay]
+            checkout_url:
+              type: string
+              format: uri
+            order_nsu:
+              type: string
+            provider_payload:
+              type: object
+              additionalProperties: true
+
+    PaymentCheckRequest:
+      type: object
+      required: [handle, order_nsu, transaction_nsu, slug]
+      properties:
+        handle:
+          type: string
+        order_nsu:
+          type: string
+        transaction_nsu:
+          type: string
+        slug:
+          type: string
+
+    PaymentCheckResponse:
+      type: object
+      required: [success, paid, amount, paid_amount, installments, capture_method]
+      properties:
+        success:
+          type: boolean
+        paid:
+          type: boolean
+        amount:
+          type: integer
+          description: Valor em centavos
+        paid_amount:
+          type: integer
+          description: Valor pago em centavos
+        installments:
+          type: integer
+        capture_method:
+          $ref: '#/components/schemas/PaymentCaptureMethod'
+
+    RiderDashboardResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          properties:
+            availability:
+              type: string
+              enum: [online, offline]
+            active_order:
+              $ref: '#/components/schemas/OrderSummary'
+            today_earnings_brl:
+              type: number
+              format: float
+            today_deliveries:
+              type: integer
+            today_online_minutes:
+              type: integer
+
+    RiderAvailabilityRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [online, offline]
+
+    RiderAvailabilityResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [status, updated_at]
+          properties:
+            status:
+              type: string
+              enum: [online, offline]
+            updated_at:
+              type: string
+              format: date-time
+
+    RiderOfferResponse:
+      type: object
+      required: [offer_id, order_id, expires_at, quote]
+      properties:
+        offer_id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        expires_at:
+          type: string
+          format: date-time
+        quote:
+          type: object
+          properties:
+            pickup_type:
+              type: string
+            estimated_value_brl:
+              type: number
+              format: float
+            total_distance_m:
+              type: integer
+            route_summary:
+              type: string
+
+    RiderOfferRejectRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+
+    RiderOrderEventRequest:
+      type: object
+      required: [event_type, occurred_at]
+      properties:
+        event_type:
+          $ref: '#/components/schemas/TrackingEventType'
+        occurred_at:
+          type: string
+          format: date-time
+        note:
+          type: string
+
+    RiderOrderCompleteRequest:
+      type: object
+      required: [confirmation_code]
+      properties:
+        confirmation_code:
+          type: string
+
+    AdminDashboardResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          properties:
+            active_orders:
+              type: integer
+            completed_today:
+              type: integer
+            canceled_today:
+              type: integer
+            gross_volume_brl:
+              type: number
+              format: float
+            platform_commission_brl:
+              type: number
+              format: float
+
+    AdminUserListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    AdminUserStatusUpdateRequest:
+      type: object
+      required: [status, reason]
+      properties:
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        reason:
+          type: string
+
+    PricingZoneRule:
+      type: object
+      required: [zone, min_km, max_km, value_brl]
+      properties:
+        zone:
+          type: integer
+        min_km:
+          type: number
+          format: float
+        max_km:
+          type: number
+          format: float
+        value_brl:
+          type: number
+          format: float
+
+    PricingRules:
+      type: object
+      required: [urgency_addon_brl, conditional_addons_brl, distance_zones_brl, minimum_charge_brl, max_distance_km]
+      properties:
+        urgency_addon_brl:
+          type: object
+          required: [padrao, urgente, agendado]
+          properties:
+            padrao:
+              type: number
+              format: float
+            urgente:
+              type: number
+              format: float
+            agendado:
+              type: number
+              format: float
+        conditional_addons_brl:
+          type: object
+          required: [sunday, holiday, rain, peak]
+          properties:
+            sunday:
+              type: number
+              format: float
+            holiday:
+              type: number
+              format: float
+            rain:
+              type: number
+              format: float
+            peak:
+              type: number
+              format: float
+        distance_zones_brl:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingZoneRule'
+        minimum_charge_brl:
+          type: number
+          format: float
+        max_distance_km:
+          type: number
+          format: float
+
+    PricingRulesUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/PricingRules'
+
+    AdminCreditAdjustmentRequest:
+      type: object
+      required: [commerce_id, amount_brl, reason]
+      properties:
+        commerce_id:
+          type: string
+          format: uuid
+        amount_brl:
+          type: number
+          format: float
+        reason:
+          type: string
+
+    AdminCreditAdjustmentResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [adjustment_id, commerce_id, amount_brl, created_at]
+          properties:
+            adjustment_id:
+              type: string
+              format: uuid
+            commerce_id:
+              type: string
+              format: uuid
+            amount_brl:
+              type: number
+              format: float
+            created_at:
+              type: string
+              format: date-time
+
+    AdminPaymentTransaction:
+      type: object
+      required: [id, provider, status, amount_brl, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [infinitepay]
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
+        amount_brl:
+          type: number
+          format: float
+        paid_amount_brl:
+          type: number
+          format: float
+        order_nsu:
+          type: string
+        transaction_nsu:
+          type: string
+        capture_method:
+          $ref: '#/components/schemas/PaymentCaptureMethod'
+        created_at:
+          type: string
+          format: date-time
+
+    AdminPaymentTransactionListResponse:
+      type: object
+      required: [success, data, pagination]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPaymentTransaction'
+        pagination:
+          $ref: '#/components/schemas/ApiPagination'
+
+    AdminSupportTicketUpdateRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/SupportTicketStatus'
+        note:
+          type: string
+        assigned_to_user_id:
+          type: string
+          format: uuid
+
+    NotificationTemplate:
+      type: object
+      required: [id, event_key, channel, title_template, body_template, active]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_key:
+          type: string
+        channel:
+          type: string
+          enum: [in_app, push]
+        title_template:
+          type: string
+        body_template:
+          type: string
+        active:
+          type: boolean
+
+    NotificationTemplateListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationTemplate'
+
+    NotificationTemplateUpdateRequest:
+      type: object
+      required: [title_template, body_template, active]
+      properties:
+        title_template:
+          type: string
+        body_template:
+          type: string
+        active:
+          type: boolean
+
+    SystemFlag:
+      type: object
+      required: [key, enabled]
+      properties:
+        key:
+          type: string
+        enabled:
+          type: boolean
+        description:
+          type: string
+
+    SystemFlagListResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemFlag'
+
+    SystemFlagUpdateRequest:
+      type: object
+      required: [enabled]
+      properties:
+        enabled:
+          type: boolean
+
+    SystemMaintenanceStatus:
+      type: object
+      required: [enabled, message, updated_at]
+      properties:
+        enabled:
+          type: boolean
+        message:
+          type: string
+        expected_back_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    SystemMaintenanceUpdateRequest:
+      type: object
+      required: [enabled, message]
+      properties:
+        enabled:
+          type: boolean
+        message:
+          type: string
+        expected_back_at:
+          type: string
+          format: date-time
+
+    PublicLeadRequest:
+      type: object
+      required: [name, contact, lead_type]
+      properties:
+        name:
+          type: string
+        contact:
+          type: string
+        lead_type:
+          type: string
+          enum: [commerce, rider, partnership, other]
+        message:
+          type: string
+
+    PublicLeadResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [lead_id, created_at]
+          properties:
+            lead_id:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+
+    LegalDocumentResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [type, version, updated_at, content]
+          properties:
+            type:
+              type: string
+              enum: [termos, privacidade, cookies]
+            version:
+              type: string
+            updated_at:
+              type: string
+              format: date-time
+            content:
+              type: string
+
+    InfinitePayWebhookPayload:
+      type: object
+      required:
+        - invoice_slug
+        - amount
+        - paid_amount
+        - installments
+        - capture_method
+        - transaction_nsu
+        - order_nsu
+        - receipt_url
+        - items
+      properties:
+        invoice_slug:
+          type: string
+        amount:
+          type: integer
+          description: Valor original em centavos
+        paid_amount:
+          type: integer
+          description: Valor pago em centavos
+        installments:
+          type: integer
+        capture_method:
+          $ref: '#/components/schemas/PaymentCaptureMethod'
+        transaction_nsu:
+          type: string
+        order_nsu:
+          type: string
+        receipt_url:
+          type: string
+          format: uri
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: true

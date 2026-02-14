@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/dist
+**/build
+**/.dart_tool
+**/coverage
+**/ios
+**/android
+**/.idea
+**/package-lock.json
+**/pubspec.lock

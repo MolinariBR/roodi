@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Cadastro</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<main class="relative z-10 flex flex-1 items-center justify-center px-4 sm:px-6 py-8 sm:py-10">
+<section class="w-full max-w-sm mx-auto">
+<div class="flex items-center justify-center mb-5">
+<div class="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-icon-xl">person_add</span>
+</div>
+</div>
+
+<h1 class="text-xl sm:text-2xl font-bold text-white text-center leading-tight">Criar conta</h1>
+<p class="text-xs sm:text-sm text-slate-400 text-center mt-2 mb-5">Escolha o perfil e conclua seu cadastro</p>
+
+<div class="mb-5">
+<p class="text-2xs uppercase tracking-widest text-slate-500 font-semibold mb-3">Perfil de cadastro</p>
+<div class="ds-auth-role-grid">
+<button class="ds-auth-role-btn is-active" data-role="rider" id="reg-role-rider" type="button">
+<span class="material-symbols-outlined text-icon-sm">delivery_dining</span>
+<span>Rider</span>
+</button>
+<button class="ds-auth-role-btn" data-role="empresa" id="reg-role-empresa" type="button">
+<span class="material-symbols-outlined text-icon-sm">storefront</span>
+<span>Empresa</span>
+</button>
+</div>
+<p class="text-2xs text-primary font-bold uppercase tracking-wider mt-2" id="register-role-label">Cadastro como Rider</p>
+</div>
+
+<form class="space-y-3" id="registerForm">
+<div>
+<label class="text-2xs uppercase tracking-wider text-slate-400 font-bold block mb-1.5">Nome completo</label>
+<input class="field-input ds-auth-input" placeholder="Seu nome" type="text"/>
+</div>
+<div>
+<label class="text-2xs uppercase tracking-wider text-slate-400 font-bold block mb-1.5">E-mail</label>
+<input class="field-input ds-auth-input" placeholder="voce@exemplo.com" type="email"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="text-2xs uppercase tracking-wider text-slate-400 font-bold block mb-1.5">Senha</label>
+<input class="field-input ds-auth-input" placeholder="******" type="password"/>
+</div>
+<div>
+<label class="text-2xs uppercase tracking-wider text-slate-400 font-bold block mb-1.5">Confirmar</label>
+<input class="field-input ds-auth-input" placeholder="******" type="password"/>
+</div>
+</div>
+<label class="flex items-center gap-2 pt-1 text-xs text-slate-400">
+<input class="h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary" type="checkbox"/>
+<span>Li e aceito os termos de uso</span>
+</label>
+<button class="ds-auth-submit-btn w-full mt-2" type="submit">
+Criar conta
+<span class="material-symbols-outlined text-icon-md">person_add</span>
+</button>
+</form>
+
+<div class="ds-auth-divider">
+<div class="h-px flex-1 bg-white/10"></div>
+<span class="text-2xs uppercase tracking-wider text-slate-500 font-semibold">ou</span>
+<div class="h-px flex-1 bg-white/10"></div>
+</div>
+
+<button class="ds-auth-social-btn w-full" type="button">
+<span class="h-6 w-6 rounded-full bg-white text-black text-sm font-bold inline-flex items-center justify-center">G</span>
+Cadastrar com Google
+</button>
+
+<div class="mt-5 pt-4 border-t border-white/10 text-center">
+<p class="text-xs text-slate-400">Ja possui conta? <a class="text-primary font-semibold hover:text-primary/80" href="./Login.html">Entrar</a></p>
+</div>
+</section>
+</main>
+</div>
+
+<script>
+      (function () {
+        const roleButtons = document.querySelectorAll('.ds-auth-role-btn');
+        const roleLabel = document.getElementById('register-role-label');
+        const registerForm = document.getElementById('registerForm');
+        const socialRegisterBtn = document.querySelector('button.ds-auth-social-btn');
+        if (!roleButtons.length || !roleLabel) return;
+
+        function getActiveRole() {
+          const activeButton = Array.from(roleButtons).find((button) => button.classList.contains('is-active'));
+          return activeButton?.dataset.role === 'empresa' ? 'empresa' : 'rider';
+        }
+
+        function redirectToRoleHome(role) {
+          try {
+            window.localStorage.setItem('roodi_onboarding_done', 'true');
+          } catch (error) {}
+          window.location.href = role === 'empresa' ? '../Commerce/Home.html' : '../Rider/Home.html';
+        }
+
+        function selectRole(role) {
+          roleButtons.forEach((button) => {
+            button.classList.toggle('is-active', button.dataset.role === role);
+          });
+          roleLabel.textContent = role === 'empresa' ? 'Cadastro como Empresa' : 'Cadastro como Rider';
+        }
+
+        roleButtons.forEach((button) => {
+          button.addEventListener('click', () => selectRole(button.dataset.role));
+        });
+
+        if (registerForm) {
+          registerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            redirectToRoleHome(getActiveRole());
+          });
+        }
+
+        if (socialRegisterBtn) {
+          socialRegisterBtn.addEventListener('click', () => {
+            redirectToRoleHome(getActiveRole());
+          });
+        }
+      })();
+    </script>
+</body></html>

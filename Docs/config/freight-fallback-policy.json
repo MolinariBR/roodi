@@ -1,0 +1,367 @@
+{
+  "version": "1.0.0",
+  "context": {
+    "project": "roodi",
+    "city": "Imperatriz-MA",
+    "country": "BR",
+    "currency": "BRL",
+    "timezone": "America/Fortaleza",
+    "updated_at": "2026-02-14",
+    "pricing_owner": "admin_only"
+  },
+  "principles": [
+    "no_synthetic_fallback_for_distance_or_time",
+    "deterministic_provider_order",
+    "strict_timeouts",
+    "cache_first_when_possible",
+    "full_audit_log_per_quote"
+  ],
+  "inputs": {
+    "required": [
+      "origin_bairro",
+      "destination_bairro",
+      "urgency",
+      "requested_at_iso"
+    ],
+    "optional": [
+      "is_holiday",
+      "is_sunday",
+      "is_peak",
+      "climate_override",
+      "order_id",
+      "commerce_id"
+    ]
+  },
+  "domains": {
+    "distance_time": {
+      "strategy": "ordered_failover",
+      "cache": {
+        "key_template": "distance_time:{city}:{origin_bairro}:{destination_bairro}",
+        "ttl_seconds": 2592000,
+        "stale_while_revalidate_seconds": 86400
+      },
+      "providers": [
+        {
+          "id": "local_bairro_matrix",
+          "kind": "local_file",
+          "enabled": true,
+          "priority": 1,
+          "timeout_ms": 40,
+          "max_retries": 0,
+          "source_file": "Docs/data/imperatriz_bairros_matriz.json",
+          "success_requirements": [
+            "distance_m > 0",
+            "duration_s > 0"
+          ]
+        },
+        {
+          "id": "tomtom_matrix",
+          "kind": "http_api",
+          "enabled": true,
+          "priority": 2,
+          "timeout_ms": 1500,
+          "max_retries": 1,
+          "retry_backoff_ms": 200,
+          "circuit_breaker": {
+            "failure_threshold": 5,
+            "open_seconds": 60,
+            "half_open_max_requests": 2
+          },
+          "request": {
+            "endpoint": "https://api.tomtom.com/routing/matrix/2",
+            "auth": "query.apiKey"
+          }
+        },
+        {
+          "id": "openrouteservice_matrix",
+          "kind": "http_api",
+          "enabled": true,
+          "priority": 3,
+          "timeout_ms": 1800,
+          "max_retries": 1,
+          "retry_backoff_ms": 200,
+          "circuit_breaker": {
+            "failure_threshold": 5,
+            "open_seconds": 60,
+            "half_open_max_requests": 2
+          },
+          "request": {
+            "endpoint": "https://api.openrouteservice.org/v2/matrix/driving-car",
+            "auth": "header.Authorization"
+          }
+        }
+      ],
+      "on_all_fail": {
+        "action": "reject_quote",
+        "code": "DISTANCE_TIME_UNAVAILABLE",
+        "message": "Could not resolve distance and duration from configured providers."
+      }
+    },
+    "climate": {
+      "strategy": "ordered_failover",
+      "cache": {
+        "key_template": "climate:{city}:{time_bucket_10min}",
+        "ttl_seconds": 600,
+        "stale_while_revalidate_seconds": 300
+      },
+      "providers": [
+        {
+          "id": "openweather",
+          "kind": "http_api",
+          "enabled": true,
+          "priority": 1,
+          "timeout_ms": 1200,
+          "max_retries": 1,
+          "request": {
+            "endpoint": "https://api.openweathermap.org/data/3.0/onecall",
+            "auth": "query.appid"
+          },
+          "rain_detection": {
+            "field_candidates": [
+              "current.rain.1h",
+              "hourly[0].rain.1h"
+            ],
+            "is_raining_if_mm_per_h_gte": 0.1
+          }
+        },
+        {
+          "id": "met_no",
+          "kind": "http_api",
+          "enabled": true,
+          "priority": 2,
+          "timeout_ms": 1200,
+          "max_retries": 1,
+          "request": {
+            "endpoint": "https://api.met.no/weatherapi/locationforecast/2.0/compact",
+            "auth": "user_agent_required"
+          },
+          "rain_detection": {
+            "field_candidates": [
+              "timeseries[0].data.next_1_hours.details.precipitation_amount"
+            ],
+            "is_raining_if_mm_per_h_gte": 0.1
+          }
+        }
+      ],
+      "on_all_fail": {
+        "action": "apply_default",
+        "default": {
+          "is_raining": false,
+          "source": "climate_default_no_rain",
+          "confidence": "low"
+        }
+      }
+    }
+  },
+  "business_rules": {
+    "urgency_addon_brl": {
+      "padrao": 0.0,
+      "urgente": 2.0,
+      "agendado": 1.0
+    },
+    "distance_zones_brl": [
+      {
+        "zone": 1,
+        "min_km": 0.0,
+        "max_km": 1.5,
+        "value": 7.0
+      },
+      {
+        "zone": 2,
+        "min_km": 1.6,
+        "max_km": 2.3,
+        "value": 8.0
+      },
+      {
+        "zone": 3,
+        "min_km": 2.4,
+        "max_km": 3.1,
+        "value": 9.0
+      },
+      {
+        "zone": 4,
+        "min_km": 3.2,
+        "max_km": 3.9,
+        "value": 10.0
+      },
+      {
+        "zone": 5,
+        "min_km": 4.0,
+        "max_km": 4.7,
+        "value": 11.0
+      },
+      {
+        "zone": 6,
+        "min_km": 4.8,
+        "max_km": 5.5,
+        "value": 12.0
+      },
+      {
+        "zone": 7,
+        "min_km": 5.6,
+        "max_km": 6.3,
+        "value": 13.0
+      },
+      {
+        "zone": 8,
+        "min_km": 6.4,
+        "max_km": 7.1,
+        "value": 14.0
+      },
+      {
+        "zone": 9,
+        "min_km": 7.2,
+        "max_km": 7.9,
+        "value": 15.0
+      },
+      {
+        "zone": 10,
+        "min_km": 8.0,
+        "max_km": 8.7,
+        "value": 16.0
+      },
+      {
+        "zone": 11,
+        "min_km": 8.8,
+        "max_km": 9.5,
+        "value": 17.0
+      },
+      {
+        "zone": 12,
+        "min_km": 9.6,
+        "max_km": 10.3,
+        "value": 18.0
+      },
+      {
+        "zone": 13,
+        "min_km": 10.4,
+        "max_km": 11.1,
+        "value": 19.0
+      },
+      {
+        "zone": 14,
+        "min_km": 11.2,
+        "max_km": 11.9,
+        "value": 20.0
+      },
+      {
+        "zone": 15,
+        "min_km": 12.0,
+        "max_km": 12.7,
+        "value": 25.0
+      }
+    ],
+    "conditional_addons_brl": {
+      "sunday": 1.0,
+      "holiday": 2.0,
+      "rain": 2.0,
+      "peak": 1.0
+    },
+    "pricing_formula": {
+      "expression": "base_zone + urgency + sunday + holiday + rain + peak",
+      "rounding": {
+        "mode": "half_up",
+        "decimals": 2
+      },
+      "minimum_charge_brl": 7.0,
+      "max_distance_policy": {
+        "when_distance_km_gt": 12.7,
+        "action": "reject_quote",
+        "code": "OUT_OF_COVERAGE"
+      }
+    }
+  },
+  "execution_flow": [
+    {
+      "step": "validate_input",
+      "fail_code": "INVALID_INPUT"
+    },
+    {
+      "step": "normalize_bairros"
+    },
+    {
+      "step": "resolve_distance_time",
+      "domain": "distance_time"
+    },
+    {
+      "step": "resolve_climate",
+      "domain": "climate"
+    },
+    {
+      "step": "evaluate_conditional_flags",
+      "notes": [
+        "is_sunday from requested_at_iso if not provided",
+        "is_peak true for local hour ranges 11-14 and 18-22",
+        "is_holiday from holiday calendar if not provided"
+      ]
+    },
+    {
+      "step": "calculate_zone_from_distance"
+    },
+    {
+      "step": "calculate_price"
+    },
+    {
+      "step": "persist_audit"
+    },
+    {
+      "step": "return_quote"
+    }
+  ],
+  "response_contract": {
+    "quote_id": "string",
+    "currency": "BRL",
+    "origin_bairro": "string",
+    "destination_bairro": "string",
+    "distance_m": "integer",
+    "duration_s": "integer",
+    "eta_min": "integer",
+    "zone": "integer",
+    "price": {
+      "base_zone_brl": "number",
+      "urgency_brl": "number",
+      "sunday_brl": "number",
+      "holiday_brl": "number",
+      "rain_brl": "number",
+      "peak_brl": "number",
+      "total_brl": "number"
+    },
+    "climate": {
+      "is_raining": "boolean",
+      "source": "string",
+      "confidence": "high_or_medium_or_low"
+    },
+    "provider_trace": {
+      "distance_time_provider": "string",
+      "climate_provider": "string",
+      "fallback_used": "boolean",
+      "latency_ms": {
+        "distance_time": "integer",
+        "climate": "integer"
+      }
+    }
+  },
+  "observability": {
+    "log_fields": [
+      "quote_id",
+      "order_id",
+      "commerce_id",
+      "origin_bairro",
+      "destination_bairro",
+      "distance_time_provider",
+      "climate_provider",
+      "fallback_used",
+      "cache_hit_distance_time",
+      "cache_hit_climate",
+      "total_brl",
+      "duration_total_ms"
+    ],
+    "metrics": [
+      "quote_success_total",
+      "quote_error_total",
+      "provider_timeout_total",
+      "provider_circuit_open_total",
+      "fallback_trigger_total"
+    ]
+  }
+}

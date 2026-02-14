@@ -1,0 +1,19 @@
+{
+  "name": "@roodi/workspace",
+  "private": true,
+  "scripts": {
+    "prepare": "husky || echo \"Husky skipped: git metadata not available\"",
+    "format": "prettier --write .",
+    "precommit": "lint-staged && npm run precommit:lint",
+    "precommit:lint": "npm --prefix Packages/Backend run lint && npm --prefix Packages/Frontend-admin run lint && npm --prefix Packages/Roodi run lint && cd Packages/Frontend-rider && flutter analyze"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.5.3"
+  },
+  "lint-staged": {
+    "*.{md,json,yml,yaml,css,js,mjs,cjs,ts,tsx}": "prettier --write",
+    "*.dart": "dart format"
+  }
+}

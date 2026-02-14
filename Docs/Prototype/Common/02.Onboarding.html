@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Onboarding 02</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<main class="relative z-10 flex flex-1 items-center justify-center px-4 sm:px-6 py-8 sm:py-10">
+<section class="w-full max-w-sm mx-auto">
+<p class="ds-onboarding-step">02 de 03</p>
+
+<div class="ds-onboarding-hero">
+<div class="ds-onboarding-icons">
+<div class="ds-onboarding-icon ds-onboarding-icon-primary">
+<span class="material-symbols-outlined text-icon-lg">route</span>
+</div>
+</div>
+</div>
+
+<h1 class="ds-onboarding-title">Acompanhe em tempo real</h1>
+<p class="ds-onboarding-copy">Visualize status dos pedidos, estimativa de chegada e tudo que acontece na rota de entrega.</p>
+
+<div class="ds-onboarding-progress" aria-label="Progresso do onboarding">
+<span class="ds-onboarding-dot"></span>
+<span class="ds-onboarding-dot is-active"></span>
+<span class="ds-onboarding-dot"></span>
+</div>
+
+<div class="grid grid-cols-10 gap-3">
+<a class="col-span-3 ds-auth-social-btn" data-onboarding-complete="true" href="./Login.html">Pular</a>
+<a class="col-span-7 ds-auth-submit-btn" href="./03Onboarding.html">
+Proximo
+<span class="material-symbols-outlined text-icon-md">arrow_forward</span>
+</a>
+</div>
+</section>
+</main>
+</div>
+<script>
+      (function () {
+        const ONBOARDING_KEY = 'roodi_onboarding_done';
+        const completeLinks = document.querySelectorAll('[data-onboarding-complete="true"]');
+        if (completeLinks.length === 0) return;
+
+        completeLinks.forEach((link) => {
+          link.addEventListener('click', () => {
+            try {
+              window.localStorage.setItem(ONBOARDING_KEY, 'true');
+            } catch (error) {}
+          });
+        });
+      })();
+    </script>
+</body></html>

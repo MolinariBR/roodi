@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Painel do Aplicativo de Entregador</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-black">
+<div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black"></div>
+
+<header class="relative z-50 px-4 sm:px-6 pt-10 sm:pt-12 pb-3 sm:pb-4 flex items-center justify-between bg-black/95 border-b border-white/5">
+<button aria-label="Abrir menu lateral" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" id="menuToggle" type="button">
+<span class="material-symbols-outlined text-icon-md">menu</span>
+</button>
+<div aria-hidden="true" class="h-4 w-20"></div>
+<div class="relative">
+<a aria-label="Notificações" class="flex h-10 w-10 items-center justify-center rounded-xl glass-panel hover:bg-white/10 text-white" href="../Common/Notifications.html?from=rider_home">
+<span class="material-symbols-outlined text-icon-md">notifications</span>
+</a>
+<span class="absolute top-1.5 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-black"></span>
+</div>
+</header>
+
+<main class="flex-1 relative w-full h-full z-10 overflow-y-auto no-scrollbar px-4 sm:px-6 pt-4 sm:pt-5 pb-8 sm:pb-10 space-y-6 sm:space-y-7">
+<section class="glass-card rounded-card p-1 border border-white/10 relative overflow-hidden">
+<div class="relative bg-black/35 border border-white/5 rounded-panel p-4 sm:p-6">
+<div id="deliveryStateCard" class="space-y-4"></div>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Rota Ativa</h2>
+<button class="ds-section-action">Ver no mapa</button>
+</div>
+<div class="space-y-3">
+<div class="glass-card ds-list-card hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-cyan-500/10 border border-cyan-500/20 group-hover:border-cyan-500/40 transition-colors">
+<span class="material-symbols-outlined text-cyan-400">route</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Progresso da Rota</h3>
+<p class="ds-list-subtitle">34% concluído • 4.2 km total</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">18 min</p>
+<p class="ds-list-side-meta text-cyan-400 bg-cyan-500/10">ETA</p>
+</div>
+</div>
+
+<div class="glass-card ds-list-card hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="ds-list-main">
+<div class="ds-list-icon bg-purple-500/10 border border-purple-500/20 group-hover:border-purple-500/40 transition-colors">
+<span class="material-symbols-outlined text-purple-400">support_agent</span>
+</div>
+<div class="ds-list-copy">
+<h3 class="ds-list-title">Contato do Cliente</h3>
+<p class="ds-list-subtitle">Instruções recebidas • apto 1204</p>
+</div>
+</div>
+<div class="ds-list-side">
+<p class="ds-list-side-value">Chat</p>
+<p class="ds-list-side-meta text-emerald-400 bg-emerald-500/10">Disponível</p>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="ds-section-head">
+<h2 class="ds-section-title">Ganhos Diários</h2>
+<button class="ds-section-action">Ver histórico</button>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-emerald-500/10 text-emerald-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">payments</span>
+</div>
+<p class="ds-kpi-label-inline">Ganho</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">$86.50</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-blue-500/10 text-blue-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">directions_bike</span>
+</div>
+<p class="ds-kpi-label-inline">Viagens</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">8</p>
+</div>
+</div>
+
+<div class="glass-card ds-kpi-card">
+<div class="ds-kpi-body">
+<div class="ds-kpi-head">
+<div class="ds-kpi-icon bg-orange-500/10 text-orange-400">
+<span class="material-symbols-outlined text-xs sm:text-icon-sm">schedule</span>
+</div>
+<p class="ds-kpi-label-inline">Online</p>
+</div>
+<p class="ds-kpi-value ds-kpi-value-compact ds-kpi-value-center">4.2<span class="text-xs sm:text-sm font-normal ml-0.5">h</span></p>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<div class="hidden absolute left-4 sm:left-6 top-24 sm:top-28 z-50 w-52 rounded-xl border border-white/10 bg-black/95 p-2" id="floatingMenu">
+<nav class="space-y-1">
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Home.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">home</span>
+<span>Início</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Orders.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">list_alt</span>
+<span>Pedidos</span>
+</a>
+<a class="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 hover:bg-white/10" href="./Profile.html">
+<span class="material-symbols-outlined text-icon-sm text-slate-300">person</span>
+<span>Perfil</span>
+</a>
+</nav>
+</div>
+
+<div class="pointer-events-none hidden absolute bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-white/10 bg-black/90 px-3 py-2 text-xs font-semibold text-slate-100" id="flowToast"></div>
+</div>
+
+<script src="./home-flow.js"></script>
+</body></html>

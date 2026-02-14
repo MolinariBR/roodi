@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roodi - Verificacao OTP</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="../design-system/tokens.css" rel="stylesheet"/>
+<link href="../design-system/design.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="../design-system/tailwind-theme.js"></script>
+</head>
+<body class="bg-background-light dark:bg-black font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="ds-sober-screen relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-black">
+<div class="absolute inset-0 bg-black"></div>
+
+<main class="relative z-10 flex flex-1 items-center justify-center px-4 sm:px-6 py-8 sm:py-10">
+<section class="w-full max-w-sm mx-auto">
+<div class="flex items-center justify-center mb-5">
+<div class="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-icon-xl">password</span>
+</div>
+</div>
+
+<h1 class="text-xl sm:text-2xl font-bold text-white text-center leading-tight">Validar codigo</h1>
+<p class="text-xs sm:text-sm text-slate-400 text-center mt-2 mb-5">Digite o codigo de 6 digitos enviado para seu e-mail.</p>
+
+<div class="ds-auth-otp-grid">
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="0" type="text" inputmode="numeric"/>
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="1" type="text" inputmode="numeric"/>
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="2" type="text" inputmode="numeric"/>
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="3" type="text" inputmode="numeric"/>
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="4" type="text" inputmode="numeric"/>
+<input class="otp-input ds-auth-otp-input" maxlength="1" data-otp-index="5" type="text" inputmode="numeric"/>
+</div>
+
+<div class="text-center text-xs text-slate-400 mb-2">Nao recebeu? <button class="text-primary font-semibold" id="otpResendBtn" type="button">Reenviar codigo</button></div>
+<p class="text-2xs text-slate-500 text-center mb-4" id="otpNote">Codigo valido por 5 min.</p>
+
+<a class="ds-auth-submit-btn w-full" href="./ResetPassword.html" id="otpVerifyLink">
+Verificar
+<span class="material-symbols-outlined text-icon-md">check</span>
+</a>
+
+<div class="mt-5 pt-4 border-t border-white/10 text-center">
+<p class="text-xs text-slate-400">Precisa alterar o e-mail? <a class="text-primary font-semibold hover:text-primary/80" href="./ForgotPassword.html">Voltar</a></p>
+</div>
+</section>
+</main>
+</div>
+<script>
+      (function () {
+        const RESET_FLOW_KEY = 'roodi_reset_flow';
+        const RESET_VERIFY_KEY = 'roodi_reset_verified';
+        const OTP_LENGTH = 6;
+        const OTP_COOLDOWN_MS = 30 * 1000;
+        const OTP_TTL_MS = 5 * 60 * 1000;
+
+        const inputs = Array.from(document.querySelectorAll('[data-otp-index]'));
+        const resendBtn = document.getElementById('otpResendBtn');
+        const verifyLink = document.getElementById('otpVerifyLink');
+        const noteEl = document.getElementById('otpNote');
+        if (inputs.length !== OTP_LENGTH || !resendBtn || !verifyLink || !noteEl) return;
+
+        let timerId;
+
+        function readFlow() {
+          try {
+            const raw = window.localStorage.getItem(RESET_FLOW_KEY);
+            return raw ? JSON.parse(raw) : null;
+          } catch (error) {
+            return null;
+          }
+        }
+
+        function saveFlow(flow) {
+          window.localStorage.setItem(RESET_FLOW_KEY, JSON.stringify(flow));
+        }
+
+        function setError(message) {
+          noteEl.textContent = message;
+          noteEl.classList.add('text-red-300');
+          noteEl.classList.remove('text-slate-500', 'text-emerald-300');
+        }
+
+        function setInfo(message) {
+          noteEl.textContent = message;
+          noteEl.classList.add('text-slate-500');
+          noteEl.classList.remove('text-red-300', 'text-emerald-300');
+        }
+
+        function setSuccess(message) {
+          noteEl.textContent = message;
+          noteEl.classList.add('text-emerald-300');
+          noteEl.classList.remove('text-slate-500', 'text-red-300');
+        }
+
+        function generateCode() {
+          return String(Math.floor(100000 + Math.random() * 900000));
+        }
+
+        function clearInputs() {
+          inputs.forEach((input) => {
+            input.value = '';
+          });
+          inputs[0].focus();
+        }
+
+        function getTypedCode() {
+          return inputs.map((input) => input.value.trim()).join('');
+        }
+
+        function updateTimer() {
+          const flow = readFlow();
+          if (!flow || !flow.expiresAt) {
+            setError('Fluxo de recuperacao invalido. Solicite um novo codigo.');
+            resendBtn.disabled = false;
+            resendBtn.classList.remove('opacity-60');
+            return;
+          }
+
+          const now = Date.now();
+          const remainingMs = Math.max(0, flow.expiresAt - now);
+          const remainingSec = Math.ceil(remainingMs / 1000);
+          const min = Math.floor(remainingSec / 60);
+          const sec = String(remainingSec % 60).padStart(2, '0');
+
+          if (remainingMs === 0) {
+            setError('Codigo expirado. Reenvie para continuar.');
+            return;
+          }
+
+          setInfo(`Codigo para ${flow.email}. Expira em ${min}:${sec}.`);
+        }
+
+        function updateResendAvailability() {
+          const flow = readFlow();
+          if (!flow || !flow.lastSentAt) {
+            resendBtn.disabled = false;
+            resendBtn.classList.remove('opacity-60');
+            return;
+          }
+
+          const now = Date.now();
+          const cooldownRemaining = flow.lastSentAt + OTP_COOLDOWN_MS - now;
+          if (cooldownRemaining > 0) {
+            resendBtn.disabled = true;
+            resendBtn.classList.add('opacity-60');
+            return;
+          }
+
+          resendBtn.disabled = false;
+          resendBtn.classList.remove('opacity-60');
+        }
+
+        function setupInputs() {
+          inputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+              input.value = input.value.replace(/\\D/g, '').slice(0, 1);
+              if (input.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+              }
+            });
+
+            input.addEventListener('keydown', (event) => {
+              if (event.key === 'Backspace' && !input.value && index > 0) {
+                inputs[index - 1].focus();
+              }
+            });
+          });
+        }
+
+        function resendCode() {
+          const flow = readFlow();
+          if (!flow || !flow.email) {
+            setError('Fluxo expirado. Volte e solicite um novo codigo.');
+            return;
+          }
+
+          const now = Date.now();
+          if (flow.lastSentAt && now - flow.lastSentAt < OTP_COOLDOWN_MS) {
+            setError('Aguarde alguns segundos para reenviar.');
+            return;
+          }
+
+          const nextFlow = {
+            ...flow,
+            code: generateCode(),
+            expiresAt: now + OTP_TTL_MS,
+            lastSentAt: now,
+            attempts: 0,
+          };
+          saveFlow(nextFlow);
+          clearInputs();
+          setSuccess(`Novo codigo enviado. Codigo mock: ${nextFlow.code}.`);
+          updateResendAvailability();
+          updateTimer();
+        }
+
+        function verifyCode() {
+          const flow = readFlow();
+          if (!flow || !flow.code || !flow.expiresAt) {
+            setError('Fluxo invalido. Solicite novo codigo.');
+            return;
+          }
+
+          if (Date.now() > flow.expiresAt) {
+            setError('Codigo expirado. Reenvie para continuar.');
+            return;
+          }
+
+          const typedCode = getTypedCode();
+          if (typedCode.length !== OTP_LENGTH) {
+            setError('Digite os 6 digitos do codigo.');
+            inputs[0].focus();
+            return;
+          }
+
+          if (typedCode !== flow.code) {
+            const failedFlow = { ...flow, attempts: (flow.attempts || 0) + 1 };
+            saveFlow(failedFlow);
+            setError('Codigo invalido. Tente novamente.');
+            clearInputs();
+            return;
+          }
+
+          const verified = {
+            email: flow.email,
+            verifiedAt: Date.now(),
+            expiresAt: Date.now() + 10 * 60 * 1000,
+          };
+          window.localStorage.setItem(RESET_VERIFY_KEY, JSON.stringify(verified));
+          setSuccess('Codigo validado. Redirecionando...');
+          window.setTimeout(() => {
+            window.location.href = './ResetPassword.html';
+          }, 280);
+        }
+
+        setupInputs();
+        updateTimer();
+        updateResendAvailability();
+        timerId = window.setInterval(() => {
+          updateTimer();
+          updateResendAvailability();
+        }, 1000);
+
+        resendBtn.addEventListener('click', resendCode);
+        verifyLink.addEventListener('click', (event) => {
+          event.preventDefault();
+          verifyCode();
+        });
+
+        window.addEventListener('beforeunload', () => {
+          if (timerId) window.clearInterval(timerId);
+        });
+      })();
+    </script>
+</body></html>

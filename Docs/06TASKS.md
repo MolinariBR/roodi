@@ -431,16 +431,16 @@ https://www.infinitepay.io/checkout
 ## Fase 4 - Frontend-rider (App unico Rider + Commerce)
 
 ### TASK-031: Implementar base do app (theme, navegacao, sessao)
-- [ ] `TASK-031` concluida
+- [x] `TASK-031` concluida
 - **Instrucao:** Implementar app shell, `ThemeMode.system`, rotas e sessao.
 - **Local fisico:** `Packages/Frontend-rider/lib/Core/*`.
 - **Motivo:** Fundacao para todos os fluxos mobile.
 - **Fluxo:** `04FLUXOS` secao 1.
 - **Pagina/Tela:** `Splash`, `Onboarding`, `Login`.
 - **Subtarefas:**
-  - [ ] Configurar `App_Theme.dart`, light/dark e resolver de tema.
-  - [ ] Configurar interceptors de auth e refresh.
-  - [ ] Resolver redirecionamento por contexto Rider/Commerce.
+  - [x] Configurar `App_Theme.dart`, light/dark e resolver de tema.
+  - [x] Configurar interceptors de auth e refresh.
+  - [x] Resolver redirecionamento por contexto Rider/Commerce.
 
 ### TASK-032: Implementar telas comuns (auth, notificacoes, suporte, estados globais)
 - [ ] `TASK-032` concluida

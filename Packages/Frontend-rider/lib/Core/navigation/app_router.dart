@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../Modules/auth/presentation/forgot_password_page.dart';
 import '../../Modules/auth/presentation/login_page.dart';
+import '../../Modules/auth/presentation/onboarding_page.dart';
 import '../../Modules/auth/presentation/otp_page.dart';
 import '../../Modules/auth/presentation/register_page.dart';
 import '../../Modules/auth/presentation/reset_password_page.dart';
@@ -28,6 +29,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.onboarding1,
+        builder: (context, state) =>
+            const OnboardingPage(step: OnboardingStep.step1),
+      ),
+      GoRoute(
+        path: AppRoutes.onboarding2,
+        builder: (context, state) =>
+            const OnboardingPage(step: OnboardingStep.step2),
+      ),
+      GoRoute(
+        path: AppRoutes.onboarding3,
+        builder: (context, state) =>
+            const OnboardingPage(step: OnboardingStep.step3),
       ),
       GoRoute(
         path: AppRoutes.register,
@@ -67,16 +83,49 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   );
 });
 
-String? _redirectForSession(SessionState session, String location) {
-  final isAuthenticated = session.status == SessionStatus.authenticated;
+String? _redirectForSession(
+  AsyncValue<SessionState> sessionAsync,
+  String location,
+) {
+  if (sessionAsync.isLoading) {
+    return location == AppRoutes.splash ? null : AppRoutes.splash;
+  }
+
+  final session =
+      sessionAsync.valueOrNull ??
+      const SessionState.unauthenticated(onboardingCompleted: false);
+  final isAuthenticated = session.isAuthenticated;
   final isAuthRoute = AppRoutes.isAuthRoute(location);
+  final isOnboardingRoute = AppRoutes.isOnboardingRoute(location);
   final isProtected = AppRoutes.isProtectedRoute(location);
+
+  if (!session.onboardingCompleted &&
+      location != AppRoutes.splash &&
+      !isOnboardingRoute) {
+    return AppRoutes.onboarding1;
+  }
+
+  if (session.onboardingCompleted && isOnboardingRoute) {
+    return isAuthenticated ? session.homeRoute : AppRoutes.login;
+  }
 
   if (!isAuthenticated && isProtected) {
     return AppRoutes.login;
   }
 
   if (isAuthenticated && isAuthRoute) {
+    return session.homeRoute;
+  }
+
+  if (isAuthenticated &&
+      location.startsWith('/rider/') &&
+      session.context != UserContext.rider) {
+    return session.homeRoute;
+  }
+
+  if (isAuthenticated &&
+      location.startsWith('/commerce/') &&
+      session.context != UserContext.commerce) {
     return session.homeRoute;
   }
 

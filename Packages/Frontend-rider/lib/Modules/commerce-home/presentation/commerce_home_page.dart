@@ -38,8 +38,11 @@ class CommerceHomePage extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: () {
-              ref.read(sessionControllerProvider.notifier).logout();
+            onPressed: () async {
+              await ref.read(sessionControllerProvider.notifier).logout();
+              if (!context.mounted) {
+                return;
+              }
               context.go(AppRoutes.login);
             },
             child: const Text('Sair'),

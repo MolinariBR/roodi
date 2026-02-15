@@ -5,11 +5,64 @@ import { getAuthContext } from "@core/http/middlewares/authenticate";
 import {
   offerIdParamSchema,
   rejectOfferRequestSchema,
+  riderAvailabilityRequestSchema,
 } from "@modules/dispatch/domain/dispatch.schemas";
 import { DispatchService } from "@modules/dispatch/application/dispatch.service";
 
 export class DispatchController {
   constructor(private readonly dispatchService = new DispatchService()) {}
+
+  public getRiderDashboard = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authContext = getAuthContext(res);
+      if (authContext.role !== "rider") {
+        throw new AppError({
+          code: "FORBIDDEN",
+          message: "Only rider users can access rider dashboard.",
+          statusCode: 403,
+        });
+      }
+
+      const responseBody = await this.dispatchService.getRiderDashboard(
+        authContext.userId,
+      );
+      res.status(200).json(responseBody);
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
+
+  public setRiderAvailability = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authContext = getAuthContext(res);
+      if (authContext.role !== "rider") {
+        throw new AppError({
+          code: "FORBIDDEN",
+          message: "Only rider users can update rider availability.",
+          statusCode: 403,
+        });
+      }
+
+      const payload = riderAvailabilityRequestSchema.parse(req.body);
+      const responseBody = await this.dispatchService.setRiderAvailability({
+        riderUserId: authContext.userId,
+        status: payload.status,
+      });
+
+      res.locals.auditEntityId = authContext.userId;
+      res.status(200).json(responseBody);
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
 
   public getCurrentOffer = async (
     _req: Request,

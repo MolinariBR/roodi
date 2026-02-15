@@ -24,6 +24,13 @@ type AppendedOrderEvent = {
   event: order_events;
 };
 
+type ConfirmationCodeValidationResult =
+  | { valid: true }
+  | {
+      valid: false;
+      reason: "not_found" | "expired" | "max_attempts" | "invalid";
+    };
+
 export class TrackingRepository {
   constructor(private readonly prismaClient: PrismaClient = defaultPrisma) {}
 
@@ -194,6 +201,72 @@ export class TrackingRepository {
         order: updatedOrder,
         event: createdEvent,
       };
+    });
+  }
+
+  public async validateConfirmationCode(input: {
+    orderId: string;
+    riderUserId: string;
+    confirmationCode: string;
+  }): Promise<ConfirmationCodeValidationResult> {
+    const now = new Date();
+    const expectedCodeHash = hashConfirmationCode(input.confirmationCode);
+
+    return this.prismaClient.$transaction(async (tx) => {
+      const currentCode = await tx.order_confirmation_codes.findUnique({
+        where: {
+          order_id: input.orderId,
+        },
+      });
+
+      if (!currentCode) {
+        return { valid: false, reason: "not_found" };
+      }
+
+      if (currentCode.expires_at.getTime() <= now.getTime()) {
+        return { valid: false, reason: "expired" };
+      }
+
+      if (currentCode.attempts_count >= currentCode.max_attempts) {
+        return { valid: false, reason: "max_attempts" };
+      }
+
+      if (currentCode.code_hash !== expectedCodeHash) {
+        await tx.order_confirmation_codes.update({
+          where: {
+            order_id: input.orderId,
+          },
+          data: {
+            attempts_count: {
+              increment: 1,
+            },
+          },
+        });
+
+        return { valid: false, reason: "invalid" };
+      }
+
+      await tx.order_confirmation_codes.update({
+        where: {
+          order_id: input.orderId,
+        },
+        data: {
+          validated_at: now,
+          validated_by_rider_user_id: input.riderUserId,
+        },
+      });
+
+      await tx.orders.update({
+        where: {
+          id: input.orderId,
+        },
+        data: {
+          confirmation_code_status: "validated",
+          updated_at: now,
+        },
+      });
+
+      return { valid: true };
     });
   }
 }

@@ -10,6 +10,76 @@ const toMoney = (value: unknown): number => {
 export class DispatchService {
   constructor(private readonly dispatchRepository = new DispatchRepository()) {}
 
+  public async getRiderDashboard(riderUserId: string): Promise<{
+    success: true;
+    data: {
+      availability: "online" | "offline";
+      active_order?: Record<string, unknown>;
+      today_earnings_brl: number;
+      month_earnings_brl: number;
+      today_deliveries: number;
+      today_online_minutes: number;
+      completed_deliveries_total: number;
+      updated_at: string;
+    };
+  }> {
+    const snapshot = await this.dispatchRepository.getRiderDashboardSnapshot(
+      riderUserId,
+    );
+
+    if (!snapshot) {
+      throw new AppError({
+        code: "NOT_FOUND",
+        message: "Rider profile not found.",
+        statusCode: 404,
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        availability: snapshot.isOnline ? "online" : "offline",
+        ...(snapshot.activeOrder
+          ? { active_order: toOrderPayload(snapshot.activeOrder) }
+          : {}),
+        today_earnings_brl: snapshot.todayEarningsBrl,
+        month_earnings_brl: snapshot.monthEarningsBrl,
+        today_deliveries: snapshot.todayDeliveries,
+        today_online_minutes: snapshot.todayOnlineMinutes,
+        completed_deliveries_total: snapshot.completedDeliveriesTotal,
+        updated_at: snapshot.updatedAt.toISOString(),
+      },
+    };
+  }
+
+  public async setRiderAvailability(input: {
+    riderUserId: string;
+    status: "online" | "offline";
+  }): Promise<{
+    success: true;
+    data: {
+      status: "online" | "offline";
+      updated_at: string;
+    };
+  }> {
+    const updated = await this.dispatchRepository.setRiderAvailability(input);
+    if (!updated) {
+      throw new AppError({
+        code: "NOT_FOUND",
+        message: "Rider profile not found.",
+        statusCode: 404,
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        status: updated.status,
+        updated_at: updated.updatedAt.toISOString(),
+      },
+    };
+  }
+
   public async openInitialDispatch(orderId: string, zone: number | null): Promise<void> {
     await this.dispatchRepository.createInitialDispatchForOrder({
       orderId,

@@ -456,18 +456,18 @@ https://www.infinitepay.io/checkout
   - [x] Tratamento de status global da plataforma.
 
 ### TASK-033: Implementar fluxo Rider completo
-- [ ] `TASK-033` concluida
+- [x] `TASK-033` concluida
 - **Instrucao:** Implementar home stateful, historico e perfil do rider.
 - **Local fisico:** `Packages/Frontend-rider/lib/Modules/rider-home-flow`, `Packages/Frontend-rider/lib/Modules/rider-orders-history`, `Packages/Frontend-rider/lib/Modules/rider-profile`.
 - **Motivo:** Entrega de valor central para o entregador.
 - **Fluxo:** `04FLUXOS` secao 2.
 - **Pagina/Tela:** `Rider/Home`, `Rider/Orders`, `Rider/Profile`.
 - **Subtarefas:**
-  - [ ] Online/offline e consulta de oferta atual.
-  - [ ] Aceitar/recusar oferta e transicoes por eventos.
-  - [ ] Finalizacao com codigo de confirmacao (`/complete`).
-  - [ ] Historico com filtros e detalhe.
-  - [ ] Perfil com edicao em bottom sheets.
+  - [x] Online/offline e consulta de oferta atual.
+  - [x] Aceitar/recusar oferta e transicoes por eventos.
+  - [x] Finalizacao com codigo de confirmacao (`/complete`).
+  - [x] Historico com filtros e detalhe.
+  - [x] Perfil com edicao em bottom sheets.
 
 ### TASK-034: Implementar fluxo Commerce completo no app
 - [ ] `TASK-034` concluida

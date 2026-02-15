@@ -16,9 +16,173 @@ type GetCurrentOfferResult = DispatchOrderRecord | null;
 
 const DEFAULT_OFFER_SECONDS = 120;
 const DEFAULT_TOP_LIMIT = 3;
+const ACTIVE_ORDER_STATUSES: order_status[] = [
+  "rider_assigned",
+  "to_merchant",
+  "at_merchant",
+  "waiting_order",
+  "to_customer",
+  "at_customer",
+  "finishing_delivery",
+];
+
+type RiderDashboardSnapshot = {
+  isOnline: boolean;
+  activeOrder: orders | null;
+  todayEarningsBrl: number;
+  monthEarningsBrl: number;
+  todayDeliveries: number;
+  todayOnlineMinutes: number;
+  completedDeliveriesTotal: number;
+  updatedAt: Date;
+};
 
 export class DispatchRepository {
   constructor(private readonly prismaClient: PrismaClient = defaultPrisma) {}
+
+  public async getRiderDashboardSnapshot(
+    riderUserId: string,
+  ): Promise<RiderDashboardSnapshot | null> {
+    const now = new Date();
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const [profile, activeOrder, todayDeliveries, todayEarnings, monthEarnings] =
+      await Promise.all([
+        this.prismaClient.rider_profiles.findUnique({
+          where: {
+            user_id: riderUserId,
+          },
+        }),
+        this.prismaClient.orders.findFirst({
+          where: {
+            rider_user_id: riderUserId,
+            status: {
+              in: ACTIVE_ORDER_STATUSES,
+            },
+          },
+          orderBy: {
+            updated_at: "desc",
+          },
+        }),
+        this.prismaClient.orders.count({
+          where: {
+            rider_user_id: riderUserId,
+            status: "completed",
+            completed_at: {
+              gte: startOfDay,
+              lte: now,
+            },
+          },
+        }),
+        this.prismaClient.order_financials.aggregate({
+          _sum: {
+            rider_repass_brl: true,
+          },
+          where: {
+            orders: {
+              rider_user_id: riderUserId,
+              status: "completed",
+              completed_at: {
+                gte: startOfDay,
+                lte: now,
+              },
+            },
+          },
+        }),
+        this.prismaClient.order_financials.aggregate({
+          _sum: {
+            rider_repass_brl: true,
+          },
+          where: {
+            orders: {
+              rider_user_id: riderUserId,
+              status: "completed",
+              completed_at: {
+                gte: startOfMonth,
+                lte: now,
+              },
+            },
+          },
+        }),
+      ]);
+
+    if (!profile) {
+      return null;
+    }
+
+    return {
+      isOnline: profile.is_online,
+      activeOrder,
+      todayEarningsBrl: Number(todayEarnings._sum.rider_repass_brl ?? 0),
+      monthEarningsBrl: Number(monthEarnings._sum.rider_repass_brl ?? 0),
+      todayDeliveries,
+      todayOnlineMinutes: profile.online_minutes_total,
+      completedDeliveriesTotal: profile.completed_deliveries,
+      updatedAt: profile.updated_at,
+    };
+  }
+
+  public async setRiderAvailability(input: {
+    riderUserId: string;
+    status: "online" | "offline";
+  }): Promise<{ status: "online" | "offline"; updatedAt: Date } | null> {
+    const now = new Date();
+    const targetOnline = input.status === "online";
+
+    const result = await this.prismaClient.$transaction(async (tx) => {
+      const profile = await tx.rider_profiles.findUnique({
+        where: {
+          user_id: input.riderUserId,
+        },
+      });
+
+      if (!profile) {
+        return null;
+      }
+
+      let onlineMinutesIncrement = 0;
+      if (
+        profile.is_online &&
+        !targetOnline &&
+        profile.last_status_change_at
+      ) {
+        const elapsedMs =
+          now.getTime() - profile.last_status_change_at.getTime();
+        onlineMinutesIncrement = Math.max(0, Math.floor(elapsedMs / (60 * 1000)));
+      }
+
+      const updatedProfile = await tx.rider_profiles.update({
+        where: {
+          user_id: input.riderUserId,
+        },
+        data: {
+          is_online: targetOnline,
+          last_status_change_at: now,
+          ...(onlineMinutesIncrement > 0
+            ? {
+                online_minutes_total: {
+                  increment: onlineMinutesIncrement,
+                },
+              }
+            : {}),
+          updated_at: now,
+        },
+      });
+
+      const status: "online" | "offline" = updatedProfile.is_online
+        ? "online"
+        : "offline";
+
+      return {
+        status,
+        updatedAt: updatedProfile.updated_at,
+      };
+    });
+
+    return result;
+  }
 
   public async createInitialDispatchForOrder(input: {
     orderId: string;

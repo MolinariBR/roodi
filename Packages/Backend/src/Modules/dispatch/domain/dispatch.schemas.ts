@@ -10,4 +10,9 @@ export const rejectOfferRequestSchema = z
   })
   .optional();
 
+export const riderAvailabilityRequestSchema = z.object({
+  status: z.enum(["online", "offline"]),
+});
+
 export type RejectOfferRequest = z.infer<typeof rejectOfferRequestSchema>;
+export type RiderAvailabilityRequest = z.infer<typeof riderAvailabilityRequestSchema>;

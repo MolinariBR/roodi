@@ -10,6 +10,20 @@ export const createRiderDispatchRouter = (): Router => {
 
   router.use(authenticateAccessTokenMiddleware);
 
+  router.get("/dashboard", controller.getRiderDashboard);
+  router.post(
+    "/availability",
+    createAuditMiddleware({
+      action: "rider.availability.update",
+      entityType: "rider_profiles",
+      resolveEntityId: (_req, res) => {
+        return typeof res.locals.auditEntityId === "string"
+          ? res.locals.auditEntityId
+          : undefined;
+      },
+    }),
+    controller.setRiderAvailability,
+  );
   router.get("/offers/current", controller.getCurrentOffer);
   router.post(
     "/offers/:offerId/accept",

@@ -11,6 +11,8 @@ import '../../Modules/auth/presentation/splash_page.dart';
 import '../../Modules/commerce-home/presentation/commerce_home_page.dart';
 import '../../Modules/notifications/presentation/notifications_page.dart';
 import '../../Modules/rider-home-flow/presentation/rider_home_page.dart';
+import '../../Modules/rider-orders-history/presentation/rider_orders_page.dart';
+import '../../Modules/rider-profile/presentation/rider_profile_page.dart';
 import '../../Modules/session/presentation/error_page.dart';
 import '../../Modules/session/presentation/maintenance_page.dart';
 import '../../Modules/session/presentation/update_page.dart';
@@ -67,6 +69,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.riderHome,
         builder: (context, state) => const RiderHomePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.riderOrders,
+        builder: (context, state) => const RiderOrdersPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.riderProfile,
+        builder: (context, state) => const RiderProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.commerceHome,

@@ -4,7 +4,10 @@ import { AppError } from "@core/http/errors/app-error";
 import { getAuthContext } from "@core/http/middlewares/authenticate";
 import { orderIdParamSchema } from "@modules/orders/domain/orders.schemas";
 import { TrackingService } from "@modules/tracking/application/tracking.service";
-import { riderOrderEventRequestSchema } from "@modules/tracking/domain/tracking.schemas";
+import {
+  riderOrderCompleteRequestSchema,
+  riderOrderEventRequestSchema,
+} from "@modules/tracking/domain/tracking.schemas";
 
 export class TrackingController {
   constructor(private readonly trackingService = new TrackingService()) {}
@@ -97,6 +100,36 @@ export class TrackingController {
         riderUserId: authContext.userId,
         orderId: params.orderId,
         payload,
+      });
+
+      res.locals.auditEntityId = params.orderId;
+      res.status(200).json(responseBody);
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
+
+  public completeRiderOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authContext = getAuthContext(res);
+      if (authContext.role !== "rider") {
+        throw new AppError({
+          code: "FORBIDDEN",
+          message: "Only rider users can complete orders.",
+          statusCode: 403,
+        });
+      }
+
+      const params = orderIdParamSchema.parse(req.params);
+      const payload = riderOrderCompleteRequestSchema.parse(req.body);
+      const responseBody = await this.trackingService.completeRiderOrder({
+        riderUserId: authContext.userId,
+        orderId: params.orderId,
+        confirmationCode: payload.confirmation_code,
       });
 
       res.locals.auditEntityId = params.orderId;

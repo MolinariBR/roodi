@@ -15,6 +15,8 @@ class AppRoutes {
   static const update = '/update';
 
   static const riderHome = '/rider/home';
+  static const riderOrders = '/rider/orders';
+  static const riderProfile = '/rider/profile';
   static const commerceHome = '/commerce/home';
   static const notifications = '/notifications';
   static const support = '/support';
@@ -31,6 +33,8 @@ class AppRoutes {
 
   static const protectedRoutes = <String>{
     riderHome,
+    riderOrders,
+    riderProfile,
     commerceHome,
     notifications,
     support,

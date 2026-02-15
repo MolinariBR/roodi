@@ -33,6 +33,19 @@ export const createRiderTrackingRouter = (): Router => {
     }),
     controller.appendRiderOrderEvent,
   );
+  router.post(
+    "/orders/:orderId/complete",
+    createAuditMiddleware({
+      action: "rider.order.complete",
+      entityType: "orders",
+      resolveEntityId: (_req, res) => {
+        return typeof res.locals.auditEntityId === "string"
+          ? res.locals.auditEntityId
+          : undefined;
+      },
+    }),
+    controller.completeRiderOrder,
+  );
 
   return router;
 };

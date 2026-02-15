@@ -2,6 +2,7 @@ import type { order_status, tracking_event_type } from "@prisma/client";
 
 import { AppError } from "@core/http/errors/app-error";
 import { isOrderStatusTransitionAllowed } from "@modules/orders/domain/order.state-machine";
+import { toOrderPayload } from "@modules/orders/domain/order.mapper";
 import { PaymentsService } from "@modules/payments/application/payments.service";
 import { TrackingRepository } from "@modules/tracking/infra/tracking.repository";
 import type { RiderOrderEventRequest } from "@modules/tracking/domain/tracking.schemas";
@@ -211,5 +212,73 @@ export class TrackingService {
       actor_role: result.event.actor_role,
       note: result.event.note,
     });
+  }
+
+  public async completeRiderOrder(input: {
+    riderUserId: string;
+    orderId: string;
+    confirmationCode: string;
+  }): Promise<Record<string, unknown>> {
+    const order = await this.trackingRepository.findRiderOrder(
+      input.orderId,
+      input.riderUserId,
+    );
+
+    if (!order) {
+      throw new AppError({
+        code: "NOT_FOUND",
+        message: "Order not found.",
+        statusCode: 404,
+      });
+    }
+
+    if (order.status === "completed") {
+      return toOrderPayload(order);
+    }
+
+    if (!isOrderStatusTransitionAllowed(order.status, "completed")) {
+      throw new AppError({
+        code: "TRANSITION_NOT_ALLOWED",
+        message: `Invalid transition from ${order.status} to completed.`,
+        statusCode: 409,
+      });
+    }
+
+    if (order.confirmation_code_required) {
+      const validationResult = await this.trackingRepository.validateConfirmationCode({
+        orderId: order.id,
+        riderUserId: input.riderUserId,
+        confirmationCode: input.confirmationCode,
+      });
+
+      if (!validationResult.valid) {
+        throw new AppError({
+          code: "BAD_REQUEST",
+          message: "Invalid or expired confirmation code.",
+          statusCode: 422,
+        });
+      }
+    }
+
+    const now = new Date();
+    const result = await this.trackingRepository.appendOrderEventAndUpdateStatus({
+      orderId: order.id,
+      riderUserId: input.riderUserId,
+      eventType: "completed",
+      occurredAt: now,
+      note: "Delivery completed with confirmation code.",
+      nextStatus: "completed",
+    });
+
+    if (!result) {
+      throw new AppError({
+        code: "NOT_FOUND",
+        message: "Order not found.",
+        statusCode: 404,
+      });
+    }
+
+    await this.paymentsService.consolidateOrderFinancials(result.order.id);
+    return toOrderPayload(result.order);
   }
 }

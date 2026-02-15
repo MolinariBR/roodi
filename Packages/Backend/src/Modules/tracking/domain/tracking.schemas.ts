@@ -18,4 +18,9 @@ export const riderOrderEventRequestSchema = z.object({
   note: z.string().trim().max(500).optional(),
 });
 
+export const riderOrderCompleteRequestSchema = z.object({
+  confirmation_code: z.string().trim().length(4),
+});
+
 export type RiderOrderEventRequest = z.infer<typeof riderOrderEventRequestSchema>;
+export type RiderOrderCompleteRequest = z.infer<typeof riderOrderCompleteRequestSchema>;

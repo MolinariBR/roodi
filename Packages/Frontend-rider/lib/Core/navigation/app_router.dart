@@ -11,6 +11,9 @@ import '../../Modules/auth/presentation/splash_page.dart';
 import '../../Modules/commerce-home/presentation/commerce_home_page.dart';
 import '../../Modules/notifications/presentation/notifications_page.dart';
 import '../../Modules/rider-home-flow/presentation/rider_home_page.dart';
+import '../../Modules/session/presentation/error_page.dart';
+import '../../Modules/session/presentation/maintenance_page.dart';
+import '../../Modules/session/presentation/update_page.dart';
 import '../../Modules/support/presentation/support_page.dart';
 import '../state/session_controller.dart';
 import '../state/session_state.dart';
@@ -77,6 +80,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.support,
         builder: (context, state) => const SupportPage(),
       ),
+      GoRoute(
+        path: AppRoutes.error,
+        builder: (context, state) => const ErrorPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.maintenance,
+        builder: (context, state) => const MaintenancePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.update,
+        builder: (context, state) {
+          final nextRoute = state.uri.queryParameters['next'];
+          return UpdatePage(nextRoute: nextRoute);
+        },
+      ),
     ],
     redirect: (context, state) =>
         _redirectForSession(session, state.matchedLocation),
@@ -98,6 +116,10 @@ String? _redirectForSession(
   final isAuthRoute = AppRoutes.isAuthRoute(location);
   final isOnboardingRoute = AppRoutes.isOnboardingRoute(location);
   final isProtected = AppRoutes.isProtectedRoute(location);
+
+  if (AppRoutes.isSystemRoute(location)) {
+    return null;
+  }
 
   if (!session.onboardingCompleted &&
       location != AppRoutes.splash &&

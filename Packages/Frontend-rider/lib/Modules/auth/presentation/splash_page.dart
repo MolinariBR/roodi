@@ -6,6 +6,7 @@ import '../../../Core/design-system/tokens/color_tokens.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../../../Core/state/session_controller.dart';
 import '../../../Core/state/session_state.dart';
+import '../../session/infra/system_status_repository.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -131,16 +132,48 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       return;
     }
 
-    if (!session.onboardingCompleted) {
-      context.go(AppRoutes.onboarding1);
+    final nextRoute = _resolveSessionRoute(session);
+    final targetRoute = await _resolveSystemAwareRoute(nextRoute);
+
+    if (!mounted) {
       return;
+    }
+
+    context.go(targetRoute);
+  }
+
+  String _resolveSessionRoute(SessionState session) {
+    if (!session.onboardingCompleted) {
+      return AppRoutes.onboarding1;
     }
 
     if (session.isAuthenticated) {
-      context.go(session.homeRoute);
-      return;
+      return session.homeRoute;
     }
 
-    context.go(AppRoutes.login);
+    return AppRoutes.login;
+  }
+
+  Future<String> _resolveSystemAwareRoute(String nextRoute) async {
+    try {
+      final snapshot = await ref
+          .read(systemStatusRepositoryProvider)
+          .fetchStatus();
+
+      if (snapshot.shouldForceMaintenance) {
+        return AppRoutes.maintenance;
+      }
+
+      if (snapshot.shouldRecommendUpdate) {
+        return Uri(
+          path: AppRoutes.update,
+          queryParameters: <String, String>{'next': nextRoute},
+        ).toString();
+      }
+
+      return nextRoute;
+    } catch (_) {
+      return AppRoutes.error;
+    }
   }
 }

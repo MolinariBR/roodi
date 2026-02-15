@@ -443,17 +443,17 @@ https://www.infinitepay.io/checkout
   - [x] Resolver redirecionamento por contexto Rider/Commerce.
 
 ### TASK-032: Implementar telas comuns (auth, notificacoes, suporte, estados globais)
-- [ ] `TASK-032` concluida
+- [x] `TASK-032` concluida
 - **Instrucao:** Implementar telas comuns conectadas ao backend real.
 - **Local fisico:** `Packages/Frontend-rider/lib/Modules/auth`, `Packages/Frontend-rider/lib/Modules/notifications`, `Packages/Frontend-rider/lib/Modules/support`, `Packages/Frontend-rider/lib/Modules/session`.
 - **Motivo:** Cobrir acesso, ajuda e mensagens globais.
 - **Fluxo:** `04FLUXOS` secao 1 e 4.
 - **Pagina/Tela:** `Login`, `Register`, `ForgotPassword`, `OTP`, `ResetPassword`, `Notifications`, `Support`, `Error`, `Mantenance`, `Update`.
 - **Subtarefas:**
-  - [ ] Fluxo de OTP completo.
-  - [ ] Lista/marcar notificacoes como lidas.
-  - [ ] Abertura e consulta de chamados.
-  - [ ] Tratamento de status global da plataforma.
+  - [x] Fluxo de OTP completo.
+  - [x] Lista/marcar notificacoes como lidas.
+  - [x] Abertura e consulta de chamados.
+  - [x] Tratamento de status global da plataforma.
 
 ### TASK-033: Implementar fluxo Rider completo
 - [ ] `TASK-033` concluida

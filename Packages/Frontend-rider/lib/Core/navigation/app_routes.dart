@@ -10,6 +10,9 @@ class AppRoutes {
   static const forgotPassword = '/forgot-password';
   static const otp = '/otp';
   static const resetPassword = '/reset-password';
+  static const error = '/error';
+  static const maintenance = '/maintenance';
+  static const update = '/update';
 
   static const riderHome = '/rider/home';
   static const commerceHome = '/commerce/home';
@@ -24,6 +27,8 @@ class AppRoutes {
     resetPassword,
   };
 
+  static const systemRoutes = <String>{splash, error, maintenance, update};
+
   static const protectedRoutes = <String>{
     riderHome,
     commerceHome,
@@ -34,6 +39,8 @@ class AppRoutes {
   static bool isAuthRoute(String path) => authRoutes.contains(path);
 
   static bool isOnboardingRoute(String path) => path.startsWith('/onboarding/');
+
+  static bool isSystemRoute(String path) => systemRoutes.contains(path);
 
   static bool isProtectedRoute(String path) {
     if (protectedRoutes.contains(path)) {

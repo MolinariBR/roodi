@@ -79,6 +79,44 @@ class SessionController extends AsyncNotifier<SessionState> {
     }
   }
 
+  Future<void> signUp({
+    required String name,
+    required String email,
+    required String password,
+    required UserContext context,
+    String? phoneNumber,
+  }) async {
+    final authRepository = ref.read(authRepositoryProvider);
+    final storage = ref.read(sessionStorageProvider);
+    final currentState =
+        state.valueOrNull ??
+        const SessionState.unauthenticated(onboardingCompleted: false);
+
+    state = const AsyncLoading<SessionState>().copyWithPrevious(state);
+
+    try {
+      await authRepository.register(
+        name: name,
+        email: email,
+        password: password,
+        context: context,
+        phoneNumber: phoneNumber,
+      );
+      await storage.writeOnboardingCompleted(true);
+      await storage.writeUserContext(context);
+
+      state = AsyncData(
+        SessionState.authenticated(context, onboardingCompleted: true),
+      );
+    } catch (error, stackTrace) {
+      state = AsyncError<SessionState>(
+        error,
+        stackTrace,
+      ).copyWithPrevious(AsyncData(currentState));
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
     final authRepository = ref.read(authRepositoryProvider);
     final storage = ref.read(sessionStorageProvider);

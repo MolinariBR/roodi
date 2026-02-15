@@ -379,28 +379,28 @@ https://www.infinitepay.io/checkout
 ## Fase 3 - Frontend-admin
 
 ### TASK-027: Implementar base do Frontend-admin (auth, layout, design system)
-- [ ] `TASK-027` concluida
+- [x] `TASK-027` concluida
 - **Instrucao:** Criar shell admin com autenticacao, guards e tema.
 - **Local fisico:** `Packages/Frontend-admin/src/Core/*`, `app/(auth)/*`, `app/(admin)/*`.
 - **Motivo:** Estruturar painel antes das paginas de negocio.
 - **Fluxo:** `04FLUXOS` (monitoramento dos fluxos de negocio).
 - **Pagina/Tela:** `/admin/login`, layout `/admin/*`.
 - **Subtarefas:**
-  - [ ] Integrar Clerk + validação de perfil admin no backend.
-  - [ ] Criar layout com navegacao lateral.
-  - [ ] Implementar tema claro/escuro por tokens web.
+  - [x] Integrar Clerk + validação de perfil admin no backend.
+  - [x] Criar layout com navegacao lateral.
+  - [x] Implementar tema claro/escuro por tokens web.
 
 ### TASK-028: Implementar paginas admin de operacao (dashboard/users/orders/tracking)
-- [ ] `TASK-028` concluida
+- [x] `TASK-028` concluida
 - **Instrucao:** Construir paginas principais de monitoramento e auditoria.
 - **Local fisico:** `Packages/Frontend-admin/src/Modules/dashboard`, `Packages/Frontend-admin/src/Modules/users`, `Packages/Frontend-admin/src/Modules/orders`, `Packages/Frontend-admin/src/Modules/tracking`.
 - **Motivo:** Controle operacional fim a fim.
 - **Fluxo:** `04FLUXOS` secao 2, 3 e 6.
 - **Pagina/Tela:** `/admin/dashboard`, `/admin/users`, `/admin/orders`, `/admin/tracking`.
 - **Subtarefas:**
-  - [ ] Tabela de usuarios com filtro por role/status.
-  - [ ] Lista e detalhe de pedidos.
-  - [ ] Timeline de tracking por pedido.
+  - [x] Tabela de usuarios com filtro por role/status.
+  - [x] Lista e detalhe de pedidos.
+  - [x] Timeline de tracking por pedido.
 
 ### TASK-029: Implementar paginas admin de preco, creditos e pagamentos
 - [ ] `TASK-029` concluida

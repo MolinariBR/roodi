@@ -470,18 +470,18 @@ https://www.infinitepay.io/checkout
   - [x] Perfil com edicao em bottom sheets.
 
 ### TASK-034: Implementar fluxo Commerce completo no app
-- [ ] `TASK-034` concluida
+- [x] `TASK-034` concluida
 - **Instrucao:** Implementar operacao do comerciante no app unico.
 - **Local fisico:** `Packages/Frontend-rider/lib/Modules/commerce-*`, `Packages/Frontend-rider/lib/Modules/clients`, `Packages/Frontend-rider/lib/Modules/products`, `Packages/Frontend-rider/lib/Modules/credits`.
 - **Motivo:** Cobrir abertura de chamado ate fechamento operacional.
 - **Fluxo:** `04FLUXOS` secao 3.
 - **Pagina/Tela:** `Commerce/Home`, `CreateCall`, `Tracking`, `History`, `Clients`, `Products`, `Credits`, `Profile`.
 - **Subtarefas:**
-  - [ ] Dashboard commerce.
-  - [ ] Simulacao e criacao de chamado via quote real.
-  - [ ] Timeline de tracking e cancelamento.
-  - [ ] Gestao de clientes e produtos.
-  - [ ] Saldo/extrato/compra de creditos.
+  - [x] Dashboard commerce.
+  - [x] Simulacao e criacao de chamado via quote real.
+  - [x] Timeline de tracking e cancelamento.
+  - [x] Gestao de clientes e produtos.
+  - [x] Saldo/extrato/compra de creditos.
 
 ### TASK-035: Integrar app e painel com usuarios/dados seed de exemplo
 - [ ] `TASK-035` concluida

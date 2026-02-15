@@ -18,6 +18,13 @@ class AppRoutes {
   static const riderOrders = '/rider/orders';
   static const riderProfile = '/rider/profile';
   static const commerceHome = '/commerce/home';
+  static const commerceCreateCall = '/commerce/create-call';
+  static const commerceTracking = '/commerce/tracking/:orderId';
+  static const commerceHistory = '/commerce/history';
+  static const commerceClients = '/commerce/clients';
+  static const commerceProducts = '/commerce/products';
+  static const commerceCredits = '/commerce/credits';
+  static const commerceProfile = '/commerce/profile';
   static const notifications = '/notifications';
   static const support = '/support';
 
@@ -36,6 +43,12 @@ class AppRoutes {
     riderOrders,
     riderProfile,
     commerceHome,
+    commerceCreateCall,
+    commerceHistory,
+    commerceClients,
+    commerceProducts,
+    commerceCredits,
+    commerceProfile,
     notifications,
     support,
   };
@@ -45,6 +58,9 @@ class AppRoutes {
   static bool isOnboardingRoute(String path) => path.startsWith('/onboarding/');
 
   static bool isSystemRoute(String path) => systemRoutes.contains(path);
+
+  static String commerceTrackingByOrderId(String orderId) =>
+      '/commerce/tracking/$orderId';
 
   static bool isProtectedRoute(String path) {
     if (protectedRoutes.contains(path)) {

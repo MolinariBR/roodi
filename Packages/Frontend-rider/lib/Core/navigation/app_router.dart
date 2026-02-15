@@ -8,8 +8,15 @@ import '../../Modules/auth/presentation/otp_page.dart';
 import '../../Modules/auth/presentation/register_page.dart';
 import '../../Modules/auth/presentation/reset_password_page.dart';
 import '../../Modules/auth/presentation/splash_page.dart';
+import '../../Modules/clients/presentation/clients_page.dart';
+import '../../Modules/commerce-create-call/presentation/commerce_create_call_page.dart';
+import '../../Modules/commerce-history/presentation/commerce_history_page.dart';
 import '../../Modules/commerce-home/presentation/commerce_home_page.dart';
+import '../../Modules/commerce-profile/presentation/commerce_profile_page.dart';
+import '../../Modules/commerce-tracking/presentation/commerce_tracking_page.dart';
+import '../../Modules/credits/presentation/credits_page.dart';
 import '../../Modules/notifications/presentation/notifications_page.dart';
+import '../../Modules/products/presentation/products_page.dart';
 import '../../Modules/rider-home-flow/presentation/rider_home_page.dart';
 import '../../Modules/rider-orders-history/presentation/rider_orders_page.dart';
 import '../../Modules/rider-profile/presentation/rider_profile_page.dart';
@@ -81,6 +88,40 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.commerceHome,
         builder: (context, state) => const CommerceHomePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceCreateCall,
+        builder: (context, state) => const CommerceCreateCallPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceTracking,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'];
+          if (orderId == null || orderId.trim().isEmpty) {
+            return const ErrorPage();
+          }
+          return CommerceTrackingPage(orderId: orderId);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.commerceHistory,
+        builder: (context, state) => const CommerceHistoryPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceClients,
+        builder: (context, state) => const ClientsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceProducts,
+        builder: (context, state) => const ProductsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceCredits,
+        builder: (context, state) => const CreditsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commerceProfile,
+        builder: (context, state) => const CommerceProfilePage(),
       ),
       GoRoute(
         path: AppRoutes.notifications,

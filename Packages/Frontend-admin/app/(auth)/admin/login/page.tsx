@@ -1,30 +1,54 @@
-export default function AdminLoginPage() {
+import { SignIn } from "@clerk/nextjs";
+import { redirectIfAuthenticatedAdmin } from "@core/auth/admin-access.server";
+
+type AdminLoginPageProps = {
+  searchParams?: {
+    error?: string;
+  };
+};
+export const dynamic = "force-dynamic";
+
+const ERROR_MESSAGES: Record<string, string> = {
+  unauthorized: "Sua conta nao possui permissao de administrador valida no backend.",
+};
+
+export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
+  await redirectIfAuthenticatedAdmin();
+
+  const errorMessage = searchParams?.error ? ERROR_MESSAGES[searchParams.error] : undefined;
+
   return (
-    <section className="space-y-4">
-      <label className="block space-y-2">
-        <span className="text-sm font-medium text-foreground">Email</span>
-        <input
-          type="email"
-          placeholder="admin@roodi.app"
-          className="w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast ease-[var(--ease-standard)] focus:border-primary"
-        />
-      </label>
-
-      <label className="block space-y-2">
-        <span className="text-sm font-medium text-foreground">Senha</span>
-        <input
-          type="password"
-          placeholder="••••••••"
-          className="w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast ease-[var(--ease-standard)] focus:border-primary"
-        />
-      </label>
-
-      <button
-        type="button"
-        className="mt-2 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity duration-fast ease-[var(--ease-standard)] hover:opacity-90"
-      >
-        Entrar
-      </button>
+    <section className="space-y-3">
+      {errorMessage ? (
+        <p className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-danger">
+          {errorMessage}
+        </p>
+      ) : null}
+      <SignIn
+        path="/admin/login"
+        routing="path"
+        forceRedirectUrl="/admin/dashboard"
+        signUpUrl="/admin/login"
+        appearance={{
+          elements: {
+            rootBox: "w-full",
+            card: "w-full rounded-xl border border-border bg-surface-1 shadow-sm",
+            headerTitle: "text-foreground",
+            headerSubtitle: "text-muted",
+            socialButtonsBlockButton:
+              "border border-border bg-surface-2 text-foreground hover:bg-surface-3",
+            dividerLine: "bg-border",
+            dividerText: "text-muted",
+            formFieldInput:
+              "border border-border bg-surface-2 text-foreground focus:border-primary focus:ring-primary",
+            formFieldLabel: "text-foreground",
+            footerActionText: "text-muted",
+            footerActionLink: "text-primary hover:text-primary",
+            formButtonPrimary:
+              "bg-primary text-primary-foreground hover:opacity-90 transition-opacity duration-fast ease-[var(--ease-standard)]",
+          },
+        }}
+      />
     </section>
   );
 }

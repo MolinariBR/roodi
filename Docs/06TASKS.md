@@ -359,20 +359,20 @@ https://www.infinitepay.io/checkout
   - [x] Validar versao ativa de documentos legais.
 
 ### TASK-026: Implementar endpoints administrativos completos
-- [ ] `TASK-026` concluida
+- [x] `TASK-026` concluida
 - **Instrucao:** Implementar APIs admin com RBAC e auditoria.
 - **Local fisico:** `Packages/Backend/src/Modules/*` (faixada admin).
 - **Motivo:** Operacao e governanca centralizada da plataforma.
 - **Fluxo:** `04FLUXOS` secoes 5, 6 e 7 (visao de controle).
 - **Pagina/Tela:** Rotas `/admin/*` planejadas em `08PAGES`.
 - **Subtarefas:**
-  - [ ] Dashboard, users/status, orders e tracking.
-  - [ ] Pricing rules (get/put, admin_only).
-  - [ ] Credits ledger + adjustments.
-  - [ ] Payments transactions (lista e detalhe).
-  - [ ] Support tickets (lista e update).
-  - [ ] Notification templates.
-  - [ ] System flags e maintenance mode.
+  - [x] Dashboard, users/status, orders e tracking.
+  - [x] Pricing rules (get/put, admin_only).
+  - [x] Credits ledger + adjustments.
+  - [x] Payments transactions (lista e detalhe).
+  - [x] Support tickets (lista e update).
+  - [x] Notification templates.
+  - [x] System flags e maintenance mode.
 
 ---
 

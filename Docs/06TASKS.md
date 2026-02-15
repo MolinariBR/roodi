@@ -403,28 +403,28 @@ https://www.infinitepay.io/checkout
   - [x] Timeline de tracking por pedido.
 
 ### TASK-029: Implementar paginas admin de preco, creditos e pagamentos
-- [ ] `TASK-029` concluida
+- [x] `TASK-029` concluida
 - **Instrucao:** Construir gestao financeira e de regras comerciais.
 - **Local fisico:** `Packages/Frontend-admin/src/Modules/pricing`, `Packages/Frontend-admin/src/Modules/credits`, `Packages/Frontend-admin/src/Modules/payments`.
 - **Motivo:** Governanca financeira e de precificacao admin_only.
 - **Fluxo:** `04FLUXOS` secao 5 e 7.
 - **Pagina/Tela:** `/admin/pricing`, `/admin/credits`, `/admin/payments`.
 - **Subtarefas:**
-  - [ ] Edicao versionada de regras de preco.
-  - [ ] Extrato global e ajuste manual de creditos.
-  - [ ] Lista/detalhe de transacoes e status de webhook.
+  - [x] Edicao versionada de regras de preco.
+  - [x] Extrato global e ajuste manual de creditos.
+  - [x] Lista/detalhe de transacoes e status de webhook.
 
 ### TASK-030: Implementar paginas admin de suporte, notificacoes e sistema
-- [ ] `TASK-030` concluida
+- [x] `TASK-030` concluida
 - **Instrucao:** Construir operacao de chamados e parametros globais.
 - **Local fisico:** `Packages/Frontend-admin/src/Modules/support`, `Packages/Frontend-admin/src/Modules/notifications`, `Packages/Frontend-admin/src/Modules/system`.
 - **Motivo:** Garantir operacao e contingencia da plataforma.
 - **Fluxo:** `04FLUXOS` secao 4.
 - **Pagina/Tela:** `/admin/support`, `/admin/notifications`, `/admin/system`.
 - **Subtarefas:**
-  - [ ] Fila de tickets com update de status/responsavel.
-  - [ ] Edicao de templates de notificacao.
-  - [ ] Controle de flags e manutencao.
+  - [x] Fila de tickets com update de status/responsavel.
+  - [x] Edicao de templates de notificacao.
+  - [x] Controle de flags e manutencao.
 
 ---
 

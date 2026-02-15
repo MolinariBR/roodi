@@ -17,6 +17,7 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
   { href: "/admin/credits", label: "Creditos" },
   { href: "/admin/payments", label: "Pagamentos" },
   { href: "/admin/products", label: "Produtos" },
+  { href: "/admin/notifications", label: "Notificacoes" },
   { href: "/admin/support", label: "Suporte" },
   { href: "/admin/system", label: "Sistema" },
 ];

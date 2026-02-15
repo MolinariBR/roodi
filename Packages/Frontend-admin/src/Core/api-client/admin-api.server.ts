@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const userRoleSchema = z.enum(["admin", "commerce", "rider"]);
 const userStatusSchema = z.enum(["active", "suspended", "blocked"]);
+const paymentStatusSchema = z.enum(["pending", "approved", "failed", "canceled"]);
 const orderStatusSchema = z.enum([
   "created",
   "searching_rider",
@@ -103,17 +104,187 @@ const trackingTimelineResponseSchema = z.object({
   data: z.array(trackingEventSchema),
 });
 
+const pricingZoneRuleSchema = z.object({
+  zone: z.number().int().min(1),
+  min_km: z.number().min(0),
+  max_km: z.number().min(0),
+  value_brl: z.number().min(0),
+});
+
+const pricingRulesSchema = z.object({
+  urgency_addon_brl: z.object({
+    padrao: z.number().min(0),
+    urgente: z.number().min(0),
+    agendado: z.number().min(0),
+  }),
+  conditional_addons_brl: z.object({
+    sunday: z.number().min(0),
+    holiday: z.number().min(0),
+    rain: z.number().min(0),
+    peak: z.number().min(0),
+  }),
+  distance_zones_brl: z.array(pricingZoneRuleSchema).min(1),
+  minimum_charge_brl: z.number().min(0),
+  max_distance_km: z.number().min(0),
+});
+
+const creditsLedgerEntrySchema = z.object({
+  id: z.string(),
+  type: z.enum(["credit", "debit", "reservation", "release", "adjustment"]),
+  amount_brl: z.number(),
+  balance_after_brl: z.number(),
+  order_id: z.string().optional(),
+  reference: z.string().optional(),
+  created_at: z.string(),
+});
+
+const creditsLedgerListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(creditsLedgerEntrySchema),
+  pagination: paginationSchema,
+});
+
+const adminCreditAdjustmentResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.object({
+    adjustment_id: z.string(),
+    commerce_id: z.string(),
+    amount_brl: z.number(),
+    created_at: z.string(),
+  }),
+});
+
+const adminPaymentTransactionSchema = z.object({
+  id: z.string(),
+  provider: z.literal("infinitepay"),
+  status: paymentStatusSchema,
+  amount_brl: z.number(),
+  paid_amount_brl: z.number().optional(),
+  order_nsu: z.string().optional(),
+  transaction_nsu: z.string().optional(),
+  capture_method: z.enum(["pix", "credit_card"]).optional(),
+  created_at: z.string(),
+});
+
+const adminPaymentTransactionListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(adminPaymentTransactionSchema),
+  pagination: paginationSchema,
+});
+
+const supportTicketSchema = z
+  .object({
+    id: z.string(),
+    subject: z.string(),
+    description: z.string(),
+    status: z.enum(["open", "in_progress", "resolved", "closed"]),
+    priority: z.enum(["low", "medium", "high", "urgent"]),
+    created_at: z.string(),
+    updated_at: z.string().optional(),
+    created_by: z
+      .object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        role: userRoleSchema,
+        status: userStatusSchema,
+      })
+      .optional(),
+    assigned_to: z
+      .object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        role: userRoleSchema,
+        status: userStatusSchema,
+      })
+      .optional(),
+  })
+  .passthrough();
+
+const supportTicketListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(supportTicketSchema),
+  pagination: paginationSchema,
+});
+
+const notificationTemplateSchema = z.object({
+  id: z.string(),
+  event_key: z.string(),
+  channel: z.enum(["in_app", "push"]),
+  title_template: z.string(),
+  body_template: z.string(),
+  active: z.boolean(),
+});
+
+const notificationTemplateListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(notificationTemplateSchema),
+});
+
+const systemFlagSchema = z.object({
+  key: z.string(),
+  enabled: z.boolean(),
+  description: z.string().optional(),
+});
+
+const systemFlagListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(systemFlagSchema),
+});
+
+const systemMaintenanceStatusSchema = z.object({
+  enabled: z.boolean(),
+  message: z.string(),
+  expected_back_at: z.string().optional(),
+  updated_at: z.string(),
+});
+
 type AdminDashboardData = z.infer<typeof adminDashboardSchema>["data"];
 type AdminUser = z.infer<typeof adminUserSchema>;
 type AdminUsersResponse = z.infer<typeof adminUsersResponseSchema>;
 type AdminOrder = z.infer<typeof orderSchema>;
 type AdminOrdersResponse = z.infer<typeof orderListResponseSchema>;
 type TrackingTimelineResponse = z.infer<typeof trackingTimelineResponseSchema>;
+type PricingRules = z.infer<typeof pricingRulesSchema>;
+type CreditsLedgerListResponse = z.infer<typeof creditsLedgerListResponseSchema>;
+type AdminCreditAdjustmentResponse = z.infer<typeof adminCreditAdjustmentResponseSchema>;
+type AdminPaymentTransaction = z.infer<typeof adminPaymentTransactionSchema>;
+type AdminPaymentTransactionListResponse = z.infer<
+  typeof adminPaymentTransactionListResponseSchema
+>;
+type SupportTicket = z.infer<typeof supportTicketSchema>;
+type SupportTicketListResponse = z.infer<typeof supportTicketListResponseSchema>;
+type NotificationTemplate = z.infer<typeof notificationTemplateSchema>;
+type NotificationTemplateListResponse = z.infer<typeof notificationTemplateListResponseSchema>;
+type SystemFlag = z.infer<typeof systemFlagSchema>;
+type SystemFlagListResponse = z.infer<typeof systemFlagListResponseSchema>;
+type SystemMaintenanceStatus = z.infer<typeof systemMaintenanceStatusSchema>;
 
 export type UserRole = z.infer<typeof userRoleSchema>;
 export type UserStatus = z.infer<typeof userStatusSchema>;
 export type OrderStatus = z.infer<typeof orderStatusSchema>;
-export type { AdminDashboardData, AdminOrder, AdminOrdersResponse, AdminUser, AdminUsersResponse, TrackingTimelineResponse };
+export type PaymentStatus = z.infer<typeof paymentStatusSchema>;
+export type {
+  AdminCreditAdjustmentResponse,
+  AdminDashboardData,
+  AdminOrder,
+  AdminOrdersResponse,
+  AdminPaymentTransaction,
+  AdminPaymentTransactionListResponse,
+  AdminUser,
+  AdminUsersResponse,
+  CreditsLedgerListResponse,
+  NotificationTemplate,
+  NotificationTemplateListResponse,
+  PricingRules,
+  SupportTicket,
+  SupportTicketListResponse,
+  SystemFlag,
+  SystemFlagListResponse,
+  SystemMaintenanceStatus,
+  TrackingTimelineResponse,
+};
 
 type ApiResult<T> = {
   data: T | null;
@@ -133,6 +304,10 @@ const resolveValidationToken = (): string | null => {
 const requestAdminEndpoint = async <T>(
   path: string,
   schema: z.ZodType<T>,
+  options?: {
+    method?: "GET" | "POST" | "PUT" | "PATCH";
+    body?: unknown;
+  },
 ): Promise<ApiResult<T>> => {
   const apiBaseUrl = resolveApiBaseUrl();
   const validationToken = resolveValidationToken();
@@ -156,18 +331,37 @@ const requestAdminEndpoint = async <T>(
 
   try {
     const response = await fetch(endpoint.toString(), {
-      method: "GET",
+      method: options?.method ?? "GET",
       cache: "no-store",
       headers: {
         Accept: "application/json",
+        ...(options?.body ? { "Content-Type": "application/json" } : {}),
         Authorization: `Bearer ${validationToken}`,
       },
+      ...(options?.body ? { body: JSON.stringify(options.body) } : {}),
     });
 
     if (!response.ok) {
+      let apiMessage: string | undefined;
+      try {
+        const errorPayload: unknown = await response.json();
+        if (
+          errorPayload &&
+          typeof errorPayload === "object" &&
+          "error" in errorPayload &&
+          typeof (errorPayload as { error?: unknown }).error === "object" &&
+          (errorPayload as { error?: { message?: unknown } }).error?.message &&
+          typeof (errorPayload as { error?: { message?: unknown } }).error?.message === "string"
+        ) {
+          apiMessage = (errorPayload as { error: { message: string } }).error.message;
+        }
+      } catch {
+        apiMessage = undefined;
+      }
+
       return {
         data: null,
-        error: `Falha de API: ${response.status} ${response.statusText}`,
+        error: apiMessage ?? `Falha de API: ${response.status} ${response.statusText}`,
       };
     }
 
@@ -240,5 +434,173 @@ export const getAdminTracking = async (
   return requestAdminEndpoint(
     `/v1/admin/tracking/orders/${orderId}`,
     trackingTimelineResponseSchema,
+  );
+};
+
+export const getAdminPricingRules = async (): Promise<ApiResult<PricingRules>> => {
+  return requestAdminEndpoint("/v1/admin/pricing/rules", pricingRulesSchema);
+};
+
+export const updateAdminPricingRules = async (
+  payload: PricingRules,
+): Promise<ApiResult<PricingRules>> => {
+  return requestAdminEndpoint("/v1/admin/pricing/rules", pricingRulesSchema, {
+    method: "PUT",
+    body: payload,
+  });
+};
+
+export const getAdminCreditsLedger = async (input: {
+  page?: number;
+  limit?: number;
+}): Promise<ApiResult<CreditsLedgerListResponse>> => {
+  const params = new URLSearchParams();
+  params.set("page", String(input.page ?? 1));
+  params.set("limit", String(input.limit ?? 20));
+  return requestAdminEndpoint(
+    `/v1/admin/credits/ledger?${params.toString()}`,
+    creditsLedgerListResponseSchema,
+  );
+};
+
+export const createAdminCreditAdjustment = async (payload: {
+  commerce_id: string;
+  amount_brl: number;
+  reason: string;
+}): Promise<ApiResult<AdminCreditAdjustmentResponse>> => {
+  return requestAdminEndpoint(
+    "/v1/admin/credits/adjustments",
+    adminCreditAdjustmentResponseSchema,
+    {
+      method: "POST",
+      body: payload,
+    },
+  );
+};
+
+export const getAdminPaymentTransactions = async (input: {
+  page?: number;
+  limit?: number;
+  status?: PaymentStatus;
+}): Promise<ApiResult<AdminPaymentTransactionListResponse>> => {
+  const params = new URLSearchParams();
+  params.set("page", String(input.page ?? 1));
+  params.set("limit", String(input.limit ?? 20));
+  if (input.status) {
+    params.set("status", input.status);
+  }
+
+  return requestAdminEndpoint(
+    `/v1/admin/payments/transactions?${params.toString()}`,
+    adminPaymentTransactionListResponseSchema,
+  );
+};
+
+export const getAdminPaymentTransaction = async (
+  transactionId: string,
+): Promise<ApiResult<AdminPaymentTransaction>> => {
+  return requestAdminEndpoint(
+    `/v1/admin/payments/transactions/${transactionId}`,
+    adminPaymentTransactionSchema,
+  );
+};
+
+export const getAdminSupportTickets = async (input: {
+  page?: number;
+  limit?: number;
+}): Promise<ApiResult<SupportTicketListResponse>> => {
+  const params = new URLSearchParams();
+  params.set("page", String(input.page ?? 1));
+  params.set("limit", String(input.limit ?? 20));
+  return requestAdminEndpoint(
+    `/v1/admin/support/tickets?${params.toString()}`,
+    supportTicketListResponseSchema,
+  );
+};
+
+export const updateAdminSupportTicket = async (input: {
+  ticketId: string;
+  status?: "open" | "in_progress" | "resolved" | "closed";
+  note?: string;
+  assigned_to_user_id?: string;
+}): Promise<ApiResult<SupportTicket>> => {
+  return requestAdminEndpoint(`/v1/admin/support/tickets/${input.ticketId}`, supportTicketSchema, {
+    method: "PATCH",
+    body: {
+      ...(input.status ? { status: input.status } : {}),
+      ...(input.note ? { note: input.note } : {}),
+      ...(input.assigned_to_user_id ? { assigned_to_user_id: input.assigned_to_user_id } : {}),
+    },
+  });
+};
+
+export const getAdminNotificationTemplates = async (): Promise<
+  ApiResult<NotificationTemplateListResponse>
+> => {
+  return requestAdminEndpoint(
+    "/v1/admin/notifications/templates",
+    notificationTemplateListResponseSchema,
+  );
+};
+
+export const updateAdminNotificationTemplate = async (input: {
+  templateId: string;
+  title_template: string;
+  body_template: string;
+  active: boolean;
+}): Promise<ApiResult<NotificationTemplate>> => {
+  return requestAdminEndpoint(
+    `/v1/admin/notifications/templates/${input.templateId}`,
+    notificationTemplateSchema,
+    {
+      method: "PUT",
+      body: {
+        title_template: input.title_template,
+        body_template: input.body_template,
+        active: input.active,
+      },
+    },
+  );
+};
+
+export const getAdminSystemFlags = async (): Promise<ApiResult<SystemFlagListResponse>> => {
+  return requestAdminEndpoint("/v1/admin/system/flags", systemFlagListResponseSchema);
+};
+
+export const updateAdminSystemFlag = async (input: {
+  flagKey: string;
+  enabled: boolean;
+}): Promise<ApiResult<SystemFlag>> => {
+  return requestAdminEndpoint(`/v1/admin/system/flags/${input.flagKey}`, systemFlagSchema, {
+    method: "PUT",
+    body: {
+      enabled: input.enabled,
+    },
+  });
+};
+
+export const getAdminSystemMaintenance = async (): Promise<ApiResult<SystemMaintenanceStatus>> => {
+  return requestAdminEndpoint(
+    "/v1/admin/system/maintenance",
+    systemMaintenanceStatusSchema,
+  );
+};
+
+export const updateAdminSystemMaintenance = async (input: {
+  enabled: boolean;
+  message: string;
+  expected_back_at?: string;
+}): Promise<ApiResult<SystemMaintenanceStatus>> => {
+  return requestAdminEndpoint(
+    "/v1/admin/system/maintenance",
+    systemMaintenanceStatusSchema,
+    {
+      method: "PUT",
+      body: {
+        enabled: input.enabled,
+        message: input.message,
+        ...(input.expected_back_at ? { expected_back_at: input.expected_back_at } : {}),
+      },
+    },
   );
 };

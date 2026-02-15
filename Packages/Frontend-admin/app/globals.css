@@ -1,6 +1,10 @@
 @import "../src/Core/design-system/themes/light.css";
 @import "../src/Core/design-system/themes/dark.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   box-sizing: border-box;
 }

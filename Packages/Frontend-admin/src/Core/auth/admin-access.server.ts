@@ -19,6 +19,51 @@ export type AdminSession = {
   displayName: string;
 };
 
+const resolveBooleanEnv = (value: string | undefined): boolean => {
+  if (!value) {
+    return false;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+};
+
+const resolveNodeEnv = (): string => {
+  const value = process.env.NODE_ENV?.trim();
+  return value && value.length > 0 ? value : "development";
+};
+
+const isNonProductionEnv = (): boolean => {
+  return resolveNodeEnv() !== "production";
+};
+
+const resolveDevAuthBypassEnabled = (): boolean => {
+  return isNonProductionEnv() && resolveBooleanEnv(process.env.ADMIN_DEV_AUTH_BYPASS);
+};
+
+const resolveDevAllowedEmails = (): Set<string> => {
+  const value = process.env.ADMIN_DEV_ALLOWED_EMAILS?.trim();
+  if (!value) {
+    return new Set<string>();
+  }
+
+  const emails = value
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter((item) => item.length > 0);
+
+  return new Set(emails);
+};
+
+const isDevEmailAllowed = (email: string): boolean => {
+  const allowedEmails = resolveDevAllowedEmails();
+  if (allowedEmails.size === 0 || allowedEmails.has("*")) {
+    return true;
+  }
+
+  return allowedEmails.has(email.toLowerCase());
+};
+
 const resolveApiBaseUrl = (): string | null => {
   const value = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
   return value ? value : null;
@@ -27,15 +72,6 @@ const resolveApiBaseUrl = (): string | null => {
 const resolveValidationToken = (): string | null => {
   const value = process.env.BACKEND_ADMIN_VALIDATION_TOKEN?.trim();
   return value ? value : null;
-};
-
-const isClerkAdmin = (metadata: unknown): boolean => {
-  if (!metadata || typeof metadata !== "object") {
-    return false;
-  }
-
-  const role = Reflect.get(metadata, "role");
-  return role === "admin";
 };
 
 const validateAdminInBackend = async (email: string): Promise<boolean> => {
@@ -102,13 +138,19 @@ export const resolveAdminSession = async (): Promise<AdminSession | null> => {
     return null;
   }
 
-  const hasAdminRole =
-    isClerkAdmin(user.publicMetadata) || isClerkAdmin(user.privateMetadata);
-  if (!hasAdminRole) {
-    return null;
+  const normalizedEmail = email.toLowerCase();
+
+  if (resolveDevAuthBypassEnabled()) {
+    if (isDevEmailAllowed(normalizedEmail)) {
+      return {
+        clerkUserId: userId,
+        email,
+        displayName: user.firstName ?? user.fullName ?? email,
+      };
+    }
   }
 
-  const isAdminInBackend = await validateAdminInBackend(email);
+  const isAdminInBackend = await validateAdminInBackend(normalizedEmail);
   if (!isAdminInBackend) {
     return null;
   }

@@ -239,6 +239,12 @@ INFINITEPAY_HANDLE=
 INFINITEPAY_WEBHOOK_SECRET=
 INFINITEPAY_WEBHOOK_URL=https://${ROODI_DOMAIN_API}/v1/payments/infinitepay/webhook"
 
+  # Para evitar falhas acidentais de comandos que assumem "development",
+  # mantemos `.env.development` como symlink para `.env.production` no servidor.
+  if [[ ! -f "${BACKEND_DIR}/.env.development" ]]; then
+    ln -sf "${BACKEND_DIR}/.env.production" "${BACKEND_DIR}/.env.development"
+  fi
+
   # Centralizacao: admin e landing leem do mesmo arquivo do backend via symlink.
   ln -sf "${BACKEND_DIR}/.env.production" "${ADMIN_DIR}/.env.production"
   ln -sf "${BACKEND_DIR}/.env.production" "${LANDING_DIR}/.env.production"
@@ -397,7 +403,7 @@ install_and_build() {
   npm --prefix "${LANDING_DIR}" install --include=dev
 
   log "Migrations (backend)"
-  npm --prefix "${BACKEND_DIR}" run db:migrate
+  ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
   log "Build (backend/admin/landing)"
   npm --prefix "${BACKEND_DIR}" run build

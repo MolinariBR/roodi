@@ -112,7 +112,7 @@ npm --prefix "${ADMIN_DIR}" install --include=dev
 npm --prefix "${LANDING_DIR}" install --include=dev
 
 log "Executando migracoes de banco"
-npm --prefix "${BACKEND_DIR}" run db:migrate
+ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
 log "Gerando builds de producao"
 npm --prefix "${BACKEND_DIR}" run build

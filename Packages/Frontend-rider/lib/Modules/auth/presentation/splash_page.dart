@@ -172,8 +172,11 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       }
 
       return nextRoute;
-    } catch (_) {
-      return AppRoutes.error;
+    } catch (error) {
+      debugPrint(
+        'Splash: system status unavailable, continuing to next route. Error: $error',
+      );
+      return nextRoute;
     }
   }
 }

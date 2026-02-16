@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../Core/api-client/api_error_parser.dart';
+import '../../../Core/design-system/layout/responsive_layout.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../../rider-home-flow/domain/rider_models.dart';
 import '../../rider-home-flow/infra/rider_repository.dart';
@@ -34,6 +35,7 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
   RiderDashboardData? _dashboard;
   RiderOfferData? _offer;
   RiderOrderData? _activeOrder;
+  List<RiderOrderData> _recentOrders = const <RiderOrderData>[];
 
   final TextEditingController _confirmationCodeController =
       TextEditingController();
@@ -60,6 +62,7 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -79,27 +82,13 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
             PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
           ],
         ),
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Rider',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
-            ),
-            Text(
-              'Início',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Rider Roodi',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -112,15 +101,34 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
         top: false,
         child: RefreshIndicator(
           onRefresh: _loadData,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-            children: <Widget>[
-              _buildStateCard(stage),
-              const SizedBox(height: 14),
-              _buildRouteSection(),
-              const SizedBox(height: 14),
-              _buildDailySummarySection(),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = pageMaxContentWidthForWidth(
+                constraints.maxWidth,
+              );
+              final stateCardHeight = _resolveStateCardHeight(
+                constraints.maxHeight,
+              );
+
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: pageListPaddingForWidth(constraints.maxWidth),
+                    children: <Widget>[
+                      _buildStateCard(stage, stateCardHeight),
+                      const SizedBox(height: 14),
+                      _buildDailySummarySection(),
+                      const SizedBox(height: 14),
+                      _buildRecentHistorySection(),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -165,74 +173,89 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
     }
   }
 
-  Widget _buildStateCard(_RiderHomeStage stage) {
+  double _resolveStateCardHeight(double viewportHeight) {
+    final targetHeight = viewportHeight * 0.46;
+    return targetHeight.clamp(280.0, 380.0);
+  }
+
+  Widget _buildStateCard(_RiderHomeStage stage, double cardHeight) {
     final stageMeta = _stageMeta(stage);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: stageMeta.badgeColor.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  stageMeta.badgeLabel,
-                  style: TextStyle(
-                    color: stageMeta.badgeColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.8,
+    return SizedBox(
+      height: cardHeight,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: stageMeta.badgeColor.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    stageMeta.badgeLabel,
+                    style: TextStyle(
+                      color: stageMeta.badgeColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                stageMeta.phaseLabel,
-                style: const TextStyle(
-                  color: Color(0xFF94A3B8),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.0,
+                const SizedBox(width: 8),
+                Text(
+                  stageMeta.phaseLabel,
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.0,
+                  ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              stageMeta.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
               ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            stageMeta.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            stageMeta.description,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+            const SizedBox(height: 4),
+            Text(
+              stageMeta.description,
+              style: const TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator())
-          else if (_errorMessage != null)
-            _buildErrorCard()
-          else
-            _buildStateBody(stage),
-        ],
+            const SizedBox(height: 12),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                  ? _buildErrorCard()
+                  : SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: _buildStateBody(stage),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -559,133 +582,6 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
     );
   }
 
-  Widget _buildRouteSection() {
-    final order = _activeOrder;
-    final offer = _offer;
-
-    String title = 'Sem rota ativa';
-    String subtitle = 'Nenhum pedido em andamento.';
-    String sideValue = '--';
-    String sideMeta = 'ETA';
-    IconData icon = Icons.route_rounded;
-    Color iconColor = const Color(0xFF67E8F9);
-
-    if (order != null) {
-      title = _statusTitle(order.status);
-      subtitle = _resolveRouteSubtitle(order);
-      sideValue = order.etaMin != null ? '${order.etaMin} min' : '--';
-      sideMeta = 'ETA';
-      icon = Icons.delivery_dining_rounded;
-      iconColor = const Color(0xFF60A5FA);
-    } else if (offer != null) {
-      title = 'Solicitação disponível';
-      subtitle = offer.quote.routeSummary;
-      sideValue = _formatDistance(offer.quote.totalDistanceM);
-      sideMeta = 'Distância';
-      icon = Icons.route_rounded;
-      iconColor = const Color(0xFF67E8F9);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            const Text(
-              'Rota Ativa',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const Spacer(),
-            TextButton(
-              onPressed: () => context.go(AppRoutes.riderOrders),
-              child: const Text(
-                'Ver histórico',
-                style: TextStyle(
-                  color: Color(0xFF67E8F9),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.03),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-          ),
-          child: ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              alignment: Alignment.center,
-              child: Icon(icon, color: iconColor, size: 20),
-            ),
-            title: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            subtitle: Text(
-              subtitle,
-              style: const TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text(
-                  sideValue,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: 0.16),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    sideMeta,
-                    style: TextStyle(
-                      color: iconColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildDailySummarySection() {
     final dashboard = _dashboard;
     final earnings = dashboard?.todayEarningsBrl ?? 0;
@@ -720,37 +616,254 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
           ],
         ),
         const SizedBox(height: 8),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth < 360) {
+              final itemWidth = (constraints.maxWidth - 8) / 2;
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: <Widget>[
+                  SizedBox(
+                    width: itemWidth,
+                    child: _metricCard(
+                      icon: Icons.payments_outlined,
+                      iconColor: const Color(0xFF34D399),
+                      label: 'Ganho',
+                      value: _formatCurrency(earnings),
+                    ),
+                  ),
+                  SizedBox(
+                    width: itemWidth,
+                    child: _metricCard(
+                      icon: Icons.delivery_dining_rounded,
+                      iconColor: const Color(0xFF60A5FA),
+                      label: 'Viagens',
+                      value: '$trips',
+                    ),
+                  ),
+                  SizedBox(
+                    width: itemWidth,
+                    child: _metricCard(
+                      icon: Icons.schedule_rounded,
+                      iconColor: const Color(0xFFF59E0B),
+                      label: 'Online',
+                      value: _formatHours(onlineMinutes),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Row(
+              children: <Widget>[
+                Expanded(
+                  child: _metricCard(
+                    icon: Icons.payments_outlined,
+                    iconColor: const Color(0xFF34D399),
+                    label: 'Ganho',
+                    value: _formatCurrency(earnings),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _metricCard(
+                    icon: Icons.delivery_dining_rounded,
+                    iconColor: const Color(0xFF60A5FA),
+                    label: 'Viagens',
+                    value: '$trips',
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _metricCard(
+                    icon: Icons.schedule_rounded,
+                    iconColor: const Color(0xFFF59E0B),
+                    label: 'Online',
+                    value: _formatHours(onlineMinutes),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentHistorySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
         Row(
           children: <Widget>[
-            Expanded(
-              child: _metricCard(
-                icon: Icons.payments_outlined,
-                iconColor: const Color(0xFF34D399),
-                label: 'Ganho',
-                value: _formatCurrency(earnings),
+            const Text(
+              'Histórico de Corridas',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _metricCard(
-                icon: Icons.delivery_dining_rounded,
-                iconColor: const Color(0xFF60A5FA),
-                label: 'Viagens',
-                value: '$trips',
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _metricCard(
-                icon: Icons.schedule_rounded,
-                iconColor: const Color(0xFFF59E0B),
-                label: 'Online',
-                value: _formatHours(onlineMinutes),
+            const Spacer(),
+            TextButton(
+              onPressed: () => context.go(AppRoutes.riderOrders),
+              child: const Text(
+                'Ver todos',
+                style: TextStyle(
+                  color: Color(0xFF67E8F9),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 8),
+        if (_isLoading && _recentOrders.isEmpty)
+          _buildHistoryLoadingCard()
+        else if (_recentOrders.isEmpty)
+          _buildHistoryEmptyCard()
+        else
+          ..._recentOrders.take(4).map(_buildHistoryOrderCard),
       ],
+    );
+  }
+
+  Widget _buildHistoryLoadingCard() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: const Row(
+        children: <Widget>[
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Carregando suas últimas corridas...',
+              style: TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryEmptyCard() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 2),
+            child: Icon(
+              Icons.delivery_dining_rounded,
+              color: Color(0xFF94A3B8),
+              size: 18,
+            ),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Você ainda não tem corridas finalizadas. Assim que concluir a primeira entrega, seu histórico aparecerá aqui.',
+              style: TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryOrderCard(RiderOrderData order) {
+    final color = _historyStatusColor(order.status);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: ListTile(
+        onTap: () => context.go(AppRoutes.riderOrders),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          alignment: Alignment.center,
+          child: Icon(Icons.storefront_rounded, color: color, size: 20),
+        ),
+        title: Text(
+          _historyTitle(order),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        subtitle: Text(
+          _historySubtitle(order),
+          style: const TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text(
+              _formatCurrency(order.totalBrl),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                _historyStatusLabel(order.status),
+                style: TextStyle(
+                  color: color,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -991,6 +1104,14 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
         repository.getCurrentOffer(),
         repository.getActiveOrder(),
       ]);
+      List<RiderOrderData> recentOrders = const <RiderOrderData>[];
+      try {
+        final history = await repository.getOrdersHistory(limit: 5);
+        recentOrders = history.items.toList(growable: false)
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      } catch (_) {
+        recentOrders = const <RiderOrderData>[];
+      }
 
       if (!mounted) {
         return;
@@ -1005,6 +1126,7 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
         _dashboard = dashboard;
         _offer = offer;
         _activeOrder = activeOrder;
+        _recentOrders = recentOrders;
       });
     } catch (error) {
       if (!mounted) {
@@ -1250,32 +1372,63 @@ class _RiderHomePageState extends ConsumerState<RiderHomePage> {
     return 'Pedido em coleta • $distance • $value';
   }
 
-  String _resolveRouteSubtitle(RiderOrderData order) {
+  String _historyTitle(RiderOrderData order) {
+    final neighborhood = order.destination?.neighborhood;
+    final city = order.destination?.city;
+    if (neighborhood != null && neighborhood.isNotEmpty) {
+      return 'Entrega • $neighborhood';
+    }
+    if (city != null && city.isNotEmpty) {
+      return 'Entrega • $city';
+    }
+    return 'Pedido ${order.id.substring(0, 8)}';
+  }
+
+  String _historySubtitle(RiderOrderData order) {
     final distance = order.distanceM != null
         ? _formatDistance(order.distanceM!)
         : '-';
-    final duration = order.durationS != null
+    final minutes = order.durationS != null
         ? '${(order.durationS! / 60).ceil()} min'
         : '-';
-    return 'Distância $distance • $duration';
+    final hourText =
+        '${order.createdAt.hour.toString().padLeft(2, '0')}:${order.createdAt.minute.toString().padLeft(2, '0')}';
+    return 'Distância $distance • $minutes • $hourText';
   }
 
-  String _statusTitle(String status) {
+  String _historyStatusLabel(String status) {
     switch (status) {
+      case 'completed':
+        return 'Concluída';
+      case 'canceled':
+        return 'Cancelada';
       case 'to_merchant':
-        return 'A caminho do comércio';
+        return 'A caminho comércio';
       case 'at_merchant':
         return 'No comércio';
       case 'waiting_order':
         return 'Aguardando pedido';
       case 'to_customer':
-        return 'A caminho do cliente';
+        return 'A caminho cliente';
       case 'at_customer':
         return 'No cliente';
       case 'finishing_delivery':
         return 'Finalizando entrega';
       default:
-        return 'Entrega em andamento';
+        return status;
+    }
+  }
+
+  Color _historyStatusColor(String status) {
+    switch (status) {
+      case 'completed':
+        return const Color(0xFF34D399);
+      case 'canceled':
+        return const Color(0xFFF87171);
+      case 'finishing_delivery':
+        return const Color(0xFF67E8F9);
+      default:
+        return const Color(0xFF94A3B8);
     }
   }
 

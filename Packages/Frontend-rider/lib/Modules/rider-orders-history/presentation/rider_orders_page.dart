@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../Core/api-client/api_error_parser.dart';
 import '../../../Core/navigation/app_routes.dart';
+import '../../../Core/state/session_controller.dart';
+import '../../../Core/state/session_state.dart';
 import '../../rider-home-flow/domain/rider_models.dart';
 import '../../rider-home-flow/infra/rider_repository.dart';
 
@@ -32,6 +34,7 @@ class _RiderOrdersPageState extends ConsumerState<RiderOrdersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final session = ref.watch(sessionControllerProvider).valueOrNull;
     final orders = _filteredOrders();
 
     return Scaffold(
@@ -40,24 +43,10 @@ class _RiderOrdersPageState extends ConsumerState<RiderOrdersPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
-        leading: PopupMenuButton<String>(
-          icon: const Icon(Icons.menu_rounded),
-          color: const Color(0xFF111214),
-          onSelected: (value) {
-            if (value == 'home') {
-              context.go(AppRoutes.riderHome);
-              return;
-            }
-            if (value == 'orders') {
-              return;
-            }
-            context.go(AppRoutes.riderProfile);
-          },
-          itemBuilder: (context) => const <PopupMenuEntry<String>>[
-            PopupMenuItem<String>(value: 'home', child: Text('Início')),
-            PopupMenuItem<String>(value: 'orders', child: Text('Pedidos')),
-            PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
-          ],
+        titleSpacing: 0,
+        leading: IconButton(
+          onPressed: () => _goBack(session),
+          icon: const Icon(Icons.arrow_back_rounded),
         ),
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -827,5 +816,12 @@ class _RiderOrdersPageState extends ConsumerState<RiderOrdersPage> {
   String _formatHours(int minutes) {
     final hours = minutes / 60;
     return '${hours.toStringAsFixed(1)}h';
+  }
+
+  void _goBack(SessionState? session) {
+    final target = session?.context == UserContext.commerce
+        ? AppRoutes.commerceHome
+        : AppRoutes.riderHome;
+    context.go(target);
   }
 }

@@ -4,6 +4,7 @@
   "scripts": {
     "prepare": "husky || echo \"Husky skipped: git metadata not available\"",
     "format": "prettier --write .",
+    "mobile:rider": "bash scripts/mobile-rider-dev.sh",
     "precommit": "lint-staged && npm run precommit:lint",
     "precommit:lint": "npm --prefix Packages/Backend run lint && npm --prefix Packages/Frontend-admin run lint && npm --prefix Packages/Roodi run lint && cd Packages/Frontend-rider && flutter analyze"
   },

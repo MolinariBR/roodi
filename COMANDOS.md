@@ -1,4 +1,15 @@
-Perfeito. Para ver os comandos disponíveis:
+Comando único para rodar no celular Android (modo debug), sem repetir setup manual:
+
+```bash
+npm run mobile:rider
+```
+
+Esse comando já faz:
+1. sobe o backend (se não estiver rodando);
+2. aplica `adb reverse tcp:3333 tcp:3333` automaticamente;
+3. executa o app Flutter com `ROODI_API_BASE_URL=http://127.0.0.1:3333`.
+
+Para ver os demais comandos disponíveis:
 
 ```bash
 # Na raiz do projeto
@@ -11,7 +22,7 @@ npm --prefix Packages/Roodi run
 ```
 
 Para o app Flutter, veja no `pubspec.yaml` e rode manualmente:
-```bash
+```bashr
 cd Packages/Frontend-rider
 flutter pub get
 flutter run

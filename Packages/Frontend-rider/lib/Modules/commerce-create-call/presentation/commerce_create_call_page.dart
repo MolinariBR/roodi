@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../Core/api-client/api_error_parser.dart';
+import '../../../Core/design-system/layout/responsive_layout.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../../commerce-home/domain/commerce_models.dart';
 import '../../commerce-home/infra/commerce_repository.dart';
@@ -112,17 +113,31 @@ class _CommerceCreateCallPageState
         top: false,
         child: RefreshIndicator(
           onRefresh: _bootstrap,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-            children: <Widget>[
-              _buildHeaderCard(),
-              const SizedBox(height: 14),
-              _buildDeliveryFormCard(),
-              const SizedBox(height: 14),
-              _buildPricingCard(),
-              const SizedBox(height: 14),
-              _buildActionsRow(),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = pageMaxContentWidthForWidth(
+                constraints.maxWidth,
+              );
+
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: ListView(
+                    padding: pageListPaddingForWidth(constraints.maxWidth),
+                    children: <Widget>[
+                      _buildHeaderCard(),
+                      const SizedBox(height: 14),
+                      _buildDeliveryFormCard(),
+                      const SizedBox(height: 14),
+                      _buildPricingCard(),
+                      const SizedBox(height: 14),
+                      _buildActionsRow(),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -338,20 +353,49 @@ class _CommerceCreateCallPageState
           const SizedBox(height: 8),
           _fieldLabel('Urgência'),
           const SizedBox(height: 6),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: _urgencyButton(label: 'Padrão', value: 'padrao'),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _urgencyButton(label: 'Urgente', value: 'urgente'),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _urgencyButton(label: 'Agendado', value: 'agendado'),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 360) {
+                final itemWidth = (constraints.maxWidth - 8) / 2;
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: <Widget>[
+                    SizedBox(
+                      width: itemWidth,
+                      child: _urgencyButton(label: 'Padrão', value: 'padrao'),
+                    ),
+                    SizedBox(
+                      width: itemWidth,
+                      child: _urgencyButton(label: 'Urgente', value: 'urgente'),
+                    ),
+                    SizedBox(
+                      width: itemWidth,
+                      child: _urgencyButton(
+                        label: 'Agendado',
+                        value: 'agendado',
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: <Widget>[
+                  Expanded(
+                    child: _urgencyButton(label: 'Padrão', value: 'padrao'),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _urgencyButton(label: 'Urgente', value: 'urgente'),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _urgencyButton(label: 'Agendado', value: 'agendado'),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 10),
           Row(

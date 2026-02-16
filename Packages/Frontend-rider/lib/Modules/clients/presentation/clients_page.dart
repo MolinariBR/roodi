@@ -38,6 +38,7 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -59,7 +60,7 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
           ],
         ),
         title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
               'Comerciante',

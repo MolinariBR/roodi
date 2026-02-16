@@ -193,18 +193,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const SizedBox(height: 10),
                   Row(
                     children: <Widget>[
-                      Text(
-                        _selectedContext == UserContext.commerce
-                            ? 'Entrando como Empresa'
-                            : 'Entrando como Rider',
-                        style: const TextStyle(
-                          color: ColorTokens.primary,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.0,
+                      Expanded(
+                        child: Text(
+                          _selectedContext == UserContext.commerce
+                              ? 'Entrando como Empresa'
+                              : 'Entrando como Rider',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: ColorTokens.primary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.0,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       TextButton(
                         onPressed: _isSubmitting
                             ? null

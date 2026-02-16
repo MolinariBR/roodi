@@ -557,16 +557,16 @@ https://www.infinitepay.io/checkout
   - [x] Testar update de regras de preco.
 
 ### TASK-039: Implementar testes frontend-rider (widget + integracao)
-- [ ] `TASK-039` concluida
+- [x] `TASK-039` concluida
 - **Instrucao:** Cobrir fluxos Rider e Commerce no app Flutter.
 - **Local fisico:** `Packages/Frontend-rider/test/*`, `integration_test/*`.
 - **Motivo:** Garantir integridade dos fluxos mobile.
 - **Fluxo:** `04FLUXOS` secao 1, 2, 3 e 4.
 - **Pagina/Tela:** `Common/*`, `Rider/*`, `Commerce/*`.
 - **Subtarefas:**
-  - [ ] Testar navegacao de autenticacao.
-  - [ ] Testar fluxo Rider ate `completed`.
-  - [ ] Testar fluxo Commerce de quote/chamado/tracking.
+  - [x] Testar navegacao de autenticacao.
+  - [x] Testar fluxo Rider ate `completed`.
+  - [x] Testar fluxo Commerce de quote/chamado/tracking.
 
 ### TASK-040: Hardening de seguranca, observabilidade e performance
 - [ ] `TASK-040` concluida

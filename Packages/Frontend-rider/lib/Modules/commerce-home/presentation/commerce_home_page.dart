@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../Core/api-client/api_error_parser.dart';
+import '../../../Core/design-system/layout/responsive_layout.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../domain/commerce_models.dart';
 import '../infra/commerce_repository.dart';
@@ -96,26 +97,40 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
         top: false,
         child: RefreshIndicator(
           onRefresh: _loadData,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
-            children: <Widget>[
-              _buildMainCallCard(activeOrder, hasActiveOrder),
-              const SizedBox(height: 14),
-              if (_isLoading)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (_errorMessage != null)
-                _buildErrorCard()
-              else ...<Widget>[
-                _buildOrdersSection(),
-                const SizedBox(height: 14),
-                _buildTodaySection(),
-                const SizedBox(height: 14),
-                _buildShortcutsSection(),
-              ],
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = pageMaxContentWidthForWidth(
+                constraints.maxWidth,
+              );
+
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: ListView(
+                    padding: pageListPaddingForWidth(constraints.maxWidth),
+                    children: <Widget>[
+                      _buildMainCallCard(activeOrder, hasActiveOrder),
+                      const SizedBox(height: 14),
+                      if (_isLoading)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (_errorMessage != null)
+                        _buildErrorCard()
+                      else ...<Widget>[
+                        _buildOrdersSection(),
+                        const SizedBox(height: 14),
+                        _buildTodaySection(),
+                        const SizedBox(height: 14),
+                        _buildShortcutsSection(),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

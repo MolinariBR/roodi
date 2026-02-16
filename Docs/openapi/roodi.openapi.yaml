@@ -458,6 +458,10 @@ paths:
       tags: [Commerce]
       summary: Criar chamado de entrega
       operationId: createCommerceOrder
+      description: |
+        Cria o chamado no estado inicial (`created`) com `payment_status=pending`
+        e retorna o pedido.
+        A alocacao de rider acontece somente apos confirmacao de pagamento.
       requestBody:
         required: true
         content:
@@ -466,24 +470,11 @@ paths:
               $ref: '#/components/schemas/CreateOrderRequest'
       responses:
         '201':
-          description: Chamado criado
+          description: Chamado criado com pagamento pendente
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
-        '402':
-          description: Saldo insuficiente para reserva
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                insufficientCredits:
-                  value:
-                    success: false
-                    error:
-                      code: INSUFFICIENT_CREDITS
-                      message: Commerce does not have enough credits.
 
   /v1/commerce/orders/{orderId}:
     get:
@@ -558,6 +549,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConfirmationCodeResponse'
+
+  /v1/commerce/orders/{orderId}/payment-intent:
+    post:
+      tags: [Commerce, Payments]
+      summary: Criar intencao de pagamento para chamado
+      operationId: createOrderPaymentIntent
+      description: |
+        Gera checkout da InfinitePay para pagamento do chamado.
+        Quando o pagamento for aprovado (webhook/check),
+        o pedido muda para `searching_rider` e o dispatch inicial e aberto.
+        O app pode abrir o `checkout_url` em webview/custom tab para UX mais fluida.
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderPaymentIntentRequest'
+      responses:
+        '201':
+          description: Intencao de pagamento criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPaymentIntentResponse'
+        '409':
+          description: Pedido em estado que nao permite nova intencao de pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/commerce/orders/{orderId}/payment:
+    get:
+      tags: [Commerce, Payments]
+      summary: Consultar status de pagamento do chamado
+      operationId: getOrderPaymentStatus
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Status de pagamento atual do pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPaymentStatusResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /v1/commerce/clients:
     get:
@@ -703,6 +743,10 @@ paths:
       tags: [Commerce]
       summary: Consultar saldo de creditos
       operationId: getCreditsBalance
+      deprecated: true
+      description: |
+        Endpoint legado da fase de carteira de creditos.
+        Preferir pagamento por chamado via `/v1/commerce/orders/{orderId}/payment-intent`.
       responses:
         '200':
           description: Saldo atual
@@ -716,6 +760,8 @@ paths:
       tags: [Commerce]
       summary: Consultar extrato de creditos
       operationId: listCreditsLedger
+      deprecated: true
+      description: Endpoint legado da fase de carteira de creditos.
       parameters:
         - $ref: '#/components/parameters/PageParam'
         - $ref: '#/components/parameters/LimitParam'
@@ -732,8 +778,11 @@ paths:
       tags: [Commerce]
       summary: Criar intencao de compra de creditos
       operationId: createCreditPurchaseIntent
+      deprecated: true
       description: |
-        Cria uma intencao de compra e gera link de checkout via integracao InfinitePay.
+        Endpoint legado de compra de creditos.
+        Fluxo recomendado: criar pagamento por pedido em
+        `/v1/commerce/orders/{orderId}/payment-intent`.
       requestBody:
         required: true
         content:
@@ -753,6 +802,8 @@ paths:
       tags: [Commerce, Payments]
       summary: Consultar status de pagamento da compra de creditos
       operationId: checkCommercePayment
+      deprecated: true
+      description: Endpoint legado de validacao manual para fluxo de creditos.
       parameters:
         - $ref: '#/components/parameters/PaymentIdParam'
       requestBody:
@@ -1348,10 +1399,12 @@ paths:
       tags: [Payments]
       summary: Receber webhook de pagamento aprovado da InfinitePay
       operationId: receiveInfinitePayWebhook
-      security: []
       description: |
+        Processa confirmacao de pagamento com idempotencia.
+        Para `purpose=order_payment`, aprova o pagamento do pedido e libera o dispatch inicial.
         Endpoint publico para notificacoes de pagamento aprovado.
         A integracao deve responder rapidamente (preferencialmente < 1s).
+      security: []
       requestBody:
         required: true
         content:
@@ -2248,6 +2301,13 @@ components:
             confirmation_code_status:
               type: string
               enum: [not_generated, generated, validated]
+            payment_status:
+              $ref: '#/components/schemas/PaymentStatus'
+            payment_required:
+              type: boolean
+            payment_confirmed_at:
+              type: string
+              format: date-time
             destination:
               $ref: '#/components/schemas/Address'
 
@@ -2516,6 +2576,28 @@ components:
           type: string
           format: uri
 
+    CreateOrderPaymentIntentRequest:
+      type: object
+      properties:
+        redirect_url:
+          type: string
+          format: uri
+        webhook_url:
+          type: string
+          format: uri
+        customer:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            phone_number:
+              type: string
+        address:
+          $ref: '#/components/schemas/Address'
+
     CreateCreditPurchaseIntentResponse:
       type: object
       required: [success, data]
@@ -2541,6 +2623,70 @@ components:
             provider_payload:
               type: object
               additionalProperties: true
+
+    OrderPaymentIntent:
+      type: object
+      required: [payment_id, order_id, provider, purpose, status, checkout_url, order_nsu, amount_brl]
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [infinitepay]
+        purpose:
+          type: string
+          enum: [order_payment]
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
+        checkout_url:
+          type: string
+          format: uri
+        order_nsu:
+          type: string
+        amount_brl:
+          type: number
+          format: float
+        expires_at:
+          type: string
+          format: date-time
+        provider_payload:
+          type: object
+          additionalProperties: true
+
+    OrderPaymentIntentResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          $ref: '#/components/schemas/OrderPaymentIntent'
+
+    OrderPaymentStatusResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required: [order_id, payment_status, paid]
+          properties:
+            order_id:
+              type: string
+              format: uuid
+            payment_status:
+              $ref: '#/components/schemas/PaymentStatus'
+            paid:
+              type: boolean
+            payment:
+              $ref: '#/components/schemas/OrderPaymentIntent'
 
     PaymentCheckRequest:
       type: object

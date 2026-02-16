@@ -66,11 +66,11 @@ Este documento consolida o que ja esta prototipado e o que esta planejado para i
 | Pagina | Caminho | Rota logica sugerida | Usuario | Funcionalidade principal | Modulos de dominio |
 |---|---|---|---|---|---|
 | Home Commerce | `Docs/Prototype/Commerce/Home.html` | `/commerce/home` | Commerce | Painel de chamados e operacao diaria | `orders`, `dispatch`, `tracking` |
-| CreateCall | `Docs/Prototype/Commerce/CreateCall.html` | `/commerce/create-call` | Commerce | Abertura de chamado e simulacao | `orders`, `pricing`, `locality`, `clients` |
-| Tracking Commerce | `Docs/Prototype/Commerce/Tracking.html` | `/commerce/tracking/:id` | Commerce | Timeline de estados da entrega | `tracking`, `orders`, `support` |
+| CreateCall | `Docs/Prototype/Commerce/CreateCall.html` | `/commerce/create-call` | Commerce | Abertura de chamado, simulacao e inicio do pagamento por pedido | `orders`, `pricing`, `locality`, `payments`, `clients` |
+| Tracking Commerce | `Docs/Prototype/Commerce/Tracking.html` | `/commerce/tracking/:id` | Commerce | Timeline de estados + status de pagamento do chamado | `tracking`, `orders`, `payments`, `support` |
 | History Commerce | `Docs/Prototype/Commerce/History.html` | `/commerce/history` | Commerce | Historico de chamados com filtros | `orders`, `tracking` |
 | Clients | `Docs/Prototype/Commerce/Clients.html` | `/commerce/clients` | Commerce | Cadastro e reutilizacao de clientes | `clients` |
-| Credits | `Docs/Prototype/Commerce/Credits.html` | `/commerce/credits` | Commerce | Saldo, extrato e compra de creditos | `credits`, `payments` |
+| Credits | `Docs/Prototype/Commerce/Credits.html` | `/commerce/credits` | Commerce | Fluxo legado de carteira (compatibilidade) | `credits`, `payments` |
 | Products | `Docs/Prototype/Commerce/Products.html` | `/commerce/products` | Commerce | Gestao de catalogo de produtos | `products` |
 | Profile Commerce | `Docs/Prototype/Commerce/Profile.html` | `/commerce/profile` | Commerce | Perfil operacional da loja | `users`, `support`, `notifications` |
 
@@ -108,7 +108,7 @@ Rider/Profile -> Support
 Commerce/Home -> CreateCall -> Tracking
 Commerce/Home <-> History
 Commerce/Home|Profile -> Clients
-Commerce/Home|Profile -> Credits
+Commerce/Home|Profile -> Payments (status por pedido em Tracking)
 Commerce/Home|Profile -> Products
 Commerce/Profile -> Support
 ```
@@ -155,7 +155,8 @@ Baseado em modulos `marketing`, `leads`, `legal` e `seo-analytics`.
 3. Comerciante e Rider nao definem regras de preco; isso pertence ao admin.
 4. Fluxo Rider deve permanecer orientado por estado no card principal, sem multiplicacao de telas.
 5. Profile Rider e Profile Commerce priorizam bottom sheet/modal para edicao de secoes.
-6. `Credits` e `Payments` sao dominios distintos: carteira x cobranca/conciliacao.
+6. Fluxo financeiro principal do commerce e pagamento por chamado (`orders/{id}/payment-intent`).
+7. `Credits` e `Payments` sao dominios distintos: carteira legada x cobranca/conciliacao atual.
 
 ## 7) Regras de manutencao do documento
 

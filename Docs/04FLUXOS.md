@@ -137,7 +137,7 @@ Transicoes principais:
 Home -> CreateCall -> Tracking
 Home <-> History
 Home/Profile -> Clients
-Home/Profile -> Credits
+Home/Profile -> Payments (status por chamado no Tracking)
 Home/Profile -> Products
 Profile -> Support
 ```
@@ -145,22 +145,22 @@ Profile -> Support
 ### Home Commerce
 1. Visualiza chamados e KPIs.
 2. Inicia novo chamado (`CreateCall`).
-3. Acessa clientes, creditos e historico.
+3. Acessa clientes, historico e produtos.
 
 ### CreateCall
 1. Captura dados de destino e parametros de urgencia.
 2. Simula valor e ETA para exibicao.
-3. Confirma chamado e segue para `Tracking`.
+3. Cria chamado em `created` + `payment_status=pending`, inicia `payment-intent` e segue para `Tracking`.
 
 ### Tracking Commerce
 1. Exibe timeline de status da entrega.
 2. Exibe dados do rider/chamado.
 3. Acoes de contato e suporte sao visuais no prototipo.
 
-### History / Clients / Credits / Products / Profile
+### History / Clients / Payments / Products / Profile
 1. `History`: lista e filtros de chamados.
 2. `Clients`: reaproveitamento de cliente na abertura de chamado.
-3. `Credits`: compra/gestao de saldo para operacao.
+3. `Payments`: pagamento por chamado e conciliacao via gateway.
 4. `Products`: gestao de catalogo.
 5. `Profile`: configuracoes da operacao e links rapidos.
 
@@ -211,25 +211,28 @@ Profile -> Support
 
 ## 6) Fluxo sistemico de dispatch (backend)
 
-1. Pedido criado pelo commerce.
-2. Classificacao de servico (S/M/P) e aplicacao de elegibilidade.
-3. Fila justa por zona/bairro.
-4. Oferta em lotes (Top 3/Top 5 em pico).
-5. Aceite define vencedor por regra objetiva.
-6. Recusa/no-response atualiza prioridade/cooldown.
-7. Ciclo da entrega segue estados operacionais ate conclusao.
+1. Commerce cria pedido (`status=created`, `payment_status=pending`).
+2. Pagamento aprovado muda pedido para `searching_rider`.
+3. Dispatch abre lote inicial por zona/elegibilidade.
+4. Fila justa por zona/bairro.
+5. Oferta em lotes (Top 3/Top 5 em pico).
+6. Aceite define vencedor por regra objetiva.
+7. Recusa/no-response atualiza prioridade/cooldown.
+8. Ciclo da entrega segue estados operacionais ate conclusao.
 
 ## 7) Fluxo sistemico financeiro (backend)
 
-1. Commerce compra creditos (`credits`).
-2. Saldo habilita criacao de novos chamados.
-3. Entrega concluida dispara efeitos financeiros:
+1. Commerce cria chamado e inicia pagamento por pedido (`order_payment`).
+2. Checkout e confirmacao via InfinitePay (`payment-intent` + webhook/check).
+3. Pagamento aprovado libera dispatch inicial do pedido.
+4. Entrega concluida dispara efeitos financeiros:
    - cobranca da empresa (FP)
    - repasse ao entregador (RE)
    - comissao da plataforma (CP)
-4. Regra base: `FP = RE + CP`.
-5. Pagamentos e conciliacao via `payments` + integracao InfinitePay.
-6. Webhooks processados com idempotencia e retry por fila.
+5. Regra base: `FP = RE + CP`.
+6. Pagamentos e conciliacao via `payments` + integracao InfinitePay.
+7. Webhooks processados com idempotencia e retry por fila.
+8. `credits` permanece como dominio legado para compatibilidade.
 
 ## 8) Cobertura atual e lacunas
 
@@ -242,7 +245,7 @@ Profile -> Support
 2. Integrar manutencao por status real do sistema.
 3. Conectar CreateCall ao motor real de cotacao por bairros.
 4. Conectar Tracking a eventos reais de estado da entrega.
-5. Conectar Credits/Payments a ledger, conciliacao e webhook real.
+5. Consolidar fluxo de pagamento por pedido no app (checkout/status) com conciliacao real.
 
 ## 9) Conclusao
 O prototipo cobre bem os fluxos visuais centrais do produto. Para ficar aderente ao projeto final, o passo seguinte e substituir simulacoes locais pelos fluxos sistemicos descritos em `01PROJETO`, `02STACK` e `03REGRAS`, mantendo a diretriz de simplicidade e sem dependencia de geolocalizacao em tempo real/offline.

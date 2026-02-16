@@ -357,25 +357,32 @@ Você precisa de regras fixas para evitar briga. Aqui vai um conjunto simples:
 
 ## 6) Como a empresa paga (fatura simples)
 
-Você escolhe um dos dois (ambos são claros):
+Fluxo oficial atual: pagamento por pedido (sem dependencia de carteira).
 
-### Opção 1 — Pré-pago (carteira da empresa)
+### Opção 1 — Pagamento por pedido (oficial)
+
+* Empresa cria o chamado.
+* Sistema gera checkout de pagamento para aquele pedido.
+* Com pagamento aprovado, o dispatch e liberado.
+* Se pagamento falhar/expirar, pedido nao entra em alocacao.
+
+**Prós:** simples para autonomos, sem recarga previa e com cobranca objetiva por entrega.
+
+### Opção 2 — Pré-pago (carteira, legado/compatibilidade)
 
 * Empresa coloca saldo (Pix) na plataforma.
 * Cada entrega concluída debita FP do saldo.
 * Se saldo insuficiente, não cria novos pedidos.
 
-**Prós:** reduz inadimplência e simplifica operação.
+**Prós:** reduz inadimplencia em operacoes recorrentes.
 
-### Opção 2 — Pós-pago (fatura semanal)
+### Opção 3 — Pós-pago (fatura semanal, opcional B2B)
 
 * Você soma FP de todas as entregas concluídas.
 * Envia fatura semanal.
 * Se atrasar, bloqueia novos pedidos.
 
-**Prós:** mais fácil para empresas maiores.
-
-> Se você quer começar sem dor, o **pré-pago** costuma ser o mais “sem briga”.
+**Prós:** mais facil para empresas maiores com recorrencia alta.
 
 ---
 

@@ -22,7 +22,7 @@ Definir o catalogo oficial de modulos do projeto Roodi, com fronteiras claras de
 4. Tracking e por estados/eventos, nao por GPS continuo.
 5. Preco e regra `admin_only`.
 6. Distancia/tempo de cotacao por matriz de bairros + fallback deterministico.
-7. `credits` e `payments` sao dominios distintos.
+7. `credits` e `payments` sao dominios distintos (com `credits` em modo legado).
 
 ## 1) Fronteira arquitetural: Core x Modules
 
@@ -63,8 +63,8 @@ Base: `ROODI/Packages/Backend/src/Modules`
 | `products` | Catalogo de produtos do comerciante | CRUD, disponibilidade e organizacao do catalogo |
 | `locality` | Resolucao de distancia/tempo por bairro | Ordem: matriz local -> tomtom -> openrouteservice; sem fallback sintetico |
 | `pricing` | Formula oficial de cotacao | `admin_only`, zona/urgencia/acrescimos e erros `OUT_OF_COVERAGE`/`DISTANCE_TIME_UNAVAILABLE` |
-| `credits` | Carteira de creditos do comerciante | Saldo, extrato, reserva e debito por entrega |
-| `payments` | Cobranca e conciliacao com gateway | Webhook idempotente, retry, conciliacao e repasse |
+| `credits` | Carteira de creditos do comerciante (legado) | Saldo, extrato e compatibilidade historica |
+| `payments` | Cobranca e conciliacao com gateway | Pagamento por pedido, webhook idempotente, retry, conciliacao e repasse |
 | `orders` | Ciclo transacional de pedido/entrega | Criacao, cancelamento, conclusao, historico e auditoria |
 | `dispatch` | Alocacao e fila operacional de riders | Elegibilidade, lotes Top3/Top5, cooldown, anti-monopolio e justica operacional |
 | `tracking` | Timeline de estados/eventos da entrega | Nao representa rastreio GPS continuo |
@@ -87,7 +87,7 @@ Base: `ROODI/Packages/Frontend-admin/src/Modules`
 | `orders` | `/admin/orders` | Auditoria e gestao de pedidos/entregas |
 | `tracking` | `/admin/tracking` | Linha de eventos da entrega |
 | `pricing` | `/admin/pricing` | Gestao de regras de preco (`admin_only`) |
-| `credits` | `/admin/credits` | Operacao de carteira e extratos |
+| `credits` | `/admin/credits` | Operacao de carteira e extratos (legado) |
 | `payments` | `/admin/payments` | Cobrancas, webhooks, conciliacao e repasses |
 | `products` | `/admin/products` | Auditoria/gestao de catalogos |
 | `notifications` | `/admin/notifications` | Templates, eventos e politicas de notificacao |
@@ -114,7 +114,7 @@ Base: `ROODI/Packages/Frontend-rider/lib/Modules`
 | `commerce-tracking` | `/commerce/tracking/:id` | Timeline de eventos da entrega |
 | `commerce-history` | `/commerce/history` | Historico de chamados do comerciante |
 | `clients` | `/commerce/clients` | Gestao da base de clientes |
-| `credits` | `/commerce/credits` | Saldo, extrato e compra de creditos |
+| `credits` | `/commerce/credits` | Fluxo legado de carteira |
 | `products` | `/commerce/products` | Gestao de produtos do comerciante |
 | `notifications` | `/notifications` | Central de notificacoes |
 | `support` | `/support` | Ajuda, canais e chamados |
@@ -139,9 +139,9 @@ Base: `ROODI/Packages/Roodi/src/Modules`
 
 1. Acesso e conta: `auth` + `session`.
 2. Operacao Rider: `rider-home-flow`, `rider-orders-history`, `rider-profile` consumindo `orders`, `dispatch`, `tracking` do backend.
-3. Operacao Commerce: `commerce-home`, `commerce-create-call`, `commerce-tracking`, `commerce-history`, `clients`, `credits`, `products`.
+3. Operacao Commerce: `commerce-home`, `commerce-create-call`, `commerce-tracking`, `commerce-history`, `clients`, `products` e `credits` (legado).
 4. Governanca de preco: `pricing` backend + `pricing` admin; nunca controlado por rider/commerce no app.
-5. Financeiro: `credits` (carteira) separado de `payments` (cobranca/conciliacao).
+5. Financeiro: `payments` e o fluxo principal (pagamento por chamado); `credits` permanece para compatibilidade.
 6. Suporte e notificacoes: modulos dedicados em backend e frontends.
 
 ## 4) Fronteiras criticas de negocio
@@ -164,8 +164,8 @@ Base: `ROODI/Packages/Roodi/src/Modules`
    - sem rastreio GPS continuo.
 
 5. `credits` x `payments`:
-   - `credits`: saldo e ledger interno da carteira.
-   - `payments`: transacao com gateway, webhook e conciliacao.
+   - `credits`: saldo e ledger interno da carteira (legado).
+   - `payments`: transacao com gateway, webhook e conciliacao (fluxo principal).
 
 ## 5) Design system e modulos
 

@@ -127,7 +127,8 @@ Responsabilidade:
 8. `rider_ledger`
 
 Responsabilidade:
-- Carteira do comerciante e extrato.
+- Pagamento por chamado (fluxo recomendado) e conciliacao.
+- Carteira de creditos (legado) para transicao controlada.
 - Integracao financeira (InfinitePay) e conciliacao.
 - Repasse do rider e comissao da plataforma.
 
@@ -173,7 +174,8 @@ Responsabilidade:
 8. `credits_wallets.commerce_user_id -> users.id`.
 9. `credits_ledger` referencia comercio + pedido quando aplicavel.
 10. `payment_intents` e `payment_transactions` formam trilha financeira com webhook idempotente.
-11. `order_financials.order_id` consolida `FP`, `RE`, `CP`.
+11. `payment_intents.order_id -> orders.id` vincula pagamento diretamente ao chamado.
+12. `order_financials.order_id` consolida `FP`, `RE`, `CP`.
 
 ## Regras de integridade obrigatorias
 1. `users.email` unico e normalizado em lowercase.
@@ -213,12 +215,15 @@ Regras:
 4. Em distancia acima da cobertura, `error_code=OUT_OF_COVERAGE`.
 
 ## Politica financeira no banco
-1. Compra de creditos:
+1. Pagamento por chamado (fluxo recomendado):
    - `payment_intents` (intencao + checkout)
    - `payment_transactions` (status e conciliacao)
    - `payment_webhook_events` (recepcao e idempotencia)
+   - vinculo com `orders` por `payment_intents.order_id`
+   - atualizacao de `orders.payment_status` e `orders.payment_confirmed_at`
+2. Compra de creditos (legado):
    - `credits_ledger` (credito efetivo)
-2. Entrega concluida:
+3. Entrega concluida:
    - movimentacao em `credits_ledger` (debito/reserva/liberacao)
    - consolidacao em `order_financials`
    - repasse em `rider_ledger`.

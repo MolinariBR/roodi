@@ -507,6 +507,9 @@ CREATE TABLE IF NOT EXISTS orders (
   total_brl NUMERIC(10,2),
   confirmation_code_required BOOLEAN NOT NULL DEFAULT TRUE,
   confirmation_code_status order_confirmation_status NOT NULL DEFAULT 'not_generated',
+  payment_status payment_status NOT NULL DEFAULT 'pending',
+  payment_required BOOLEAN NOT NULL DEFAULT TRUE,
+  payment_confirmed_at TIMESTAMPTZ,
   accepted_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
   canceled_at TIMESTAMPTZ,
@@ -521,6 +524,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
 CREATE INDEX IF NOT EXISTS idx_orders_commerce_status_created ON orders (commerce_user_id, status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_orders_rider_status_created ON orders (rider_user_id, status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_payment_status_created ON orders (payment_status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_orders_status_created ON orders (status, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS order_product_snapshots (
@@ -645,6 +649,7 @@ CREATE INDEX IF NOT EXISTS idx_credits_ledger_order ON credits_ledger (order_id)
 CREATE TABLE IF NOT EXISTS payment_intents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   commerce_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
   provider payment_provider NOT NULL DEFAULT 'infinitepay',
   purpose TEXT NOT NULL DEFAULT 'credit_purchase',
   status payment_status NOT NULL DEFAULT 'pending',
@@ -665,6 +670,7 @@ CREATE TABLE IF NOT EXISTS payment_intents (
 );
 
 CREATE INDEX IF NOT EXISTS idx_payment_intents_commerce ON payment_intents (commerce_user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_payment_intents_order ON payment_intents (order_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_payment_intents_status ON payment_intents (status, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS payment_transactions (

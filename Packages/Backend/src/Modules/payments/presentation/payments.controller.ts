@@ -5,7 +5,9 @@ import { PaymentsService } from "@modules/payments/application/payments.service"
 import {
   adminPaymentTransactionListQuerySchema,
   createCreditPurchaseIntentRequestSchema,
+  createOrderPaymentIntentRequestSchema,
   infinitePayWebhookPayloadSchema,
+  orderIdParamSchema,
   paymentCheckRequestSchema,
   paymentIdParamSchema,
   transactionIdParamSchema,
@@ -98,6 +100,49 @@ export class PaymentsController {
       });
 
       res.locals.auditEntityId = params.paymentId;
+      res.status(200).json(responseBody);
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
+
+  public createOrderPaymentIntent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authContext = getAuthContext(res);
+      const params = orderIdParamSchema.parse(req.params);
+      const payload = createOrderPaymentIntentRequestSchema.parse(req.body ?? {});
+
+      const responseBody = await this.paymentsService.createOrderPaymentIntent({
+        commerceUserId: authContext.userId,
+        orderId: params.orderId,
+        payload,
+      });
+
+      res.locals.auditEntityId = params.orderId;
+      res.status(201).json(responseBody);
+    } catch (error: unknown) {
+      next(error);
+    }
+  };
+
+  public getOrderPaymentStatus = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authContext = getAuthContext(res);
+      const params = orderIdParamSchema.parse(req.params);
+
+      const responseBody = await this.paymentsService.getOrderPaymentStatus({
+        commerceUserId: authContext.userId,
+        orderId: params.orderId,
+      });
+
       res.status(200).json(responseBody);
     } catch (error: unknown) {
       next(error);

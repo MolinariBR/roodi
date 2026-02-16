@@ -75,6 +75,27 @@ describe("credits and payments endpoints", () => {
     expect(response.body.error.code).toBe("VALIDATION_ERROR");
   });
 
+  it("returns 422 on order payment intent with invalid order id", async () => {
+    const response = await request(app)
+      .post("/v1/commerce/orders/not-a-uuid/payment-intent")
+      .set("authorization", `Bearer ${commerceAccessToken}`)
+      .send({});
+
+    expect(response.status).toBe(422);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("returns 403 on order payment status for rider role", async () => {
+    const response = await request(app)
+      .get("/v1/commerce/orders/00000000-0000-0000-0000-000000000901/payment")
+      .set("authorization", `Bearer ${riderAccessToken}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error.code).toBe("FORBIDDEN");
+  });
+
   it("returns 422 on webhook with invalid payload", async () => {
     const response = await request(app).post("/v1/payments/infinitepay/webhook").send({
       invoice_slug: "inv-1",

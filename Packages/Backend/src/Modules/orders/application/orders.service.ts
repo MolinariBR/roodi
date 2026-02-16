@@ -1,8 +1,6 @@
 import type { order_status } from "@prisma/client";
 
 import { AppError } from "@core/http/errors/app-error";
-import { logger } from "@core/observability/logger";
-import { DispatchService } from "@modules/dispatch/application/dispatch.service";
 import { toOrderPayload } from "@modules/orders/domain/order.mapper";
 import { RIDER_ACTIVE_ORDER_STATUSES } from "@modules/orders/domain/order.state-machine";
 import type {
@@ -23,10 +21,7 @@ const assertCancelableOrderStatus = (status: order_status): void => {
 };
 
 export class OrdersService {
-  constructor(
-    private readonly ordersRepository = new OrdersRepository(),
-    private readonly dispatchService = new DispatchService(),
-  ) {}
+  constructor(private readonly ordersRepository = new OrdersRepository()) {}
 
   public async listAdminOrders(input: {
     query: OrderListQuery;
@@ -130,50 +125,13 @@ export class OrdersService {
       });
     }
 
-    try {
-      const createdOrder = await this.ordersRepository.createOrderWithCreditReservation({
-        commerceUserId: input.commerceUserId,
-        payload: input.payload,
-        quote,
-      });
+    const createdOrder = await this.ordersRepository.createOrderAwaitingPayment({
+      commerceUserId: input.commerceUserId,
+      payload: input.payload,
+      quote,
+    });
 
-      try {
-        await this.dispatchService.openInitialDispatch(createdOrder.id, createdOrder.zone);
-      } catch (dispatchError: unknown) {
-        logger.warn(
-          {
-            order_id: createdOrder.id,
-            commerce_user_id: input.commerceUserId,
-            error: dispatchError,
-          },
-          "initial_dispatch_failed_after_order_creation",
-        );
-      }
-
-      return toOrderPayload(createdOrder);
-    } catch (error: unknown) {
-      if (error instanceof AppError) {
-        throw error;
-      }
-
-      if (error instanceof Error && error.message === "INSUFFICIENT_CREDITS") {
-        throw new AppError({
-          code: "INSUFFICIENT_CREDITS",
-          message: "Commerce does not have enough credits.",
-          statusCode: 402,
-        });
-      }
-
-      if (error instanceof Error && error.message === "WALLET_NOT_FOUND") {
-        throw new AppError({
-          code: "NOT_FOUND",
-          message: "Credits wallet not found for commerce user.",
-          statusCode: 404,
-        });
-      }
-
-      throw error;
-    }
+    return toOrderPayload(createdOrder);
   }
 
   public async getCommerceOrder(input: {

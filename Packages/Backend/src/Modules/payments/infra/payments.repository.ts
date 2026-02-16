@@ -5,6 +5,8 @@ import { prisma as defaultPrisma } from "@core/database/prisma";
 type CreatePaymentIntentInput = {
   commerceUserId: string;
   providerHandle: string;
+  purpose: string;
+  orderId?: string;
   orderNsu: string;
   amountBrl: string;
   amountCents: number;
@@ -96,6 +98,8 @@ export class PaymentsRepository {
 
   public createPaymentIntent(input: CreatePaymentIntentInput): Promise<{
     id: string;
+    order_id: string | null;
+    purpose: string;
     order_nsu: string;
     amount_brl: Prisma.Decimal;
     amount_cents: number;
@@ -108,7 +112,8 @@ export class PaymentsRepository {
       data: {
         commerce_user_id: input.commerceUserId,
         provider: "infinitepay",
-        purpose: "credit_purchase",
+        purpose: input.purpose,
+        order_id: input.orderId,
         status: "pending",
         amount_brl: input.amountBrl,
         amount_cents: input.amountCents,
@@ -120,6 +125,8 @@ export class PaymentsRepository {
       },
       select: {
         id: true,
+        order_id: true,
+        purpose: true,
         order_nsu: true,
         amount_brl: true,
         amount_cents: true,
@@ -171,6 +178,8 @@ export class PaymentsRepository {
     commerceUserId: string,
   ): Promise<{
     id: string;
+    order_id: string | null;
+    purpose: string;
     order_nsu: string;
     provider_handle: string;
     amount_brl: Prisma.Decimal;
@@ -185,6 +194,8 @@ export class PaymentsRepository {
       },
       select: {
         id: true,
+        order_id: true,
+        purpose: true,
         order_nsu: true,
         provider_handle: true,
         amount_brl: true,
@@ -195,8 +206,94 @@ export class PaymentsRepository {
     });
   }
 
+  public findCommerceOrderById(
+    orderId: string,
+    commerceUserId: string,
+  ): Promise<{
+    id: string;
+    status: string;
+    total_brl: Prisma.Decimal | null;
+    payment_status: payment_status;
+    payment_required: boolean;
+    payment_confirmed_at: Date | null;
+  } | null> {
+    return this.prismaClient.orders.findFirst({
+      where: {
+        id: orderId,
+        commerce_user_id: commerceUserId,
+      },
+      select: {
+        id: true,
+        status: true,
+        total_brl: true,
+        payment_status: true,
+        payment_required: true,
+        payment_confirmed_at: true,
+      },
+    });
+  }
+
+  public findLatestOrderPaymentIntentForCommerce(
+    orderId: string,
+    commerceUserId: string,
+  ): Promise<{
+    id: string;
+    order_id: string | null;
+    purpose: string;
+    status: payment_status;
+    provider: "infinitepay";
+    order_nsu: string;
+    amount_brl: Prisma.Decimal;
+    checkout_url: string | null;
+    expires_at: Date | null;
+    response_payload: Prisma.JsonValue | null;
+  } | null> {
+    return this.prismaClient.payment_intents.findFirst({
+      where: {
+        commerce_user_id: commerceUserId,
+        order_id: orderId,
+        purpose: "order_payment",
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      select: {
+        id: true,
+        order_id: true,
+        purpose: true,
+        status: true,
+        provider: true,
+        order_nsu: true,
+        amount_brl: true,
+        checkout_url: true,
+        expires_at: true,
+        response_payload: true,
+      },
+    });
+  }
+
+  public markOrderPaymentPending(orderId: string): Promise<void> {
+    return this.prismaClient.orders
+      .updateMany({
+        where: {
+          id: orderId,
+          payment_status: {
+            not: "approved",
+          },
+        },
+        data: {
+          payment_status: "pending",
+          payment_confirmed_at: null,
+          updated_at: new Date(),
+        },
+      })
+      .then(() => undefined);
+  }
+
   public findPaymentIntentByOrderNsu(orderNsu: string): Promise<{
     id: string;
+    order_id: string | null;
+    purpose: string;
     order_nsu: string;
     commerce_user_id: string;
     amount_brl: Prisma.Decimal;
@@ -209,6 +306,8 @@ export class PaymentsRepository {
       },
       select: {
         id: true,
+        order_id: true,
+        purpose: true,
         order_nsu: true,
         commerce_user_id: true,
         amount_brl: true,
@@ -222,6 +321,20 @@ export class PaymentsRepository {
     const now = new Date();
 
     await this.prismaClient.$transaction(async (tx) => {
+      const paymentIntent = await tx.payment_intents.findUnique({
+        where: {
+          id: input.paymentIntentId,
+        },
+        select: {
+          purpose: true,
+          order_id: true,
+        },
+      });
+
+      if (!paymentIntent) {
+        throw new Error("PAYMENT_INTENT_NOT_FOUND");
+      }
+
       await tx.payment_intents.update({
         where: {
           id: input.paymentIntentId,
@@ -265,11 +378,44 @@ export class PaymentsRepository {
           approved_at: input.status === "approved" ? now : null,
         },
       });
+
+      if (paymentIntent.purpose === "order_payment" && paymentIntent.order_id) {
+        if (input.status === "approved") {
+          await tx.orders.update({
+            where: {
+              id: paymentIntent.order_id,
+            },
+            data: {
+              payment_status: "approved",
+              payment_confirmed_at: now,
+              updated_at: now,
+            },
+          });
+        } else {
+          await tx.orders.updateMany({
+            where: {
+              id: paymentIntent.order_id,
+              payment_status: {
+                not: "approved",
+              },
+            },
+            data: {
+              payment_status: input.status,
+              updated_at: now,
+            },
+          });
+        }
+      }
     });
   }
 
   public async applyApprovedPayment(input: ApplyApprovedPaymentInput): Promise<{
     alreadyCredited: boolean;
+    orderPayment?: {
+      orderId: string;
+      zone: number | null;
+      shouldOpenDispatch: boolean;
+    };
   }> {
     const approvedAt = input.approvedAt ?? new Date();
 
@@ -329,6 +475,50 @@ export class PaymentsRepository {
           approved_at: approvedAt,
         },
       });
+
+      if (paymentIntent.purpose === "order_payment") {
+        if (!paymentIntent.order_id) {
+          throw new Error("ORDER_PAYMENT_INTENT_WITHOUT_ORDER");
+        }
+
+        const currentOrder = await tx.orders.findUnique({
+          where: {
+            id: paymentIntent.order_id,
+          },
+          select: {
+            id: true,
+            status: true,
+            zone: true,
+          },
+        });
+
+        if (!currentOrder) {
+          throw new Error("ORDER_NOT_FOUND");
+        }
+
+        const shouldOpenDispatch = currentOrder.status === "created";
+
+        await tx.orders.update({
+          where: {
+            id: paymentIntent.order_id,
+          },
+          data: {
+            ...(shouldOpenDispatch ? { status: "searching_rider" } : {}),
+            payment_status: "approved",
+            payment_confirmed_at: approvedAt,
+            updated_at: approvedAt,
+          },
+        });
+
+        return {
+          alreadyCredited: false,
+          orderPayment: {
+            orderId: currentOrder.id,
+            zone: currentOrder.zone,
+            shouldOpenDispatch,
+          },
+        };
+      }
 
       const existingCreditEntry = await tx.credits_ledger.findFirst({
         where: {

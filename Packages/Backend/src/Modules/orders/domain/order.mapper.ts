@@ -54,6 +54,11 @@ export const toOrderPayload = (order: orders): Record<string, unknown> => {
     },
     confirmation_code_required: order.confirmation_code_required,
     confirmation_code_status: order.confirmation_code_status,
+    payment_status: order.payment_status,
+    payment_required: order.payment_required,
+    ...(order.payment_confirmed_at
+      ? { payment_confirmed_at: order.payment_confirmed_at.toISOString() }
+      : {}),
     ...(destination ? { destination } : {}),
   };
 };

@@ -396,6 +396,9 @@ model orders {
   total_brl                                                       Decimal?                  @db.Decimal(10, 2)
   confirmation_code_required                                      Boolean                   @default(true)
   confirmation_code_status                                        order_confirmation_status @default(not_generated)
+  payment_status                                                  payment_status            @default(pending)
+  payment_required                                                Boolean                   @default(true)
+  payment_confirmed_at                                            DateTime?                 @db.Timestamptz(6)
   accepted_at                                                     DateTime?                 @db.Timestamptz(6)
   completed_at                                                    DateTime?                 @db.Timestamptz(6)
   canceled_at                                                     DateTime?                 @db.Timestamptz(6)
@@ -409,6 +412,7 @@ model orders {
   order_events                                                    order_events[]
   order_financials                                                order_financials?
   order_product_snapshots                                         order_product_snapshots[]
+  payment_intents                                                 payment_intents[]         @relation("orders_payment_intents")
   commerce_clients                                                commerce_clients?         @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_orders_commerce_user_idTousers                            users                     @relation("orders_commerce_user_idTousers", fields: [commerce_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   locality_bairros_orders_destination_bairro_idTolocality_bairros locality_bairros?         @relation("orders_destination_bairro_idTolocality_bairros", fields: [destination_bairro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -420,6 +424,7 @@ model orders {
 
   @@index([commerce_user_id, status, created_at(sort: Desc)], map: "idx_orders_commerce_status_created")
   @@index([rider_user_id, status, created_at(sort: Desc)], map: "idx_orders_rider_status_created")
+  @@index([payment_status, created_at(sort: Desc)], map: "idx_orders_payment_status_created")
   @@index([status, created_at(sort: Desc)], map: "idx_orders_status_created")
 }
 
@@ -427,6 +432,7 @@ model orders {
 model payment_intents {
   id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   commerce_user_id     String                 @db.Uuid
+  order_id             String?                @db.Uuid
   provider             payment_provider       @default(infinitepay)
   purpose              String                 @default("credit_purchase")
   status               payment_status         @default(pending)
@@ -443,9 +449,11 @@ model payment_intents {
   created_at           DateTime               @default(now()) @db.Timestamptz(6)
   updated_at           DateTime               @default(now()) @db.Timestamptz(6)
   users                users                  @relation(fields: [commerce_user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orders               orders?                @relation("orders_payment_intents", fields: [order_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
   payment_transactions payment_transactions[]
 
   @@index([commerce_user_id, created_at(sort: Desc)], map: "idx_payment_intents_commerce")
+  @@index([order_id, created_at(sort: Desc)], map: "idx_payment_intents_order")
   @@index([status, created_at(sort: Desc)], map: "idx_payment_intents_status")
 }
 

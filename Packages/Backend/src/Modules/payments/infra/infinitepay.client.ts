@@ -8,8 +8,23 @@ type CreateCheckoutLinkInput = {
   handle: string;
   amountCents: number;
   orderNsu: string;
+  description?: string;
   redirectUrl?: string;
   webhookUrl?: string;
+  customer?: {
+    name?: string;
+    email?: string;
+    phone_number?: string;
+  };
+  address?: {
+    cep?: string;
+    state?: string;
+    city?: string;
+    neighborhood?: string;
+    street?: string;
+    number?: string;
+    complement?: string;
+  };
 };
 
 type PaymentCheckInput = {
@@ -149,18 +164,24 @@ export class InfinitePayClient {
     checkoutUrl: string;
     providerPayload: Record<string, unknown>;
   }> {
+    const itemDescription = input.description?.trim().length
+      ? input.description.trim()
+      : "Recarga de creditos Roodi";
+
     const requestPayload = {
       handle: input.handle,
       itens: [
         {
           quantity: 1,
           price: input.amountCents,
-          description: "Recarga de creditos Roodi",
+          description: itemDescription,
         },
       ],
       order_nsu: input.orderNsu,
       ...(input.redirectUrl ? { redirect_url: input.redirectUrl } : {}),
       ...(input.webhookUrl ? { webhook_url: input.webhookUrl } : {}),
+      ...(input.customer ? { customer: input.customer } : {}),
+      ...(input.address ? { address: input.address } : {}),
     } satisfies Record<string, unknown>;
 
     const response = await this.postJson("/invoices/public/checkout/links", requestPayload);

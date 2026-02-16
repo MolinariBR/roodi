@@ -150,7 +150,7 @@ export class OrdersRepository {
     });
   }
 
-  public async createOrderWithCreditReservation(input: CreateOrderInput): Promise<orders> {
+  public async createOrderAwaitingPayment(input: CreateOrderInput): Promise<orders> {
     const now = new Date();
     const totalBrl = input.quote.total_brl;
 
@@ -159,45 +159,13 @@ export class OrdersRepository {
     }
 
     return this.prismaClient.$transaction(async (tx) => {
-      const walletUpdate = await tx.credits_wallets.updateMany({
-        where: {
-          commerce_user_id: input.commerceUserId,
-          balance_brl: {
-            gte: totalBrl,
-          },
-        },
-        data: {
-          balance_brl: {
-            decrement: totalBrl,
-          },
-          reserved_brl: {
-            increment: totalBrl,
-          },
-          updated_at: now,
-        },
-      });
-
-      if (walletUpdate.count === 0) {
-        throw new Error("INSUFFICIENT_CREDITS");
-      }
-
-      const wallet = await tx.credits_wallets.findUnique({
-        where: {
-          commerce_user_id: input.commerceUserId,
-        },
-      });
-
-      if (!wallet) {
-        throw new Error("WALLET_NOT_FOUND");
-      }
-
       const createdOrder = await tx.orders.create({
         data: {
           order_code: formatOrderCode(now),
           commerce_user_id: input.commerceUserId,
           client_id: input.payload.client_id,
           quote_id: input.quote.id,
-          status: "searching_rider",
+          status: "created",
           urgency: input.payload.urgency,
           origin_bairro_id: input.quote.origin_bairro_id,
           destination_bairro_id: input.quote.destination_bairro_id,
@@ -224,6 +192,9 @@ export class OrdersRepository {
           total_brl: input.quote.total_brl,
           confirmation_code_required: true,
           confirmation_code_status: "not_generated",
+          payment_status: "pending",
+          payment_required: true,
+          payment_confirmed_at: null,
           created_at: now,
           updated_at: now,
         },
@@ -235,27 +206,12 @@ export class OrdersRepository {
           event_type: "order_created",
           actor_user_id: input.commerceUserId,
           actor_role: "commerce",
-          note: "Pedido criado pelo comerciante.",
+          note: "Pedido criado pelo comerciante e aguardando pagamento.",
           payload: {
-            status: "searching_rider",
+            status: "created",
             quote_id: input.quote.id,
           },
           occurred_at: now,
-        },
-      });
-
-      await tx.credits_ledger.create({
-        data: {
-          commerce_user_id: input.commerceUserId,
-          order_id: createdOrder.id,
-          entry_type: "reservation",
-          amount_brl: totalBrl.mul(-1),
-          balance_after_brl: wallet.balance_brl,
-          reference_type: "order",
-          reference_id: createdOrder.id,
-          reason: "Reserva de creditos para abertura do pedido.",
-          created_by_user_id: input.commerceUserId,
-          created_at: now,
         },
       });
 
@@ -294,7 +250,7 @@ export class OrdersRepository {
         },
       });
 
-      if (order.total_brl) {
+      if (!order.payment_required && order.total_brl) {
         const wallet = await tx.credits_wallets.findUnique({
           where: {
             commerce_user_id: input.commerceUserId,

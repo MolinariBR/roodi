@@ -84,9 +84,8 @@ Arquivos atuais:
 - Nenhuma lacuna de modelo no contrato atual.
 
 ## Lacunas de volume/cobertura funcional (mesmo em modelos seedados)
-1. `payments`: ainda prioriza fluxo `approved`; cenarios `failed`/`canceled` podem ser ampliados.
-2. `dispatch_offers`: pode receber mais variacoes de tentativa por rider para carga de estresse.
-3. `support_tickets`: pode receber maior volume para validar paginação pesada no admin.
+1. Base funcional coberta para validacao de integracao (`approved`, `failed`, `canceled`, variacoes de `dispatch_offers`, volume adicional de `support_tickets`).
+2. Expansao futura opcional: massa de carga para testes de performance (milhares de registros por dominio).
 
 ## Impacto por frontend
 
@@ -108,6 +107,9 @@ Arquivos atuais:
 - `020_locality.seed.ts` ampliado para carregar todos os `123` bairros de Imperatriz e preencher a matriz completa (`n * (n - 1)`) com:
   - valores diretos do dataset quando presentes;
   - estimativa deterministica por geodesia + calibracao da propria matriz quando houver `0/0`.
+- `080_finance.seed.ts` ampliado com cenarios `payment_status = failed` e `payment_status = canceled`, incluindo intents, transactions e webhooks idempotentes.
+- `090_notifications_support.seed.ts` ampliado com volume adicional de `support_tickets` e `support_ticket_messages` (mix de `open`, `in_progress`, `resolved`, `closed`).
+- `100_dispatch_quotes.seed.ts` ampliado com novo batch e mais variacoes de decisao em `dispatch_offers` (`pending`, `rejected`, `expired`, `no_response`, `accepted`).
 - Carga validada com sucesso via `npm run db:seed` em `Packages/Backend`.
 - `eslint` do backend: sem erros.
 - `typecheck` do backend: permanece com erro preexistente em `tests/contract/_helpers/contract-runtime.ts` (tipagem Redis), sem relacao com os seeds.

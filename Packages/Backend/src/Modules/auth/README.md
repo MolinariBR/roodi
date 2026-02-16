@@ -17,7 +17,7 @@ Implementar autenticacao por credenciais locais com sessao JWT + refresh token, 
 2. Login por `email + password + role`.
 3. Rotacao de refresh token com revogacao do token anterior.
 4. Logout por revogacao de refresh token.
-5. Recuperacao de senha via OTP com expiracao e limite de tentativas.
+5. Recuperacao de senha via OTP com expiracao e limite de tentativas (envio por Resend quando configurado).
 6. Reset de senha com `reset_token` de curta duracao.
 
 ## Persistence

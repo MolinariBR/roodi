@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 
 import { PrismaClient } from "@prisma/client";
-import { createClient, type RedisClientType } from "redis";
+import { createClient } from "redis";
 import { GenericContainer, Wait } from "testcontainers";
 
 type UserRole = "admin" | "commerce" | "rider";
@@ -10,6 +10,7 @@ type UserRole = "admin" | "commerce" | "rider";
 type TokenServiceType = {
   issueAccessToken: (user: { id: string; role: UserRole }) => { token: string };
 };
+type ContractRedisClient = ReturnType<typeof createClient>;
 
 const BACKEND_ROOT = path.resolve(__dirname, "..", "..", "..");
 
@@ -72,7 +73,7 @@ const runPrismaCommandWithRetry = async (
 export type ContractRuntime = {
   app: import("express").Express;
   prisma: PrismaClient;
-  redis: RedisClientType;
+  redis: ContractRedisClient;
   issueAccessToken: (user: { id: string; role: UserRole }) => string;
   stop: () => Promise<void>;
 };

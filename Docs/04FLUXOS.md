@@ -60,7 +60,7 @@ ForgotPassword -> OTP -> ResetPassword -> Login
 1. Login/cadastro seleciona contexto de uso (`Rider` ou `Empresa`).
 2. Autenticacao alvo da arquitetura:
    - Backend com JWT (`access` + `refresh`), OTP e RBAC por perfil.
-   - Admin com Clerk.
+   - Admin com autenticacao propria via backend.
 3. No prototipo atual, OTP e manutencao ainda estao simulados no cliente.
 
 ### Gap de integracao

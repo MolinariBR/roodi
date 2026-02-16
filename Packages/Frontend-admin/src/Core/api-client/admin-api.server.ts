@@ -1,4 +1,8 @@
+import { cookies } from "next/headers";
 import { z } from "zod";
+
+import { ADMIN_ACCESS_COOKIE_NAME, resolveApiBaseUrl } from "@core/auth/admin-session.shared";
+import { readAdminAccessToken } from "@core/auth/admin-session.cookies";
 
 const userRoleSchema = z.enum(["admin", "commerce", "rider"]);
 const userStatusSchema = z.enum(["active", "suspended", "blocked"]);
@@ -291,14 +295,14 @@ type ApiResult<T> = {
   error: string | null;
 };
 
-const resolveApiBaseUrl = (): string | null => {
-  const value = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
-  return value ? value : null;
-};
+const resolveRequestAccessToken = (): string | null => {
+  const tokenFromReader = readAdminAccessToken();
+  if (tokenFromReader) {
+    return tokenFromReader;
+  }
 
-const resolveValidationToken = (): string | null => {
-  const value = process.env.BACKEND_ADMIN_VALIDATION_TOKEN?.trim();
-  return value ? value : null;
+  const tokenFromCookies = cookies().get(ADMIN_ACCESS_COOKIE_NAME)?.value?.trim();
+  return tokenFromCookies && tokenFromCookies.length > 0 ? tokenFromCookies : null;
 };
 
 const requestAdminEndpoint = async <T>(
@@ -310,12 +314,12 @@ const requestAdminEndpoint = async <T>(
   },
 ): Promise<ApiResult<T>> => {
   const apiBaseUrl = resolveApiBaseUrl();
-  const validationToken = resolveValidationToken();
+  const accessToken = resolveRequestAccessToken();
 
-  if (!apiBaseUrl || !validationToken) {
+  if (!apiBaseUrl || !accessToken) {
     return {
       data: null,
-      error: "Configuração ausente: NEXT_PUBLIC_API_BASE_URL ou BACKEND_ADMIN_VALIDATION_TOKEN.",
+      error: "Sessao administrativa ausente ou expirada. Faca login novamente.",
     };
   }
 
@@ -336,7 +340,7 @@ const requestAdminEndpoint = async <T>(
       headers: {
         Accept: "application/json",
         ...(options?.body ? { "Content-Type": "application/json" } : {}),
-        Authorization: `Bearer ${validationToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       ...(options?.body ? { body: JSON.stringify(options.body) } : {}),
     });

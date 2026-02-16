@@ -13,7 +13,6 @@
     "test:e2e": "vitest run tests/e2e"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.37.4",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-table": "^8.21.3",

@@ -1,7 +1,9 @@
-import { UserButton } from "@clerk/nextjs";
+import { clearAdminSession, readAdminRefreshToken } from "@core/auth/admin-session.cookies";
+import { resolveApiBaseUrl } from "@core/auth/admin-session.shared";
 import { AdminSidebar } from "@core/app-shell/admin-sidebar";
 import { requireAdminSession } from "@core/auth/admin-access.server";
 import { ThemeModeToggle } from "@core/design-system";
+import { redirect } from "next/navigation";
 
 type AdminLayoutProps = Readonly<{
   children: React.ReactNode;
@@ -10,6 +12,34 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const adminSession = await requireAdminSession();
+
+  const logoutAction = async (): Promise<void> => {
+    "use server";
+
+    const refreshToken = readAdminRefreshToken();
+    const apiBaseUrl = resolveApiBaseUrl();
+
+    if (refreshToken && apiBaseUrl) {
+      try {
+        const endpoint = new URL("/v1/auth/logout", apiBaseUrl);
+        await fetch(endpoint.toString(), {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: refreshToken,
+          }),
+        });
+      } catch {
+        // Logout local continua mesmo se backend estiver indisponivel.
+      }
+    }
+
+    clearAdminSession();
+    redirect("/admin/login");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -35,7 +65,14 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             </div>
             <div className="flex items-center gap-2">
               <ThemeModeToggle />
-              <UserButton afterSignOutUrl="/admin/login" />
+              <form action={logoutAction}>
+                <button
+                  className="rounded-md border border-border bg-surface-2 px-3 py-2 text-xs font-medium text-foreground transition-opacity duration-fast hover:opacity-90"
+                  type="submit"
+                >
+                  Sair
+                </button>
+              </form>
             </div>
           </header>
 

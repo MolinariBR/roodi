@@ -15,6 +15,17 @@ const csvToArray = (value: string): string[] =>
     .map((item) => item.trim())
     .filter(Boolean);
 
+const optionalEmailSchema = z
+  .string()
+  .trim()
+  .email()
+  .or(z.literal(""))
+  .optional()
+  .transform((value) => {
+    const trimmed = value?.trim();
+    return trimmed && trimmed.length > 0 ? trimmed : undefined;
+  });
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3333),
@@ -49,6 +60,10 @@ const envSchema = z.object({
   OTP_EXPIRES_MINUTES: z.coerce.number().int().min(1).max(30).default(10),
   OTP_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(10).default(5),
   OTP_RESEND_COOLDOWN_SECONDS: z.coerce.number().int().min(0).max(300).default(60),
+  RESEND_API_BASE_URL: z.string().url().default("https://api.resend.com"),
+  RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM_EMAIL: optionalEmailSchema,
+  RESEND_REPLY_TO: optionalEmailSchema,
   TOMTOM_API_KEY: z.string().optional(),
   OPENROUTESERVICE_API_KEY: z.string().optional(),
   OPENWEATHER_API_KEY: z.string().optional(),
@@ -91,6 +106,10 @@ export const env = {
   otpExpiresMinutes: parsedEnv.OTP_EXPIRES_MINUTES,
   otpMaxAttempts: parsedEnv.OTP_MAX_ATTEMPTS,
   otpResendCooldownSeconds: parsedEnv.OTP_RESEND_COOLDOWN_SECONDS,
+  resendApiBaseUrl: parsedEnv.RESEND_API_BASE_URL,
+  resendApiKey: parsedEnv.RESEND_API_KEY,
+  resendFromEmail: parsedEnv.RESEND_FROM_EMAIL,
+  resendReplyTo: parsedEnv.RESEND_REPLY_TO,
   tomtomApiKey: parsedEnv.TOMTOM_API_KEY,
   openRouteServiceApiKey: parsedEnv.OPENROUTESERVICE_API_KEY,
   openWeatherApiKey: parsedEnv.OPENWEATHER_API_KEY,

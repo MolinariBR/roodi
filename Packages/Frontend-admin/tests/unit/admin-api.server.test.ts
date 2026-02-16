@@ -1,5 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+const { cookiesMock } = vi.hoisted(() => {
+  return {
+    cookiesMock: vi.fn(),
+  };
+});
+
+vi.mock("next/headers", () => {
+  return {
+    cookies: cookiesMock,
+  };
+});
+
 import {
   getAdminOrders,
   updateAdminPricingRules,
@@ -37,7 +49,15 @@ describe("unit: admin api client", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     process.env.NEXT_PUBLIC_API_BASE_URL = API_BASE_URL;
-    process.env.BACKEND_ADMIN_VALIDATION_TOKEN = ADMIN_TOKEN;
+    cookiesMock.mockReturnValue({
+      get: (key: string) => {
+        if (key === "roodi_admin_access_token") {
+          return { name: key, value: ADMIN_TOKEN };
+        }
+
+        return undefined;
+      },
+    });
   });
 
   it("builds orders query with status filter and parses response", async () => {
@@ -95,9 +115,7 @@ describe("unit: admin api client", () => {
     expect(calledUrl).toContain("limit=20");
     expect(calledUrl).toContain("status=searching_rider");
     expect(calledOptions.method).toBe("GET");
-    expect((calledOptions.headers as Record<string, string>).Authorization).toBe(
-      `Bearer ${ADMIN_TOKEN}`,
-    );
+    expect((calledOptions.headers as Record<string, string>).Authorization).toBe(`Bearer ${ADMIN_TOKEN}`);
   });
 
   it("returns backend message when orders endpoint fails", async () => {

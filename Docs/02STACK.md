@@ -21,7 +21,7 @@
 ### Autenticacao e autorizacao
 1. Credenciais proprias: email/senha com hash (`bcrypt` ou `argon2`).
 2. Sessao: JWT (`access token` curto + `refresh token` com rotacao).
-3. Recuperacao de acesso: OTP para reset de senha (com expiracao e limite de tentativas).
+3. Recuperacao de acesso: OTP para reset de senha (com expiracao e limite de tentativas) enviado por Resend.
 4. Social login: Google, Facebook e Apple (validacao no backend).
 5. Autorizacao: RBAC por perfil (`admin`, `commerce`, `rider`) e guards por modulo/rota.
 6. Revogacao de sessao: denylist/versionamento de token em Redis para logout e bloqueio.
@@ -76,12 +76,12 @@
 2. Estado assíncrono: TanStack Query (cache, invalidação e re-fetch).
 3. Formulario e schema: React Hook Form + Zod.
 4. Tabelas operacionais: TanStack Table (historico, pedidos, creditos).
-5. Autenticacao admin: Clerk (identidade e sessao do painel).
+5. Autenticacao admin: propria via backend (`/v1/auth/login`, `access/refresh`, cookies httpOnly).
 6. Telemetria de erro: Sentry (painel e alertas).
 
 ### Autenticacao no painel admin
-1. Login e sessao gerenciados pelo Clerk.
-2. Backend valida claims/perfil administrativo antes de liberar rotas sensiveis.
+1. Login e sessao gerenciados pelo backend de autenticacao do Roodi.
+2. Guard de rota valida token admin em endpoint protegido antes de liberar rotas sensiveis.
 3. Acoes de alto impacto exigem permissao explicita (RBAC).
 
 ### Testes de frontend-admin
@@ -162,8 +162,9 @@
 1. `TOMTOM_API_KEY`
 2. `OPENROUTESERVICE_API_KEY`
 3. `OPENWEATHER_API_KEY`
-4. `INFINITEPAY_*`
-5. `GOOGLE_MAPS_API_KEY` (somente pipeline de geracao de matriz, quando usado)
+4. `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO`
+5. `INFINITEPAY_*`
+6. `GOOGLE_MAPS_API_KEY` (somente pipeline de geracao de matriz, quando usado)
 
 ## 7. Resumo de escolha arquitetural
 1. Backend forte em regras e auditoria.

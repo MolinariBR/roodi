@@ -86,6 +86,40 @@ describe.sequential("contract: critical backend flows with ephemeral infra", () 
     expect(refreshAfterLogout.body.error.code).toBe("UNAUTHORIZED");
   });
 
+  it("authenticates seeded users for admin, commerce and rider contexts", async () => {
+    const credentials: ReadonlyArray<{
+      email: string;
+      password: string;
+      role: "admin" | "commerce" | "rider";
+    }> = [
+      {
+        email: "admin@roodi.app",
+        password: "Admin@123456",
+        role: "admin",
+      },
+      {
+        email: "comercio.centro@roodi.app",
+        password: "Commerce@123456",
+        role: "commerce",
+      },
+      {
+        email: "rider.maria@roodi.app",
+        password: "Rider@123456",
+        role: "rider",
+      },
+    ];
+
+    for (const credential of credentials) {
+      const response = await request(runtime.app).post("/v1/auth/login").send(credential);
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.user.email).toBe(credential.email);
+      expect(response.body.data.user.role).toBe(credential.role);
+      expect(typeof response.body.data.access_token).toBe("string");
+      expect(typeof response.body.data.refresh_token).toBe("string");
+    }
+  });
+
   it("keeps quote contract and stores provider attempts", async () => {
     const commerceToken = runtime.issueAccessToken({
       id: seedIds.users.commerceCentro,

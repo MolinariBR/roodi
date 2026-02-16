@@ -20,6 +20,7 @@ import type {
   UserSummary,
 } from "@modules/auth/domain/auth.types";
 import { AuthRepository } from "@modules/auth/infra/auth.repository";
+import { OtpDeliveryService } from "@modules/auth/infra/otp-delivery.service";
 import { OtpService } from "@modules/auth/infra/otp.service";
 import { PasswordService } from "@modules/auth/infra/password.service";
 import { TokenService } from "@modules/auth/infra/token.service";
@@ -63,6 +64,7 @@ export class AuthService {
     private readonly passwordService = new PasswordService(),
     private readonly tokenService = new TokenService(),
     private readonly otpService = new OtpService(),
+    private readonly otpDeliveryService = new OtpDeliveryService(),
   ) {}
 
   private async createSession(user: users, sessionContext: SessionContext): Promise<AuthTokenResponse> {
@@ -302,6 +304,19 @@ export class AuthService {
       maxAttempts: env.otpMaxAttempts,
       expiresAt,
     });
+
+    if (user?.id) {
+      try {
+        await this.otpDeliveryService.sendPasswordResetOtp({
+          email,
+          otpCode,
+          expiresInMinutes: env.otpExpiresMinutes,
+        });
+      } catch (error: unknown) {
+        await this.authRepository.expireOtpChallenge(challengeId);
+        throw error;
+      }
+    }
 
     return {
       success: true,

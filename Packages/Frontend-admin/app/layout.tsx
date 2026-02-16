@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { THEME_MODE_INIT_SCRIPT } from "@core/design-system";
 import "./globals.css";
 
@@ -19,9 +18,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_MODE_INIT_SCRIPT }} />
       </head>
-      <body>
-        <ClerkProvider>{children}</ClerkProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

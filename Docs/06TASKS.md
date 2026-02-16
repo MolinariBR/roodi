@@ -112,7 +112,7 @@ Definir o backlog executavel do projeto Roodi com checklist de tarefas e subtare
 - **Pagina/Tela:** Todas.
 - **Subtarefas:**
   - [x] Backend: Express, Prisma, Zod, JWT, Redis, BullMQ, Pino, Socket.IO.
-  - [x] Frontend-admin: Next, TanStack Query/Table, RHF, Zod, Clerk.
+  - [x] Frontend-admin: Next, TanStack Query/Table, RHF, Zod, auth propria via backend.
   - [x] Frontend-rider: Dio, Riverpod, GoRouter, Freezed/Json Serializable, storage seguro.
   - [x] Landing: Next, Tailwind, Zod para formulario de lead.
 
@@ -403,7 +403,7 @@ https://www.infinitepay.io/checkout
 - **Fluxo:** `04FLUXOS` (monitoramento dos fluxos de negocio).
 - **Pagina/Tela:** `/admin/login`, layout `/admin/*`.
 - **Subtarefas:**
-  - [x] Integrar Clerk + validação de perfil admin no backend.
+  - [x] Integrar auth propria + validação de perfil admin no backend.
   - [x] Criar layout com navegacao lateral.
   - [x] Implementar tema claro/escuro por tokens web.
 

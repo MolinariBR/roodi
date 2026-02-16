@@ -533,28 +533,28 @@ https://www.infinitepay.io/checkout
   - [x] Testar regra financeira `FP = RE + CP`.
 
 ### TASK-037: Implementar testes com Testcontainers (excecao de Docker permitida)
-- [ ] `TASK-037` concluida
+- [x] `TASK-037` concluida
 - **Instrucao:** Criar testes de contrato com PostgreSQL/Redis efemeros via testcontainers.
 - **Local fisico:** `Packages/Backend/tests/contract/*`.
 - **Motivo:** Validar integrações reais sem mock excessivo.
 - **Fluxo:** `04FLUXOS` secao 5, 6 e 7.
 - **Pagina/Tela:** Impacta backend de todas as telas.
 - **Subtarefas:**
-  - [ ] Subir banco efemero por suite.
-  - [ ] Rodar migrations + seed de teste.
-  - [ ] Executar cenarios criticos de API fim a fim.
+  - [x] Subir banco efemero por suite.
+  - [x] Rodar migrations + seed de teste.
+  - [x] Executar cenarios criticos de API fim a fim.
 
 ### TASK-038: Implementar testes frontend-admin
-- [ ] `TASK-038` concluida
+- [x] `TASK-038` concluida
 - **Instrucao:** Criar testes unitarios de componentes e E2E das rotas admin.
 - **Local fisico:** `Packages/Frontend-admin/tests/*`.
 - **Motivo:** Garantir confiabilidade da operacao administrativa.
 - **Fluxo:** `04FLUXOS` (governanca dos fluxos operacionais).
 - **Pagina/Tela:** `/admin/login`, `/admin/dashboard`, `/admin/orders`, `/admin/pricing`, `/admin/payments`.
 - **Subtarefas:**
-  - [ ] Testar guards de autenticacao.
-  - [ ] Testar listagens/tabelas com filtros.
-  - [ ] Testar update de regras de preco.
+  - [x] Testar guards de autenticacao.
+  - [x] Testar listagens/tabelas com filtros.
+  - [x] Testar update de regras de preco.
 
 ### TASK-039: Implementar testes frontend-rider (widget + integracao)
 - [ ] `TASK-039` concluida

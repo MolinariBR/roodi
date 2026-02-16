@@ -8,7 +8,9 @@
     "start": "next start -p 3001",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"No tests configured yet\""
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run tests/unit",
+    "test:e2e": "vitest run tests/e2e"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.37.4",
@@ -22,6 +24,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/node": "20.17.19",
     "@types/prop-types": "15.7.14",
     "@types/react": "18.3.18",
@@ -31,6 +34,7 @@
     "eslint-config-next": "14.2.25",
     "postcss": "8.5.2",
     "tailwindcss": "3.4.17",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "vitest": "^4.0.18"
   }
 }

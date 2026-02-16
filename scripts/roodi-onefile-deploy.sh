@@ -88,18 +88,35 @@ ensure_repo_location() {
     log "Repo atual: ${REPO_DIR}"
     log "Movendo para ${ROODI_APP_DIR} (idempotente)"
     mkdir -p "$(dirname "${ROODI_APP_DIR}")"
-    if [[ -d "${ROODI_APP_DIR}/.git" ]]; then
-      log "Destino ja contem um repo. Usando ${ROODI_APP_DIR} como fonte."
+    mkdir -p "${ROODI_APP_DIR}"
+    # Source of truth is where the script is executed (REPO_DIR).
+    # Always sync to /opt/roodi/app to avoid stale files there.
+    if command -v rsync >/dev/null 2>&1; then
+      rsync -a --delete \
+        --exclude 'node_modules' \
+        --exclude '.next' \
+        --exclude 'dist' \
+        --exclude 'build' \
+        "${REPO_DIR}/" "${ROODI_APP_DIR}/"
     else
-      rm -rf "${ROODI_APP_DIR}"
-      mkdir -p "${ROODI_APP_DIR}"
-      # Preserve .git and permissions; fastest is rsync
-      if command -v rsync >/dev/null 2>&1; then
-        rsync -a --delete "${REPO_DIR}/" "${ROODI_APP_DIR}/"
-      else
-        cp -a "${REPO_DIR}/." "${ROODI_APP_DIR}/"
-      fi
+      cp -a "${REPO_DIR}/." "${ROODI_APP_DIR}/"
     fi
+  fi
+}
+
+validate_backend_env() {
+  local env_file="${BACKEND_DIR}/.env.production"
+  [[ -f "${env_file}" ]] || fail "Arquivo ausente: ${env_file}"
+
+  local database_url
+  database_url="$(grep -m1 '^DATABASE_URL=' "${env_file}" | cut -d= -f2-)"
+  [[ -n "${database_url}" ]] || fail "DATABASE_URL vazio em ${env_file}"
+
+  if [[ "${database_url}" == *"<user>"* || "${database_url}" == *"<password>"* || "${database_url}" == *"<host>"* ]]; then
+    fail "DATABASE_URL ainda contem placeholders (<user>/<password>/<host>) em ${env_file}."
+  fi
+  if [[ "${database_url}" == *"ROODI_DB_PASSWORD="* ]]; then
+    fail "DATABASE_URL parece corrompido (contendo ROODI_DB_PASSWORD=) em ${env_file}."
   fi
 }
 
@@ -150,12 +167,9 @@ ensure_postgres_db_user() {
   database_url="$(grep -m1 '^DATABASE_URL=' "${env_file}" | cut -d= -f2-)"
   [[ -n "${database_url}" ]] || fail "DATABASE_URL vazio em ${env_file}"
 
-  # Protecao contra placeholders e URLs corrompidas (ja aconteceu na VPS).
-  if [[ "${database_url}" == *"<user>"* || "${database_url}" == *"<password>"* || "${database_url}" == *"<host>"* ]]; then
-    fail "DATABASE_URL ainda contem placeholders (<user>/<password>/<host>) em ${env_file}."
-  fi
+  # Basic validation already done earlier, but keep safety here too.
   if [[ "${database_url}" == *"ROODI_DB_PASSWORD="* ]]; then
-    fail "DATABASE_URL parece corrompido (contendo ROODI_DB_PASSWORD=) em ${env_file}. Corrija o arquivo antes de continuar."
+    fail "DATABASE_URL parece corrompido (contendo ROODI_DB_PASSWORD=) em ${env_file}."
   fi
 
   # Parse robusto do DATABASE_URL (suporta URL encoding).
@@ -403,18 +417,16 @@ healthcheck() {
 
 main() {
   ensure_dirs
-  install_system_deps
-
-  # ripgrep used only to re-read secrets if needed; install minimal
-  if ! command -v rg >/dev/null 2>&1; then
-    apt-get install -y ripgrep
-  fi
-
   ensure_repo_location
 
   [[ -d "${BACKEND_DIR}" ]] || fail "backend nao encontrado em ${BACKEND_DIR}"
   [[ -d "${ADMIN_DIR}" ]] || fail "frontend-admin nao encontrado em ${ADMIN_DIR}"
   [[ -d "${LANDING_DIR}" ]] || fail "landing nao encontrada em ${LANDING_DIR}"
+
+  # Fail fast on env problems before running apt-get (saves VPS resources).
+  validate_backend_env
+
+  install_system_deps
 
   ensure_postgres_db_user
   ensure_env_files

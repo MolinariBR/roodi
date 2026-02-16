@@ -202,7 +202,7 @@ ensure_swap() {
     return 0
   fi
 
-  if swapon --show | rg -q '^/swapfile' 2>/dev/null; then
+  if swapon --show | grep -q '^/swapfile' 2>/dev/null; then
     log "Swap ja configurado (/swapfile)"
     return 0
   fi

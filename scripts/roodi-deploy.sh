@@ -115,7 +115,7 @@ log "Executando migracoes de banco"
 ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
 log "Prisma generate (backend)"
-npm --prefix "${BACKEND_DIR}" exec prisma generate
+(cd "${BACKEND_DIR}" && npx prisma generate --schema prisma/schema.prisma)
 
 log "Gerando builds de producao"
 npm --prefix "${BACKEND_DIR}" run build

@@ -49,7 +49,11 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-ROODI_APP_DIR="${ROODI_APP_DIR:-/opt/roodi/app}"
+#
+# IMPORTANT:
+# Default to using the repo where the script is executed (avoids stale copies in /opt/roodi/app).
+# If you really want /opt/roodi/app, clone the repo there and export ROODI_APP_DIR=/opt/roodi/app.
+ROODI_APP_DIR="${ROODI_APP_DIR:-${REPO_DIR}}"
 ROODI_SHARED_DIR="${ROODI_SHARED_DIR:-/opt/roodi/shared}"
 ROODI_DOMAIN_API="${ROODI_DOMAIN_API:-api.roodi.app}"
 ROODI_DOMAIN_ADMIN="${ROODI_DOMAIN_ADMIN:-admin.roodi.app}"
@@ -121,17 +125,31 @@ validate_backend_env() {
 }
 
 install_system_deps() {
-  log "Instalando dependencias do sistema (apt)"
-  export DEBIAN_FRONTEND=noninteractive
+  # Avoid draining VPS resources by re-running apt-get on every execution.
+  local has_all="true"
+  for cmd in git curl nginx certbot psql redis-server openssl node npm; do
+    if ! command -v "${cmd}" >/dev/null 2>&1; then
+      has_all="false"
+      break
+    fi
+  done
 
-  apt-get update -y
-  apt-get install -y --no-install-recommends \
-    ca-certificates curl gnupg git \
-    nginx \
-    certbot python3-certbot-nginx \
-    redis-server \
-    postgresql postgresql-contrib \
-    openssl
+  if [[ "${has_all}" == "true" ]] && command -v pm2 >/dev/null 2>&1; then
+    log "Dependencias do sistema ja instaladas. Pulando apt-get."
+  else
+    log "Instalando dependencias do sistema (apt)"
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get update -y
+    apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg git \
+      nginx \
+      certbot python3-certbot-nginx \
+      redis-server \
+      postgresql postgresql-contrib \
+      openssl \
+      python3
+  fi
 
   # Node.js 20 LTS (NodeSource)
   if ! command -v node >/dev/null 2>&1; then
@@ -399,7 +417,7 @@ install_and_build() {
   # Critical: prisma migrate does NOT guarantee client generation.
   # Build depends on a Prisma Client that matches prisma/schema.prisma.
   log "Prisma generate (backend)"
-  npm --prefix "${BACKEND_DIR}" exec prisma generate
+  (cd "${BACKEND_DIR}" && npx prisma generate --schema prisma/schema.prisma)
 
   log "Build (backend/admin/landing)"
   npm --prefix "${BACKEND_DIR}" run build

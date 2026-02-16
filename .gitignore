@@ -40,6 +40,10 @@ __pycache__/
 **/.env
 **/.env.*
 !**/.env.example
+!.env.development
+!.env.production
+!**/.env.development
+!**/.env.production
 
 # Flutter / Dart
 .dart_tool/

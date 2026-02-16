@@ -114,6 +114,9 @@ npm --prefix "${LANDING_DIR}" install --include=dev
 log "Executando migracoes de banco"
 ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
+log "Prisma generate (backend)"
+npm --prefix "${BACKEND_DIR}" exec prisma generate
+
 log "Gerando builds de producao"
 npm --prefix "${BACKEND_DIR}" run build
 npm --prefix "${ADMIN_DIR}" run build

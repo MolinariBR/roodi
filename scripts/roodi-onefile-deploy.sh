@@ -396,6 +396,11 @@ install_and_build() {
   log "Migrations (backend)"
   ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
+  # Critical: prisma migrate does NOT guarantee client generation.
+  # Build depends on a Prisma Client that matches prisma/schema.prisma.
+  log "Prisma generate (backend)"
+  npm --prefix "${BACKEND_DIR}" exec prisma generate
+
   log "Build (backend/admin/landing)"
   npm --prefix "${BACKEND_DIR}" run build
   npm --prefix "${ADMIN_DIR}" run build

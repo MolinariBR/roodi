@@ -61,3 +61,6 @@ IP DIGITAL OCEAN: 129.212.198.174
 roodi.app = Landing Page "Roodi"
 api.roodi.app = Backend
 admin.roodi.app = Frontend-admin
+
+
+teste

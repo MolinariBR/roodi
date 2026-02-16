@@ -19,7 +19,6 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
   bool _isLoading = true;
   String? _errorMessage;
 
-  CommerceProfileData? _profile;
   CommerceCreditsBalanceData? _balance;
   List<CommerceOrderData> _orders = const <CommerceOrderData>[];
 
@@ -31,7 +30,6 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final profileName = _profile?.name ?? 'Painel da Empresa';
     final activeOrder = _orders.firstWhere(
       (item) => !_isFinalStatus(item.status),
       orElse: () => _orders.isNotEmpty ? _orders.first : _emptyOrder(),
@@ -45,6 +43,7 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -64,27 +63,13 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
             PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
           ],
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'Comerciante',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
-            ),
-            Text(
-              profileName,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Roodi',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -281,7 +266,7 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
           Row(
             children: <Widget>[
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: OutlinedButton(
                   onPressed: hasActiveOrder
                       ? () => _cancelOrder(activeOrder.id)
@@ -305,7 +290,7 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
               ),
               const SizedBox(width: 8),
               Expanded(
-                flex: 7,
+                flex: 6,
                 child: ElevatedButton.icon(
                   onPressed: hasActiveOrder
                       ? () => context.go(
@@ -323,7 +308,7 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
                   ),
                   icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                   label: Text(
-                    hasActiveOrder ? 'Acompanhar Tracking' : 'Chamar Rider',
+                    hasActiveOrder ? 'Acompanhar' : 'Chamar Rider',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -774,7 +759,6 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
     try {
       final repository = ref.read(commerceRepositoryProvider);
       final results = await Future.wait<Object>(<Future<Object>>[
-        repository.getProfile(),
         repository.getCreditsBalance(),
         repository.getOrders(limit: 20),
       ]);
@@ -784,9 +768,8 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
       }
 
       setState(() {
-        _profile = results[0] as CommerceProfileData;
-        _balance = results[1] as CommerceCreditsBalanceData;
-        _orders = (results[2] as CommerceOrderListData).items;
+        _balance = results[0] as CommerceCreditsBalanceData;
+        _orders = (results[1] as CommerceOrderListData).items;
       });
     } catch (error) {
       if (!mounted) {
@@ -808,84 +791,100 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
   }
 
   Future<void> _cancelOrder(String orderId) async {
-    final reasonController = TextEditingController();
-    final detailsController = TextEditingController();
+    String reason = '';
+    String details = '';
 
-    final shouldCancel = await showModalBottomSheet<bool>(
+    final formData = await showModalBottomSheet<_CancelOrderFormData>(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0xFF0A0B0C),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            20,
-            16,
-            20,
-            20 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Text(
-                'Cancelar chamado',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+      builder: (modalContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.viewInsetsOf(context).bottom,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text(
+                        'Cancelar chamado',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        autofocus: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: _sheetInputDecoration('Motivo'),
+                        onChanged: (value) {
+                          reason = value;
+                          setModalState(() {});
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        maxLines: 2,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: _sheetInputDecoration(
+                          'Detalhes (opcional)',
+                        ),
+                        onChanged: (value) {
+                          details = value;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Voltar'),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: reason.trim().isEmpty
+                                  ? null
+                                  : () {
+                                      Navigator.of(context).pop(
+                                        _CancelOrderFormData(
+                                          reason: reason.trim(),
+                                          details: details.trim().isEmpty
+                                              ? null
+                                              : details.trim(),
+                                        ),
+                                      );
+                                    },
+                              child: const Text('Cancelar chamado'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: reasonController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _sheetInputDecoration('Motivo'),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: detailsController,
-                maxLines: 2,
-                style: const TextStyle(color: Colors.white),
-                decoration: _sheetInputDecoration('Detalhes (opcional)'),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Voltar'),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (reasonController.text.trim().isEmpty) {
-                          return;
-                        }
-                        Navigator.of(context).pop(true);
-                      },
-                      child: const Text('Cancelar chamado'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
 
-    final reason = reasonController.text.trim();
-    final details = detailsController.text.trim();
-    reasonController.dispose();
-    detailsController.dispose();
-
-    if (shouldCancel != true || reason.isEmpty) {
+    if (formData == null) {
       return;
     }
 
@@ -894,8 +893,8 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
           .read(commerceRepositoryProvider)
           .cancelOrder(
             orderId: orderId,
-            reason: reason,
-            details: details.isEmpty ? null : details,
+            reason: formData.reason,
+            details: formData.details,
           );
       if (!mounted) {
         return;
@@ -1041,4 +1040,11 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
       createdAt: DateTime.now(),
     );
   }
+}
+
+class _CancelOrderFormData {
+  const _CancelOrderFormData({required this.reason, this.details});
+
+  final String reason;
+  final String? details;
 }

@@ -59,27 +59,13 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
             PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
           ],
         ),
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Comerciante',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
-            ),
-            Text(
-              'Clientes da Empresa',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Clientes da Empresa',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         actions: <Widget>[
           IconButton(

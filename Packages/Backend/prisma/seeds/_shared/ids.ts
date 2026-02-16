@@ -81,10 +81,129 @@ export const seedIds = {
   },
   finance: {
     paymentIntentCentroCreditPurchase: "00000000-0000-0000-0000-000000001001",
+    paymentIntentFarmaciaFailed: "00000000-0000-0000-0000-000000001002",
+    paymentIntentCentroCanceled: "00000000-0000-0000-0000-000000001003",
     paymentTransactionCentroApproved: "00000000-0000-0000-0000-000000001011",
+    paymentTransactionFarmaciaFailed: "00000000-0000-0000-0000-000000001012",
+    paymentTransactionCentroCanceled: "00000000-0000-0000-0000-000000001013",
     creditsLedgerCentroCredit: "00000000-0000-0000-0000-000000001021",
     creditsLedgerCentroOrderDebit: "00000000-0000-0000-0000-000000001022",
     webhookIdempotencyCentroApproved:
       "infinitepay:payment.approved:NSU-DEV-0001",
+    webhookIdempotencyFarmaciaFailed:
+      "infinitepay:payment.failed:NSU-DEV-0002",
+    webhookIdempotencyCentroCanceled:
+      "infinitepay:payment.canceled:NSU-DEV-0003",
+  },
+  notifications: {
+    templates: {
+      orderCreatedInApp: "00000000-0000-0000-0000-000000001101",
+      orderCreatedPush: "00000000-0000-0000-0000-000000001102",
+      orderStatusInApp: "00000000-0000-0000-0000-000000001103",
+      paymentApprovedInApp: "00000000-0000-0000-0000-000000001104",
+      supportUpdatedInApp: "00000000-0000-0000-0000-000000001105",
+    },
+    items: {
+      riderOfferPending: "00000000-0000-0000-0000-000000001121",
+      riderOrderInProgress: "00000000-0000-0000-0000-000000001122",
+      commerceOrderCreated: "00000000-0000-0000-0000-000000001123",
+      commercePaymentApproved: "00000000-0000-0000-0000-000000001124",
+      adminSupportOpened: "00000000-0000-0000-0000-000000001125",
+      adminSystemWarning: "00000000-0000-0000-0000-000000001126",
+    },
+  },
+  support: {
+    faqs: {
+      howToCallRider: "00000000-0000-0000-0000-000000001201",
+      riderNoShow: "00000000-0000-0000-0000-000000001202",
+      paymentDelay: "00000000-0000-0000-0000-000000001203",
+      updateDocuments: "00000000-0000-0000-0000-000000001204",
+    },
+    tickets: {
+      commerceLateDelivery: "00000000-0000-0000-0000-000000001221",
+      riderAddressIssue: "00000000-0000-0000-0000-000000001222",
+      commercePaymentReconcile: "00000000-0000-0000-0000-000000001223",
+      commerceClientNotFound: "00000000-0000-0000-0000-000000001224",
+      riderAppCrash: "00000000-0000-0000-0000-000000001225",
+      commerceDoubleCharge: "00000000-0000-0000-0000-000000001226",
+      riderUnsafeRoute: "00000000-0000-0000-0000-000000001227",
+      commerceMissingProduct: "00000000-0000-0000-0000-000000001228",
+      riderDocumentReview: "00000000-0000-0000-0000-000000001229",
+    },
+    messages: {
+      ticket1AdminNote: "00000000-0000-0000-0000-000000001241",
+      ticket2AdminNote: "00000000-0000-0000-0000-000000001242",
+      ticket3AdminNote: "00000000-0000-0000-0000-000000001243",
+      ticket4AdminNote: "00000000-0000-0000-0000-000000001244",
+      ticket5AdminNote: "00000000-0000-0000-0000-000000001245",
+      ticket6AdminNote: "00000000-0000-0000-0000-000000001246",
+      ticket7AdminNote: "00000000-0000-0000-0000-000000001247",
+      ticket8AdminNote: "00000000-0000-0000-0000-000000001248",
+      ticket9AdminNote: "00000000-0000-0000-0000-000000001249",
+    },
+  },
+  quotes: {
+    successCentroBacuri: "00000000-0000-0000-0000-000000001301",
+    failureCentroSaoJose: "00000000-0000-0000-0000-000000001302",
+  },
+  dispatch: {
+    batches: {
+      searchingRiderBatch1: "00000000-0000-0000-0000-000000001321",
+      toCustomerBatch1: "00000000-0000-0000-0000-000000001322",
+      searchingRiderBatch2: "00000000-0000-0000-0000-000000001323",
+    },
+    offers: {
+      searchingJoaoPending: "00000000-0000-0000-0000-000000001341",
+      searchingMariaRejected: "00000000-0000-0000-0000-000000001342",
+      searchingPedroExpired: "00000000-0000-0000-0000-000000001343",
+      toCustomerMariaAccepted: "00000000-0000-0000-0000-000000001344",
+      searchingJoaoNoResponse: "00000000-0000-0000-0000-000000001345",
+      searchingMariaPendingBatch2: "00000000-0000-0000-0000-000000001346",
+      searchingPedroRejectedBatch2: "00000000-0000-0000-0000-000000001347",
+    },
+  },
+  orderLifecycle: {
+    created: "00000000-0000-0000-0000-000000001401",
+    riderAssigned: "00000000-0000-0000-0000-000000001402",
+    toMerchant: "00000000-0000-0000-0000-000000001403",
+    atMerchant: "00000000-0000-0000-0000-000000001404",
+    waitingOrder: "00000000-0000-0000-0000-000000001405",
+    atCustomer: "00000000-0000-0000-0000-000000001406",
+    finishingDelivery: "00000000-0000-0000-0000-000000001407",
+    canceled: "00000000-0000-0000-0000-000000001408",
+  },
+  confirmations: {
+    completedOrderCode: "00000000-0000-0000-0000-000000001451",
+    atCustomerOrderCode: "00000000-0000-0000-0000-000000001452",
+  },
+  legal: {
+    termosV1: "00000000-0000-0000-0000-000000001501",
+    privacidadeV1: "00000000-0000-0000-0000-000000001502",
+    cookiesV1: "00000000-0000-0000-0000-000000001503",
+  },
+  publicLeads: {
+    commerceLead: "00000000-0000-0000-0000-000000001521",
+    riderLead: "00000000-0000-0000-0000-000000001522",
+    partnerLead: "00000000-0000-0000-0000-000000001523",
+  },
+  observability: {
+    authOtpChallenges: {
+      riderJoaoReset: "00000000-0000-0000-0000-000000001601",
+      commerceCentroReset: "00000000-0000-0000-0000-000000001602",
+    },
+    authRefreshJti: {
+      adminActive: "seed-jti-admin-active-0001",
+      commerceRevoked: "seed-jti-commerce-revoked-0001",
+    },
+    auditRequestIds: {
+      quoteCreated: "seed-req-quote-created-0001",
+      paymentApproved: "seed-req-payment-approved-0001",
+      supportUpdate: "seed-req-support-update-0001",
+    },
+  },
+  riderLedger: {
+    joaoCompletedOrderCredit: "00000000-0000-0000-0000-000000001701",
+    mariaPendingDeliveryCredit: "00000000-0000-0000-0000-000000001702",
+    joaoAdjustment: "00000000-0000-0000-0000-000000001703",
   },
 } as const;

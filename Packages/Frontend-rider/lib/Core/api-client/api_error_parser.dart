@@ -9,6 +9,24 @@ String mapApiErrorMessage(
     if (responseData is Map<String, dynamic>) {
       final payloadError = responseData['error'];
       if (payloadError is Map<String, dynamic>) {
+        final details = payloadError['details'];
+        if (details is Map<String, dynamic>) {
+          final issues = details['issues'];
+          if (issues is List && issues.isNotEmpty) {
+            final firstIssue = issues.first;
+            if (firstIssue is Map<String, dynamic>) {
+              final issuePath = firstIssue['path'];
+              final issueMessage = firstIssue['message'];
+              if (issueMessage is String && issueMessage.trim().isNotEmpty) {
+                if (issuePath is String && issuePath.trim().isNotEmpty) {
+                  return '${issuePath.trim()}: ${issueMessage.trim()}';
+                }
+                return issueMessage.trim();
+              }
+            }
+          }
+        }
+
         final message = payloadError['message'];
         if (message is String && message.trim().isNotEmpty) {
           return message.trim();

@@ -160,7 +160,7 @@ const PRODUCTS: ReadonlyArray<ProductSeed> = [
     priceBrl: "8.00",
     stock: 60,
     soldCount: 20,
-    status: "active",
+    status: "paused",
   },
   {
     id: seedIds.commerceData.products.centroSobremesaPudim,
@@ -220,7 +220,7 @@ const PRODUCTS: ReadonlyArray<ProductSeed> = [
     priceBrl: "19.00",
     stock: 75,
     soldCount: 25,
-    status: "active",
+    status: "hidden",
   },
 ];
 

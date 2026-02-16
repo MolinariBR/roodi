@@ -43,13 +43,14 @@ class _RiderOrdersPageState extends ConsumerState<RiderOrdersPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         titleSpacing: 0,
         leading: IconButton(
           onPressed: () => _goBack(session),
           icon: const Icon(Icons.arrow_back_rounded),
         ),
         title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
               'Rider',

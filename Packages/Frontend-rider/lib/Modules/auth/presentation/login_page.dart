@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../Core/api-client/api_error_parser.dart';
 import '../../../Core/design-system/tokens/color_tokens.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../../../Core/state/session_controller.dart';
@@ -477,13 +478,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             password: _passwordController.text,
             context: _selectedContext,
           );
-    } catch (_) {
+    } catch (error) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _errorMessage =
-            'Falha no login. Verifique e-mail/senha e tente novamente.';
+        _errorMessage = mapApiErrorMessage(
+          error,
+          fallbackMessage:
+              'Falha no login. Verifique e-mail/senha e tente novamente.',
+        );
       });
       return;
     } finally {

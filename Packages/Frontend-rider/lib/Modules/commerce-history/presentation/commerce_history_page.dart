@@ -49,6 +49,7 @@ class _CommerceHistoryPageState extends ConsumerState<CommerceHistoryPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -68,27 +69,13 @@ class _CommerceHistoryPageState extends ConsumerState<CommerceHistoryPage> {
             PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
           ],
         ),
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Comerciante',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
-            ),
-            Text(
-              'Histórico de Chamados',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Histórico de Chamados',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -198,8 +185,11 @@ class _CommerceHistoryPageState extends ConsumerState<CommerceHistoryPage> {
       ),
       child: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 4,
             children: <Widget>[
               Container(
                 width: 22,
@@ -211,9 +201,9 @@ class _CommerceHistoryPageState extends ConsumerState<CommerceHistoryPage> {
                 alignment: Alignment.center,
                 child: Icon(icon, size: 14, color: iconColor),
               ),
-              const SizedBox(width: 6),
               Text(
                 label,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Color(0xFFCBD5E1),
                   fontSize: 11,

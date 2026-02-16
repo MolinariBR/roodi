@@ -15,6 +15,28 @@ const CENTER_CREDIT_PURCHASE = {
   webhookProcessedAt: new Date("2026-02-13T18:40:16.000Z"),
 };
 
+const FARMACIA_CREDIT_PURCHASE_FAILED = {
+  orderNsu: "NSU-DEV-0002",
+  transactionNsu: "TXN-DEV-0002",
+  invoiceSlug: "inv-roodi-dev-0002",
+  amountBrl: "60.00",
+  amountCents: 6000,
+  checkoutUrl: "https://checkout.infinitepay.io/dev/nsu-dev-0002",
+  webhookReceivedAt: new Date("2026-02-13T20:10:05.000Z"),
+  webhookProcessedAt: new Date("2026-02-13T20:10:06.000Z"),
+};
+
+const CENTER_CREDIT_PURCHASE_CANCELED = {
+  orderNsu: "NSU-DEV-0003",
+  transactionNsu: "TXN-DEV-0003",
+  invoiceSlug: "inv-roodi-dev-0003",
+  amountBrl: "45.00",
+  amountCents: 4500,
+  checkoutUrl: "https://checkout.infinitepay.io/dev/nsu-dev-0003",
+  webhookReceivedAt: new Date("2026-02-13T21:15:00.000Z"),
+  webhookProcessedAt: new Date("2026-02-13T21:15:01.000Z"),
+};
+
 const ORDER_FINANCIALS_COMPLETED = {
   freightPlatformBrl: "13.00",
   riderRepassBrl: "12.00",
@@ -32,6 +54,32 @@ function buildWebhookPayload(): Prisma.InputJsonValue {
     amount_cents: CENTER_CREDIT_PURCHASE.amountCents,
     status: "approved",
     paid_at: CENTER_CREDIT_PURCHASE.approvedAt.toISOString(),
+  };
+}
+
+function buildFailedWebhookPayload(): Prisma.InputJsonValue {
+  return {
+    provider: "infinitepay",
+    event: "payment.failed",
+    order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu,
+    transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+    invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+    amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+    status: "failed",
+    reason: "gateway_declined",
+  };
+}
+
+function buildCanceledWebhookPayload(): Prisma.InputJsonValue {
+  return {
+    provider: "infinitepay",
+    event: "payment.canceled",
+    order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu,
+    transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+    invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+    amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+    status: "canceled",
+    reason: "user_aborted_checkout",
   };
 }
 
@@ -286,4 +334,258 @@ export async function seedFinance({ prisma }: SeedContext): Promise<void> {
   if (fp !== re + cp) {
     throw new Error("Regra financeira invalida no seed: FP deve ser RE + CP.");
   }
+
+  await prisma.payment_intents.upsert({
+    where: { order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu },
+    update: {
+      commerce_user_id: seedIds.users.commerceFarmacia,
+      provider: "infinitepay",
+      purpose: "credit_purchase",
+      status: "failed",
+      amount_brl: FARMACIA_CREDIT_PURCHASE_FAILED.amountBrl,
+      amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+      provider_handle: `ip-checkout-${FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu.toLowerCase()}`,
+      checkout_url: FARMACIA_CREDIT_PURCHASE_FAILED.checkoutUrl,
+      redirect_url: FARMACIA_CREDIT_PURCHASE_FAILED.checkoutUrl,
+      webhook_url: "http://localhost:3333/v1/payments/infinitepay/webhook",
+      request_payload: {
+        amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+        purpose: "credit_purchase",
+      },
+      response_payload: {
+        status: "failed",
+        invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+        transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      },
+      expires_at: null,
+    },
+    create: {
+      id: seedIds.finance.paymentIntentFarmaciaFailed,
+      commerce_user_id: seedIds.users.commerceFarmacia,
+      provider: "infinitepay",
+      purpose: "credit_purchase",
+      status: "failed",
+      amount_brl: FARMACIA_CREDIT_PURCHASE_FAILED.amountBrl,
+      amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+      provider_handle: `ip-checkout-${FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu.toLowerCase()}`,
+      order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu,
+      checkout_url: FARMACIA_CREDIT_PURCHASE_FAILED.checkoutUrl,
+      redirect_url: FARMACIA_CREDIT_PURCHASE_FAILED.checkoutUrl,
+      webhook_url: "http://localhost:3333/v1/payments/infinitepay/webhook",
+      request_payload: {
+        amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+        purpose: "credit_purchase",
+      },
+      response_payload: {
+        status: "failed",
+        invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+        transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      },
+      expires_at: null,
+    },
+  });
+
+  await prisma.payment_intents.upsert({
+    where: { order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu },
+    update: {
+      commerce_user_id: seedIds.users.commerceCentro,
+      provider: "infinitepay",
+      purpose: "credit_purchase",
+      status: "canceled",
+      amount_brl: CENTER_CREDIT_PURCHASE_CANCELED.amountBrl,
+      amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+      provider_handle: `ip-checkout-${CENTER_CREDIT_PURCHASE_CANCELED.orderNsu.toLowerCase()}`,
+      checkout_url: CENTER_CREDIT_PURCHASE_CANCELED.checkoutUrl,
+      redirect_url: CENTER_CREDIT_PURCHASE_CANCELED.checkoutUrl,
+      webhook_url: "http://localhost:3333/v1/payments/infinitepay/webhook",
+      request_payload: {
+        amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+        purpose: "credit_purchase",
+      },
+      response_payload: {
+        status: "canceled",
+        invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+        transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      },
+      expires_at: null,
+    },
+    create: {
+      id: seedIds.finance.paymentIntentCentroCanceled,
+      commerce_user_id: seedIds.users.commerceCentro,
+      provider: "infinitepay",
+      purpose: "credit_purchase",
+      status: "canceled",
+      amount_brl: CENTER_CREDIT_PURCHASE_CANCELED.amountBrl,
+      amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+      provider_handle: `ip-checkout-${CENTER_CREDIT_PURCHASE_CANCELED.orderNsu.toLowerCase()}`,
+      order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu,
+      checkout_url: CENTER_CREDIT_PURCHASE_CANCELED.checkoutUrl,
+      redirect_url: CENTER_CREDIT_PURCHASE_CANCELED.checkoutUrl,
+      webhook_url: "http://localhost:3333/v1/payments/infinitepay/webhook",
+      request_payload: {
+        amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+        purpose: "credit_purchase",
+      },
+      response_payload: {
+        status: "canceled",
+        invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+        transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      },
+      expires_at: null,
+    },
+  });
+
+  const failedPaymentIntent = await prisma.payment_intents.findUniqueOrThrow({
+    where: { order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu },
+    select: { id: true },
+  });
+
+  const canceledPaymentIntent = await prisma.payment_intents.findUniqueOrThrow({
+    where: { order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu },
+    select: { id: true },
+  });
+
+  await prisma.payment_transactions.upsert({
+    where: { id: seedIds.finance.paymentTransactionFarmaciaFailed },
+    update: {
+      payment_intent_id: failedPaymentIntent.id,
+      provider: "infinitepay",
+      status: "failed",
+      invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+      transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      capture_method: "pix",
+      amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+      paid_amount_cents: null,
+      installments: 1,
+      receipt_url: null,
+      provider_payload: {
+        gateway: "infinitepay",
+        status: "failed",
+        reason: "gateway_declined",
+      },
+      approved_at: null,
+    },
+    create: {
+      id: seedIds.finance.paymentTransactionFarmaciaFailed,
+      payment_intent_id: failedPaymentIntent.id,
+      provider: "infinitepay",
+      status: "failed",
+      invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+      transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      capture_method: "pix",
+      amount_cents: FARMACIA_CREDIT_PURCHASE_FAILED.amountCents,
+      paid_amount_cents: null,
+      installments: 1,
+      receipt_url: null,
+      provider_payload: {
+        gateway: "infinitepay",
+        status: "failed",
+        reason: "gateway_declined",
+      },
+      approved_at: null,
+    },
+  });
+
+  await prisma.payment_transactions.upsert({
+    where: { id: seedIds.finance.paymentTransactionCentroCanceled },
+    update: {
+      payment_intent_id: canceledPaymentIntent.id,
+      provider: "infinitepay",
+      status: "canceled",
+      invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+      transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      capture_method: "pix",
+      amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+      paid_amount_cents: null,
+      installments: 1,
+      receipt_url: null,
+      provider_payload: {
+        gateway: "infinitepay",
+        status: "canceled",
+        reason: "user_aborted_checkout",
+      },
+      approved_at: null,
+    },
+    create: {
+      id: seedIds.finance.paymentTransactionCentroCanceled,
+      payment_intent_id: canceledPaymentIntent.id,
+      provider: "infinitepay",
+      status: "canceled",
+      invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+      transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      capture_method: "pix",
+      amount_cents: CENTER_CREDIT_PURCHASE_CANCELED.amountCents,
+      paid_amount_cents: null,
+      installments: 1,
+      receipt_url: null,
+      provider_payload: {
+        gateway: "infinitepay",
+        status: "canceled",
+        reason: "user_aborted_checkout",
+      },
+      approved_at: null,
+    },
+  });
+
+  await prisma.payment_webhook_events.upsert({
+    where: {
+      idempotency_key: seedIds.finance.webhookIdempotencyFarmaciaFailed,
+    },
+    update: {
+      provider: "infinitepay",
+      event_key: "payment.failed",
+      invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+      transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu,
+      payload: buildFailedWebhookPayload(),
+      processing_status: "processed",
+      error_message: "gateway_declined",
+      received_at: FARMACIA_CREDIT_PURCHASE_FAILED.webhookReceivedAt,
+      processed_at: FARMACIA_CREDIT_PURCHASE_FAILED.webhookProcessedAt,
+    },
+    create: {
+      provider: "infinitepay",
+      event_key: "payment.failed",
+      invoice_slug: FARMACIA_CREDIT_PURCHASE_FAILED.invoiceSlug,
+      transaction_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.transactionNsu,
+      order_nsu: FARMACIA_CREDIT_PURCHASE_FAILED.orderNsu,
+      idempotency_key: seedIds.finance.webhookIdempotencyFarmaciaFailed,
+      payload: buildFailedWebhookPayload(),
+      processing_status: "processed",
+      error_message: "gateway_declined",
+      received_at: FARMACIA_CREDIT_PURCHASE_FAILED.webhookReceivedAt,
+      processed_at: FARMACIA_CREDIT_PURCHASE_FAILED.webhookProcessedAt,
+    },
+  });
+
+  await prisma.payment_webhook_events.upsert({
+    where: {
+      idempotency_key: seedIds.finance.webhookIdempotencyCentroCanceled,
+    },
+    update: {
+      provider: "infinitepay",
+      event_key: "payment.canceled",
+      invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+      transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu,
+      payload: buildCanceledWebhookPayload(),
+      processing_status: "processed",
+      error_message: "user_aborted_checkout",
+      received_at: CENTER_CREDIT_PURCHASE_CANCELED.webhookReceivedAt,
+      processed_at: CENTER_CREDIT_PURCHASE_CANCELED.webhookProcessedAt,
+    },
+    create: {
+      provider: "infinitepay",
+      event_key: "payment.canceled",
+      invoice_slug: CENTER_CREDIT_PURCHASE_CANCELED.invoiceSlug,
+      transaction_nsu: CENTER_CREDIT_PURCHASE_CANCELED.transactionNsu,
+      order_nsu: CENTER_CREDIT_PURCHASE_CANCELED.orderNsu,
+      idempotency_key: seedIds.finance.webhookIdempotencyCentroCanceled,
+      payload: buildCanceledWebhookPayload(),
+      processing_status: "processed",
+      error_message: "user_aborted_checkout",
+      received_at: CENTER_CREDIT_PURCHASE_CANCELED.webhookReceivedAt,
+      processed_at: CENTER_CREDIT_PURCHASE_CANCELED.webhookProcessedAt,
+    },
+  });
 }

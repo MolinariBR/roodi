@@ -60,6 +60,7 @@ class _CommerceCreateCallPageState
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -80,27 +81,13 @@ class _CommerceCreateCallPageState
             PopupMenuItem<String>(value: 'profile', child: Text('Perfil')),
           ],
         ),
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Comerciante',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
-              ),
-            ),
-            Text(
-              'Novo Chamado',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Novo Chamado',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         actions: <Widget>[
           IconButton(

@@ -42,6 +42,7 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: PopupMenuButton<String>(
           icon: const Icon(Icons.menu_rounded),
           color: const Color(0xFF111214),
@@ -62,7 +63,7 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
           ],
         ),
         title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
               'Rider',
@@ -652,10 +653,48 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
   }
 
   Future<void> _openPersonalSheet(RiderProfileData profile) async {
+    String normalize(String? value) => (value ?? '').trim().toLowerCase();
+
+    bool hasAddressContent(RiderProfileAddressData? address) {
+      if (address == null) {
+        return false;
+      }
+      return <String?>[
+        address.state,
+        address.city,
+        address.neighborhood,
+        address.street,
+        address.number,
+        address.cep,
+        address.complement,
+      ].any((value) => value != null && value.trim().isNotEmpty);
+    }
+
+    bool addressesAreEqual(
+      RiderProfileAddressData? home,
+      RiderProfileAddressData? base,
+    ) {
+      if (home == null || base == null) {
+        return false;
+      }
+
+      final same =
+          normalize(home.state) == normalize(base.state) &&
+          normalize(home.city) == normalize(base.city) &&
+          normalize(home.neighborhood) == normalize(base.neighborhood) &&
+          normalize(home.street) == normalize(base.street) &&
+          normalize(home.number) == normalize(base.number) &&
+          normalize(home.cep) == normalize(base.cep) &&
+          normalize(home.complement) == normalize(base.complement);
+
+      return same && (hasAddressContent(home) || hasAddressContent(base));
+    }
+
     final nameController = TextEditingController(text: profile.name);
     final phoneController = TextEditingController(
       text: profile.phoneNumber ?? '',
     );
+    final emailController = TextEditingController(text: profile.email);
     final whatsappController = TextEditingController(
       text: profile.whatsapp ?? '',
     );
@@ -703,6 +742,24 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
     final baseComplementController = TextEditingController(
       text: profile.addressBase?.complement ?? '',
     );
+    var pointAddressSameAsHome = addressesAreEqual(
+      profile.addressHome,
+      profile.addressBase,
+    );
+
+    void copyHomeToBaseAddress() {
+      baseStateController.text = homeStateController.text;
+      baseCityController.text = homeCityController.text;
+      baseNeighborhoodController.text = homeNeighborhoodController.text;
+      baseStreetController.text = homeStreetController.text;
+      baseNumberController.text = homeNumberController.text;
+      baseCepController.text = homeCepController.text;
+      baseComplementController.text = homeComplementController.text;
+    }
+
+    if (pointAddressSameAsHome) {
+      copyHomeToBaseAddress();
+    }
 
     await _showEditSheet(
       title: 'Dados Pessoais',
@@ -714,10 +771,7 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
             _textField(nameController),
             const SizedBox(height: 10),
             _fieldLabel('E-mail'),
-            _textField(
-              TextEditingController(text: profile.email),
-              enabled: false,
-            ),
+            _textField(emailController, enabled: false),
             const SizedBox(height: 10),
             _fieldLabel('Telefone'),
             _textField(phoneController),
@@ -737,43 +791,106 @@ class _RiderProfilePageState extends ConsumerState<RiderProfilePage> {
             ),
             const SizedBox(height: 12),
             _sheetSubHeader('Endereço do Ponto'),
-            _addressBlock(
-              stateController: baseStateController,
-              cityController: baseCityController,
-              neighborhoodController: baseNeighborhoodController,
-              streetController: baseStreetController,
-              numberController: baseNumberController,
-              cepController: baseCepController,
-              complementController: baseComplementController,
+            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.03),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: CheckboxListTile(
+                value: pointAddressSameAsHome,
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setModalState(() {
+                    pointAddressSameAsHome = value;
+                    if (pointAddressSameAsHome) {
+                      copyHomeToBaseAddress();
+                    }
+                  });
+                },
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: const Color(0xFF19B3E6),
+                checkboxShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                title: const Text(
+                  'Usar o mesmo endereço da residência',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ),
+            const SizedBox(height: 8),
+            if (pointAddressSameAsHome)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: const Text(
+                  'O endereço do ponto será salvo com os mesmos dados do endereço residencial.',
+                  style: TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            else
+              _addressBlock(
+                stateController: baseStateController,
+                cityController: baseCityController,
+                neighborhoodController: baseNeighborhoodController,
+                streetController: baseStreetController,
+                numberController: baseNumberController,
+                cepController: baseCepController,
+                complementController: baseComplementController,
+              ),
           ],
         );
       },
       onSave: () async {
+        final homeAddressPayload = _buildAddressPayload(
+          state: homeStateController.text,
+          city: homeCityController.text,
+          neighborhood: homeNeighborhoodController.text,
+          street: homeStreetController.text,
+          number: homeNumberController.text,
+          cep: homeCepController.text,
+          complement: homeComplementController.text,
+        );
+
         final payload = <String, dynamic>{
           'name': nameController.text.trim(),
           if (phoneController.text.trim().isNotEmpty)
             'phone_number': phoneController.text.trim(),
           if (whatsappController.text.trim().isNotEmpty)
             'whatsapp': whatsappController.text.trim(),
-          'address_home': _buildAddressPayload(
-            state: homeStateController.text,
-            city: homeCityController.text,
-            neighborhood: homeNeighborhoodController.text,
-            street: homeStreetController.text,
-            number: homeNumberController.text,
-            cep: homeCepController.text,
-            complement: homeComplementController.text,
-          ),
-          'address_base': _buildAddressPayload(
-            state: baseStateController.text,
-            city: baseCityController.text,
-            neighborhood: baseNeighborhoodController.text,
-            street: baseStreetController.text,
-            number: baseNumberController.text,
-            cep: baseCepController.text,
-            complement: baseComplementController.text,
-          ),
+          'address_home': homeAddressPayload,
+          'address_base': pointAddressSameAsHome
+              ? Map<String, dynamic>.from(homeAddressPayload)
+              : _buildAddressPayload(
+                  state: baseStateController.text,
+                  city: baseCityController.text,
+                  neighborhood: baseNeighborhoodController.text,
+                  street: baseStreetController.text,
+                  number: baseNumberController.text,
+                  cep: baseCepController.text,
+                  complement: baseComplementController.text,
+                ),
         };
 
         await _patchProfile(payload);

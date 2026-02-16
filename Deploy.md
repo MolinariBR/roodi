@@ -55,18 +55,22 @@ Recomendacao para estabilidade de producao:
   └── ecosystem.config.cjs
 ```
 
-## 6. Variaveis de ambiente
-Arquivos de referencia no repo:
+## 6. Variaveis de ambiente (centralizadas no Backend)
+Fonte unica de verdade:
+1. `Packages/Backend/.env.development`
+2. `Packages/Backend/.env.production`
+
+Templates de referencia no repo (para saber quais variaveis cada app precisa):
 1. `Packages/Backend/.env.example`
 2. `Packages/Frontend-admin/.env.example`
 3. `Packages/Roodi/.env.example`
 
-Arquivos de producao esperados:
-1. `Packages/Backend/.env.production`
-2. `Packages/Frontend-admin/.env.production`
-3. `Packages/Roodi/.env.production`
+Como os outros pacotes consomem as variaveis:
+1. `Packages/Frontend-admin/.env.production` deve ser um symlink para `Packages/Backend/.env.production`.
+2. `Packages/Roodi/.env.production` deve ser um symlink para `Packages/Backend/.env.production`.
+3. (Opcional) fazer o mesmo para `.env.development`.
 
-Minimo para subir em producao:
+Minimo para subir em producao (dentro do `.env.production` do Backend):
 1. Backend:
    - `NODE_ENV=production`
    - `PORT=3333`

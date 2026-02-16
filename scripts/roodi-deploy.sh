@@ -86,13 +86,15 @@ require_directory "${ADMIN_DIR}"
 require_directory "${LANDING_DIR}"
 
 require_file "${BACKEND_DIR}/.env.production"
-require_file "${ADMIN_DIR}/.env.production"
-require_file "${LANDING_DIR}/.env.production"
 require_file "${PM2_ECOSYSTEM_FILE}"
 
 if [[ -n "$(git -C "${ROOT_DIR}" status --porcelain --untracked-files=no)" ]]; then
   fail "Repositorio local com alteracoes nao commitadas. Commit/stash antes do deploy."
 fi
+
+log "Garantindo symlinks de env (admin/landing -> backend)"
+ln -sf "${BACKEND_DIR}/.env.production" "${ADMIN_DIR}/.env.production"
+ln -sf "${BACKEND_DIR}/.env.production" "${LANDING_DIR}/.env.production"
 
 if [[ "${SKIP_GIT_PULL}" == "false" ]]; then
   log "Sincronizando codigo da branch ${BRANCH}"

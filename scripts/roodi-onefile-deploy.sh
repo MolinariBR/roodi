@@ -159,26 +159,19 @@ ensure_postgres_db_user() {
     chmod 600 "${ROODI_SHARED_DIR}/created-secrets.txt" || true
   fi
 
-  # Create role and db if missing
-  sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
-DO \$\$
-BEGIN
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${ROODI_DB_USER}') THEN
-    CREATE ROLE ${ROODI_DB_USER} LOGIN PASSWORD '${ROODI_DB_PASSWORD}';
-  END IF;
-END
-\$\$;
-SQL
+  # Create role if missing (works in a transaction).
+  local role_exists
+  role_exists="$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${ROODI_DB_USER}'" | tr -d '[:space:]' || true)"
+  if [[ "${role_exists}" != "1" ]]; then
+    sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE ${ROODI_DB_USER} LOGIN PASSWORD '${ROODI_DB_PASSWORD}';"
+  fi
 
-  sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
-DO \$\$
-BEGIN
-  IF NOT EXISTS (SELECT FROM pg_database WHERE datname = '${ROODI_DB_NAME}') THEN
-    CREATE DATABASE ${ROODI_DB_NAME} OWNER ${ROODI_DB_USER};
-  END IF;
-END
-\$\$;
-SQL
+  # Create database if missing (CREATE DATABASE cannot run inside DO/transaction).
+  local db_exists
+  db_exists="$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='${ROODI_DB_NAME}'" | tr -d '[:space:]' || true)"
+  if [[ "${db_exists}" != "1" ]]; then
+    sudo -u postgres createdb -O "${ROODI_DB_USER}" "${ROODI_DB_NAME}"
+  fi
 }
 
 write_env_if_missing() {
@@ -246,24 +239,9 @@ INFINITEPAY_HANDLE=
 INFINITEPAY_WEBHOOK_SECRET=
 INFINITEPAY_WEBHOOK_URL=https://${ROODI_DOMAIN_API}/v1/payments/infinitepay/webhook"
 
-  # Frontend-admin .env.production
-  write_env_if_missing "${ADMIN_DIR}/.env.production" "\
-NEXT_PUBLIC_APP_ENV=production
-NEXT_PUBLIC_WEB_URL=https://${ROODI_DOMAIN_ADMIN}
-NEXT_PUBLIC_API_BASE_URL=https://${ROODI_DOMAIN_API}
-NEXT_PUBLIC_SENTRY_DSN="
-
-  # Landing .env.production
-  write_env_if_missing "${LANDING_DIR}/.env.production" "\
-NEXT_PUBLIC_APP_ENV=production
-NEXT_PUBLIC_SITE_URL=https://${ROODI_DOMAIN_LANDING}
-NEXT_PUBLIC_API_BASE_URL=https://${ROODI_DOMAIN_API}
-LEADS_WEBHOOK_URL=https://${ROODI_DOMAIN_API}/v1/public/leads
-LEADS_WEBHOOK_TOKEN=replace_me
-ANALYTICS_PROVIDER=none
-NEXT_PUBLIC_GA_MEASUREMENT_ID=
-NEXT_PUBLIC_PLAUSIBLE_DOMAIN=
-NEXT_PUBLIC_SENTRY_DSN="
+  # Centralizacao: admin e landing leem do mesmo arquivo do backend via symlink.
+  ln -sf "${BACKEND_DIR}/.env.production" "${ADMIN_DIR}/.env.production"
+  ln -sf "${BACKEND_DIR}/.env.production" "${LANDING_DIR}/.env.production"
 }
 
 ensure_pm2_ecosystem() {
@@ -473,4 +451,3 @@ main() {
 }
 
 main
-

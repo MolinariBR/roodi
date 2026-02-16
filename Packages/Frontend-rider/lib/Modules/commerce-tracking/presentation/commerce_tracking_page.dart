@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,6 +24,8 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
 
   CommerceOrderData? _order;
   List<CommerceTrackingEventData> _events = const <CommerceTrackingEventData>[];
+  CommerceOrderPaymentStatusData? _paymentStatus;
+  bool _isPaymentActionLoading = false;
 
   @override
   void initState() {
@@ -94,7 +97,7 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
                 const SizedBox(height: 14),
                 _buildTimelineCard(),
                 const SizedBox(height: 14),
-                _buildSummaryCard(order),
+                _buildSummaryCard(order, _paymentStatus),
               ],
             ],
           ),
@@ -402,7 +405,12 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
     );
   }
 
-  Widget _buildSummaryCard(CommerceOrderData order) {
+  Widget _buildSummaryCard(
+    CommerceOrderData order,
+    CommerceOrderPaymentStatusData? paymentStatus,
+  ) {
+    final paymentLabel = _paymentStatusLabel(paymentStatus, order);
+    final showPaymentActions = _shouldShowPaymentActions(order, paymentStatus);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -433,6 +441,71 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
           ),
           const SizedBox(height: 6),
           _row(label: 'Status', value: _statusLabel(order.status)),
+          const SizedBox(height: 6),
+          _row(label: 'Pagamento', value: paymentLabel),
+          if (showPaymentActions) ...<Widget>[
+            const SizedBox(height: 10),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isPaymentActionLoading
+                        ? null
+                        : () => _payNow(order.id),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(40),
+                      backgroundColor: const Color(0xFF19B3E6),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: _isPaymentActionLoading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : const Text(
+                            'Pagar agora',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _isPaymentActionLoading ? null : _loadData,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(40),
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.14),
+                      ),
+                      foregroundColor: const Color(0xFFCBD5E1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Atualizar pagamento',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
           const SizedBox(height: 8),
           Row(
             children: <Widget>[
@@ -561,6 +634,7 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
       final results = await Future.wait<Object>(<Future<Object>>[
         repository.getOrderById(widget.orderId),
         repository.getOrderTracking(widget.orderId),
+        repository.getOrderPaymentStatus(widget.orderId),
       ]);
 
       if (!mounted) {
@@ -570,6 +644,7 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
         _order = results[0] as CommerceOrderData;
         _events = (results[1] as List<CommerceTrackingEventData>).reversed
             .toList(growable: false);
+        _paymentStatus = results[2] as CommerceOrderPaymentStatusData;
       });
     } catch (error) {
       if (!mounted) {
@@ -728,6 +803,8 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
 
   String _statusLabel(String status) {
     switch (status) {
+      case 'created':
+        return 'Aguardando pagamento';
       case 'searching_rider':
         return 'Aguardando aceite do rider';
       case 'rider_assigned':
@@ -753,6 +830,9 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
   }
 
   String _statusPill(String status) {
+    if (status == 'created') {
+      return 'Pagamento pendente';
+    }
     if (_isFinalStatus(status)) {
       return _statusLabel(status);
     }
@@ -800,6 +880,8 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
 
   Color _statusColor(String status) {
     switch (status) {
+      case 'created':
+        return const Color(0xFFFACC15);
       case 'completed':
         return const Color(0xFF86EFAC);
       case 'canceled':
@@ -832,5 +914,112 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
       return '--';
     }
     return _formatTime(_events.first.occurredAt);
+  }
+
+  bool _shouldShowPaymentActions(
+    CommerceOrderData order,
+    CommerceOrderPaymentStatusData? paymentStatus,
+  ) {
+    if (_isFinalStatus(order.status)) {
+      return false;
+    }
+
+    if (paymentStatus == null) {
+      return order.paymentRequired ?? false;
+    }
+
+    return !paymentStatus.paid;
+  }
+
+  String _paymentStatusLabel(
+    CommerceOrderPaymentStatusData? paymentStatus,
+    CommerceOrderData order,
+  ) {
+    final status = paymentStatus?.paymentStatus ?? order.paymentStatus;
+    switch (status) {
+      case 'approved':
+        return 'Aprovado';
+      case 'failed':
+        return 'Falhou';
+      case 'canceled':
+        return 'Cancelado';
+      case 'pending':
+        return 'Pendente';
+      default:
+        return (order.paymentRequired ?? false) ? 'Pendente' : 'Não aplicável';
+    }
+  }
+
+  Future<void> _payNow(String orderId) async {
+    setState(() {
+      _isPaymentActionLoading = true;
+    });
+
+    try {
+      var payment = _paymentStatus?.payment;
+
+      if (payment == null || payment.checkoutUrl.trim().isEmpty) {
+        await ref
+            .read(commerceRepositoryProvider)
+            .createOrderPaymentIntent(orderId: orderId);
+      }
+
+      final status = await ref
+          .read(commerceRepositoryProvider)
+          .getOrderPaymentStatus(orderId);
+      payment = status.payment;
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _paymentStatus = status;
+      });
+
+      final checkoutUrl = payment?.checkoutUrl;
+      if (checkoutUrl == null || checkoutUrl.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Pagamento criado, mas sem URL de checkout no momento.',
+            ),
+          ),
+        );
+        return;
+      }
+
+      await Clipboard.setData(ClipboardData(text: checkoutUrl));
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Link de pagamento copiado. Abra no navegador para concluir.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            mapApiErrorMessage(
+              error,
+              fallbackMessage: 'Não foi possível iniciar o pagamento.',
+            ),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPaymentActionLoading = false;
+        });
+      }
+    }
   }
 }

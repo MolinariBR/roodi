@@ -979,6 +979,8 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
 
   String _statusLabel(String status) {
     switch (status) {
+      case 'created':
+        return 'Aguardando pagamento';
       case 'searching_rider':
         return 'Aguardando aceite';
       case 'rider_assigned':
@@ -1004,6 +1006,8 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
 
   Color _statusColor(String status) {
     switch (status) {
+      case 'created':
+        return const Color(0xFFFCD34D);
       case 'searching_rider':
       case 'rider_assigned':
         return const Color(0xFFFCD34D);

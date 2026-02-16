@@ -184,6 +184,48 @@ class CommerceRepository {
     return CommerceOrderData.fromMap(body);
   }
 
+  Future<CommerceOrderPaymentIntentData> createOrderPaymentIntent({
+    required String orderId,
+    String? redirectUrl,
+    String? webhookUrl,
+    Map<String, dynamic>? customer,
+    Map<String, dynamic>? address,
+  }) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/v1/commerce/orders/$orderId/payment-intent',
+      data: <String, dynamic>{
+        if (redirectUrl != null && redirectUrl.trim().isNotEmpty)
+          'redirect_url': redirectUrl.trim(),
+        if (webhookUrl != null && webhookUrl.trim().isNotEmpty)
+          'webhook_url': webhookUrl.trim(),
+        if (customer != null) 'customer': customer,
+        if (address != null) 'address': address,
+      },
+    );
+
+    final body = response.data;
+    if (body == null) {
+      throw const FormatException(
+        'Resposta de intent de pagamento do pedido vazia.',
+      );
+    }
+
+    return CommerceOrderPaymentIntentData.fromEnvelope(body);
+  }
+
+  Future<CommerceOrderPaymentStatusData> getOrderPaymentStatus(
+    String orderId,
+  ) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/v1/commerce/orders/$orderId/payment',
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const FormatException('Resposta de status de pagamento vazia.');
+    }
+    return CommerceOrderPaymentStatusData.fromEnvelope(body);
+  }
+
   Future<CommerceOrderListData> getOrders({
     int page = 1,
     int limit = 20,

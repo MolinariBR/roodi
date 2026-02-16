@@ -131,6 +131,27 @@ class _FakeCommerceRepository extends CommerceRepository {
       ),
     ];
   }
+
+  @override
+  Future<CommerceOrderPaymentStatusData> getOrderPaymentStatus(
+    String orderId,
+  ) async {
+    return const CommerceOrderPaymentStatusData(
+      orderId: 'ord-12345678',
+      paymentStatus: 'pending',
+      paid: false,
+      payment: CommerceOrderPaymentIntentData(
+        paymentId: 'pay-intent-001',
+        provider: 'infinitepay',
+        purpose: 'order_payment',
+        status: 'pending',
+        checkoutUrl: 'https://pay.infinitepay.io/checkout/order-001',
+        orderNsu: 'ORD-TEST-001',
+        amountBrl: 12.5,
+        orderId: 'ord-12345678',
+      ),
+    );
+  }
 }
 
 late GoRouter _testRouter;

@@ -32,7 +32,6 @@ class _CommerceCreateCallPageState
 
   String _urgency = 'padrao';
   CommerceProfileData? _profile;
-  CommerceCreditsBalanceData? _balance;
   CommerceQuoteData? _quote;
 
   @override
@@ -133,9 +132,6 @@ class _CommerceCreateCallPageState
 
   Widget _buildHeaderCard() {
     final profileName = _profile?.name ?? 'Loja';
-    final balanceText = _balance == null
-        ? '--'
-        : _formatCurrency(_balance!.balanceBrl);
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -187,7 +183,7 @@ class _CommerceCreateCallPageState
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _smallInfo(label: 'Saldo', value: balanceText),
+                child: _smallInfo(label: 'Pagamento', value: 'Por pedido'),
               ),
             ],
           ),
@@ -321,18 +317,6 @@ class _CommerceCreateCallPageState
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Spacer(),
-              TextButton(
-                onPressed: () => context.go(AppRoutes.commerceCredits),
-                child: const Text(
-                  'Créditos',
-                  style: TextStyle(
-                    color: Color(0xFF67E8F9),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
                 ),
               ),
             ],
@@ -680,21 +664,15 @@ class _CommerceCreateCallPageState
 
     try {
       final repository = ref.read(commerceRepositoryProvider);
-      final results = await Future.wait<Object>(<Future<Object>>[
-        repository.getProfile(),
-        repository.getCreditsBalance(),
-      ]);
+      final profile = await repository.getProfile();
 
       if (!mounted) {
         return;
       }
 
-      final profile = results[0] as CommerceProfileData;
-      final balance = results[1] as CommerceCreditsBalanceData;
       final query = GoRouterState.of(context).uri.queryParameters;
 
       _profile = profile;
-      _balance = balance;
       _originBairroController.text =
           profile.addressBase?.neighborhood ??
           profile.addressHome?.neighborhood ??
@@ -788,6 +766,7 @@ class _CommerceCreateCallPageState
     });
 
     try {
+      final repository = ref.read(commerceRepositoryProvider);
       final profile = _profile;
       final order = await ref
           .read(commerceRepositoryProvider)
@@ -814,10 +793,42 @@ class _CommerceCreateCallPageState
                 : _notesController.text.trim(),
           );
 
+      CommerceOrderPaymentIntentData? paymentIntent;
+      try {
+        paymentIntent = await repository.createOrderPaymentIntent(
+          orderId: order.id,
+          customer: <String, dynamic>{
+            if (_recipientController.text.trim().isNotEmpty)
+              'name': _recipientController.text.trim(),
+            if (_phoneController.text.trim().isNotEmpty)
+              'phone_number': _phoneController.text.trim(),
+          },
+          address: <String, dynamic>{
+            if (_destinationBairroController.text.trim().isNotEmpty)
+              'neighborhood': _destinationBairroController.text.trim(),
+            if (profile?.addressBase?.city != null)
+              'city': profile!.addressBase!.city,
+            if (profile?.addressBase?.state != null)
+              'state': profile!.addressBase!.state,
+            if (addressText.isNotEmpty) 'street': addressText,
+          },
+        );
+      } catch (_) {
+        paymentIntent = null;
+      }
+
       if (!mounted) {
         return;
       }
-      _showSnackBar('Chamado criado com sucesso.');
+      if (paymentIntent == null) {
+        _showSnackBar(
+          'Chamado criado. Não foi possível iniciar o pagamento agora.',
+        );
+      } else {
+        _showSnackBar(
+          'Chamado criado. Conclua o pagamento para liberar o rider.',
+        );
+      }
       context.go(AppRoutes.commerceTrackingByOrderId(order.id));
     } catch (error) {
       if (!mounted) {

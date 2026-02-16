@@ -55,6 +55,8 @@ class CommerceOrderData {
     required this.status,
     required this.totalBrl,
     required this.createdAt,
+    this.paymentStatus,
+    this.paymentRequired,
     this.riderId,
     this.quoteId,
     this.urgency,
@@ -71,6 +73,8 @@ class CommerceOrderData {
   final String status;
   final double totalBrl;
   final DateTime createdAt;
+  final String? paymentStatus;
+  final bool? paymentRequired;
   final String? riderId;
   final String? quoteId;
   final String? urgency;
@@ -102,6 +106,12 @@ class CommerceOrderData {
       status: status,
       totalBrl: totalBrl.toDouble(),
       createdAt: DateTime.parse(createdAt),
+      paymentStatus: map['payment_status'] is String
+          ? map['payment_status'] as String
+          : null,
+      paymentRequired: map['payment_required'] is bool
+          ? map['payment_required'] as bool
+          : null,
       riderId: map['rider_id'] is String ? map['rider_id'] as String : null,
       quoteId: map['quote_id'] is String ? map['quote_id'] as String : null,
       urgency: map['urgency'] is String ? map['urgency'] as String : null,
@@ -536,6 +546,110 @@ class CommercePaymentCheckData {
       paidAmount: paidAmount.toDouble(),
       installments: installments.toInt(),
       captureMethod: captureMethod,
+    );
+  }
+}
+
+class CommerceOrderPaymentIntentData {
+  const CommerceOrderPaymentIntentData({
+    required this.paymentId,
+    required this.provider,
+    required this.purpose,
+    required this.status,
+    required this.checkoutUrl,
+    required this.orderNsu,
+    required this.amountBrl,
+    this.orderId,
+  });
+
+  final String paymentId;
+  final String provider;
+  final String purpose;
+  final String status;
+  final String checkoutUrl;
+  final String orderNsu;
+  final double amountBrl;
+  final String? orderId;
+
+  factory CommerceOrderPaymentIntentData.fromMap(Map<String, dynamic> map) {
+    final paymentId = map['payment_id'];
+    final provider = map['provider'];
+    final purpose = map['purpose'];
+    final status = map['status'];
+    final checkoutUrl = map['checkout_url'];
+    final orderNsu = map['order_nsu'];
+    final amountBrl = map['amount_brl'];
+
+    if (paymentId is! String ||
+        provider is! String ||
+        purpose is! String ||
+        status is! String ||
+        checkoutUrl is! String ||
+        orderNsu is! String ||
+        amountBrl is! num) {
+      throw const FormatException('Intent de pagamento do pedido invalida.');
+    }
+
+    return CommerceOrderPaymentIntentData(
+      paymentId: paymentId,
+      provider: provider,
+      purpose: purpose,
+      status: status,
+      checkoutUrl: checkoutUrl,
+      orderNsu: orderNsu,
+      amountBrl: amountBrl.toDouble(),
+      orderId: map['order_id'] is String ? map['order_id'] as String : null,
+    );
+  }
+
+  factory CommerceOrderPaymentIntentData.fromEnvelope(
+    Map<String, dynamic> map,
+  ) {
+    final data = map['data'];
+    if (data is! Map<String, dynamic>) {
+      throw const FormatException('Intent de pagamento do pedido invalida.');
+    }
+    return CommerceOrderPaymentIntentData.fromMap(data);
+  }
+}
+
+class CommerceOrderPaymentStatusData {
+  const CommerceOrderPaymentStatusData({
+    required this.orderId,
+    required this.paymentStatus,
+    required this.paid,
+    this.payment,
+  });
+
+  final String orderId;
+  final String paymentStatus;
+  final bool paid;
+  final CommerceOrderPaymentIntentData? payment;
+
+  factory CommerceOrderPaymentStatusData.fromEnvelope(
+    Map<String, dynamic> map,
+  ) {
+    final data = map['data'];
+    if (data is! Map<String, dynamic>) {
+      throw const FormatException('Status de pagamento invalido.');
+    }
+
+    final orderId = data['order_id'];
+    final paymentStatus = data['payment_status'];
+    final paid = data['paid'];
+    final payment = data['payment'];
+
+    if (orderId is! String || paymentStatus is! String || paid is! bool) {
+      throw const FormatException('Status de pagamento invalido.');
+    }
+
+    return CommerceOrderPaymentStatusData(
+      orderId: orderId,
+      paymentStatus: paymentStatus,
+      paid: paid,
+      payment: payment is Map<String, dynamic>
+          ? CommerceOrderPaymentIntentData.fromMap(payment)
+          : null,
     );
   }
 }

@@ -160,6 +160,11 @@ Future<void> _pumpForAction(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 300));
 }
 
+Future<void> _tapVisible(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.tap(finder);
+}
+
 void main() {
   testWidgets('rider: fluxo completo ate entrega finalizada', (
     WidgetTester tester,
@@ -178,35 +183,35 @@ void main() {
     await _pumpForAction(tester);
     expect(find.text('Ficar online'), findsOneWidget);
 
-    await tester.tap(find.text('Ficar online'));
+    await _tapVisible(tester, find.text('Ficar online'));
     await _pumpForAction(tester);
     expect(find.text('Aceitar pedido'), findsOneWidget);
 
-    await tester.tap(find.text('Aceitar pedido'));
+    await _tapVisible(tester, find.text('Aceitar pedido'));
     await _pumpForAction(tester);
     expect(find.textContaining('Cheguei no'), findsOneWidget);
 
-    await tester.tap(find.textContaining('Cheguei no'));
+    await _tapVisible(tester, find.textContaining('Cheguei no'));
     await _pumpForAction(tester);
     expect(find.text('Pedido em preparo'), findsOneWidget);
 
-    await tester.tap(find.text('Pedido em preparo'));
+    await _tapVisible(tester, find.text('Pedido em preparo'));
     await _pumpForAction(tester);
     expect(find.text('Pedido pronto'), findsOneWidget);
 
-    await tester.tap(find.text('Pedido pronto'));
+    await _tapVisible(tester, find.text('Pedido pronto'));
     await _pumpForAction(tester);
     expect(find.text('Cheguei no cliente'), findsOneWidget);
 
-    await tester.tap(find.text('Cheguei no cliente'));
+    await _tapVisible(tester, find.text('Cheguei no cliente'));
     await _pumpForAction(tester);
     expect(find.text('Iniciar finalização'), findsOneWidget);
 
-    await tester.tap(find.text('Iniciar finalização'));
+    await _tapVisible(tester, find.text('Iniciar finalização'));
     await _pumpForAction(tester);
 
     await tester.enterText(find.byType(TextField).first, '1234');
-    await tester.tap(find.text('Confirmar entrega'));
+    await _tapVisible(tester, find.text('Confirmar entrega'));
     await _pumpForAction(tester);
 
     expect(fakeRepository.completeCalls, 1);

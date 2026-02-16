@@ -12,7 +12,7 @@
 #   ROODI_ENABLE_SSL=1                          # run certbot (default: 1)
 #   ROODI_DB_NAME=roodi
 #   ROODI_DB_USER=roodi
-#   ROODI_DB_PASSWORD=...                       # if missing, generated once and stored in /opt/roodi/shared/created-secrets.txt
+#   ROODI_DB_PASSWORD=...                       # nao usado: o script usa DATABASE_URL do .env.production como fonte unica
 #
 # What it does:
 # 1) Installs system deps (nginx/certbot/node/pm2/postgres/redis)
@@ -142,28 +142,45 @@ ensure_postgres_db_user() {
   log "Configurando PostgreSQL (db/user) - idempotente"
   need psql
 
-  if [[ -z "${ROODI_DB_PASSWORD}" ]]; then
-    local secrets_file="${ROODI_SHARED_DIR}/created-secrets.txt"
-    if [[ -f "${secrets_file}" ]]; then
-      ROODI_DB_PASSWORD="$(grep -m1 '^ROODI_DB_PASSWORD=' "${secrets_file}" | cut -d= -f2-)"
-    fi
-  fi
+  # Fonte unica: DATABASE_URL dentro do Backend .env.production.
+  local env_file="${BACKEND_DIR}/.env.production"
+  [[ -f "${env_file}" ]] || fail "Arquivo ausente: ${env_file} (deve vir do git clone)."
 
-  if [[ -z "${ROODI_DB_PASSWORD}" ]]; then
-    ROODI_DB_PASSWORD="$(rand_hex)"
-    {
-      echo "ROODI_DB_USER=${ROODI_DB_USER}"
-      echo "ROODI_DB_PASSWORD=${ROODI_DB_PASSWORD}"
-      echo "ROODI_DB_NAME=${ROODI_DB_NAME}"
-    } >> "${ROODI_SHARED_DIR}/created-secrets.txt"
-    chmod 600 "${ROODI_SHARED_DIR}/created-secrets.txt" || true
-  fi
+  local database_url
+  database_url="$(grep -m1 '^DATABASE_URL=' "${env_file}" | cut -d= -f2-)"
+  [[ -n "${database_url}" ]] || fail "DATABASE_URL vazio em ${env_file}"
+
+  # Parse robusto do DATABASE_URL (suporta URL encoding).
+  local parsed
+  parsed="$(python3 - <<PY
+from urllib.parse import urlparse, unquote
+import sys
+u = urlparse(sys.argv[1])
+user = unquote(u.username or "")
+pw = unquote(u.password or "")
+host = u.hostname or "localhost"
+port = str(u.port or 5432)
+db = (u.path or "").lstrip("/")
+print("|".join([user, pw, host, port, db]))
+PY
+"${database_url}")"
+
+  local db_user db_pass db_host db_port db_name
+  IFS='|' read -r db_user db_pass db_host db_port db_name <<< "${parsed}"
+  [[ -n "${db_user}" && -n "${db_pass}" && -n "${db_name}" ]] || fail "DATABASE_URL invalido: usuario/senha/db ausentes."
+
+  ROODI_DB_USER="${db_user}"
+  ROODI_DB_PASSWORD="${db_pass}"
+  ROODI_DB_NAME="${db_name}"
 
   # Create role if missing (works in a transaction).
   local role_exists
   role_exists="$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${ROODI_DB_USER}'" | tr -d '[:space:]' || true)"
   if [[ "${role_exists}" != "1" ]]; then
     sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE ${ROODI_DB_USER} LOGIN PASSWORD '${ROODI_DB_PASSWORD}';"
+  else
+    # Forca consistencia: senha do role sempre deve bater com o .env.production.
+    sudo -u postgres psql -v ON_ERROR_STOP=1 -c "ALTER ROLE ${ROODI_DB_USER} WITH PASSWORD '${ROODI_DB_PASSWORD}';"
   fi
 
   # Create database if missing (CREATE DATABASE cannot run inside DO/transaction).
@@ -189,61 +206,8 @@ EOF
 }
 
 ensure_env_files() {
-  log "Garantindo .env.production (idempotente)"
-  local jwt_access
-  local jwt_refresh
-  jwt_access="$(rand_hex)"
-  jwt_refresh="$(rand_hex)"
-
-  # Backend .env.production
-  write_env_if_missing "${BACKEND_DIR}/.env.production" "\
-NODE_ENV=production
-PORT=3333
-API_VERSION=1.0.0
-APP_VERSION=1.0.0
-LOG_LEVEL=info
-REQUEST_TIMEOUT_MS=10000
-SENTRY_DSN=
-MAINTENANCE_MODE=false
-MAINTENANCE_MESSAGE=
-ADMIN_WEB_URL=https://${ROODI_DOMAIN_ADMIN}
-LANDING_WEB_URL=https://${ROODI_DOMAIN_LANDING}
-CORS_ALLOWED_ORIGINS=https://${ROODI_DOMAIN_ADMIN},https://${ROODI_DOMAIN_LANDING}
-DATABASE_URL=postgresql://${ROODI_DB_USER}:${ROODI_DB_PASSWORD}@localhost:5432/${ROODI_DB_NAME}?schema=public
-REDIS_URL=redis://localhost:6379
-REDIS_PREFIX=roodi:prod
-JWT_ISSUER=roodi.app
-JWT_AUDIENCE=roodi-api
-JWT_ACCESS_SECRET=${jwt_access}
-JWT_ACCESS_EXPIRES_IN=15m
-JWT_REFRESH_SECRET=${jwt_refresh}
-JWT_REFRESH_EXPIRES_IN=30d
-AUTH_PASSWORD_HASH_ALGORITHM=bcrypt
-AUTH_PASSWORD_HASH_ROUNDS=12
-OTP_CODE_LENGTH=6
-OTP_EXPIRES_MINUTES=10
-OTP_MAX_ATTEMPTS=5
-OTP_RESEND_COOLDOWN_SECONDS=60
-RESEND_API_BASE_URL=https://api.resend.com
-RESEND_API_KEY=
-RESEND_FROM_EMAIL=
-RESEND_REPLY_TO=
-TOMTOM_API_KEY=
-OPENROUTESERVICE_API_KEY=
-OPENWEATHER_API_KEY=
-MET_NO_BASE_URL=https://api.met.no/weatherapi/locationforecast/2.0/compact
-GOOGLE_MAPS_API_KEY=
-INFINITEPAY_API_BASE_URL=https://api.infinitepay.io
-INFINITEPAY_API_KEY=
-INFINITEPAY_HANDLE=
-INFINITEPAY_WEBHOOK_SECRET=
-INFINITEPAY_WEBHOOK_URL=https://${ROODI_DOMAIN_API}/v1/payments/infinitepay/webhook"
-
-  # Para evitar falhas acidentais de comandos que assumem "development",
-  # mantemos `.env.development` como symlink para `.env.production` no servidor.
-  if [[ ! -f "${BACKEND_DIR}/.env.development" ]]; then
-    ln -sf "${BACKEND_DIR}/.env.production" "${BACKEND_DIR}/.env.development"
-  fi
+  log "Validando env centralizado (Backend) + symlinks (admin/landing)"
+  [[ -f "${BACKEND_DIR}/.env.production" ]] || fail "Arquivo ausente: ${BACKEND_DIR}/.env.production"
 
   # Centralizacao: admin e landing leem do mesmo arquivo do backend via symlink.
   ln -sf "${BACKEND_DIR}/.env.production" "${ADMIN_DIR}/.env.production"
@@ -453,7 +417,7 @@ main() {
   log "  API:    https://${ROODI_DOMAIN_API}"
   log "  Admin:  https://${ROODI_DOMAIN_ADMIN}"
   log "  Site:   https://${ROODI_DOMAIN_LANDING}"
-  log "Se geramos senha do banco: ${ROODI_SHARED_DIR}/created-secrets.txt (permissoes 600)."
+  log "Banco e usuario foram criados/ajustados com base no DATABASE_URL do .env.production."
 }
 
 main

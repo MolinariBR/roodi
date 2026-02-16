@@ -502,34 +502,35 @@ https://www.infinitepay.io/checkout
 - **Observacao de integracao:** endpoints de `clients` e `products` ja existem no backend; o app deve consumir estas rotas e remover estado local temporario.
 
 ### TASK-035: Integrar app e painel com usuarios/dados seed de exemplo
-- [ ] `TASK-035` concluida
+- [x] `TASK-035` concluida
 - **Instrucao:** Validar os fluxos principais usando contas seed.
 - **Local fisico:** `Packages/Backend/prisma/seeds/*`, configs de ambiente nos frontends.
 - **Motivo:** Garantir navegacao e acoes reais sem mock local.
 - **Fluxo:** `04FLUXOS` secoes 1, 2, 3 e 7.
 - **Pagina/Tela:** `/admin/*`, `Rider/*`, `Commerce/*`, `Common/*`.
 - **Subtarefas:**
-  - [ ] Login admin com usuario seed.
-  - [ ] Login rider com usuario seed.
-  - [ ] Login commerce com usuario seed.
-  - [ ] Validar corrida completa e reflexo financeiro.
+  - [x] Login admin com usuario seed.
+  - [x] Login rider com usuario seed.
+  - [x] Login commerce com usuario seed.
+  - [x] Validar corrida completa e reflexo financeiro.
+- **Observacao de validacao:** fluxo validado por integracao real de API com seeds (`/v1/auth/login`, `/v1/admin/dashboard`, `/v1/rider/dashboard`, `/v1/commerce/orders`, transicoes de entrega e reflexo em `order_financials` + `credits_ledger`).
 
 ---
 
 ## Fase 5 - Testes, Qualidade e Fechamento
 
 ### TASK-036: Implementar testes unitarios e de integracao backend
-- [ ] `TASK-036` concluida
+- [x] `TASK-036` concluida
 - **Instrucao:** Cobrir regras criticas dos modulos backend com testes reais.
 - **Local fisico:** `Packages/Backend/src/Modules/*/tests`, `Packages/Backend/tests/integration/*`.
 - **Motivo:** Reduzir regressao e garantir regra de negocio.
 - **Fluxo:** `04FLUXOS` secao 5, 6 e 7.
 - **Pagina/Tela:** Impacta todas as telas operacionais.
 - **Subtarefas:**
-  - [ ] Testar cotacao (sucesso, `DISTANCE_TIME_UNAVAILABLE`, `OUT_OF_COVERAGE`).
-  - [ ] Testar transicoes de estado da entrega.
-  - [ ] Testar compra de creditos e webhook.
-  - [ ] Testar regra financeira `FP = RE + CP`.
+  - [x] Testar cotacao (sucesso, `DISTANCE_TIME_UNAVAILABLE`, `OUT_OF_COVERAGE`).
+  - [x] Testar transicoes de estado da entrega.
+  - [x] Testar compra de creditos e webhook.
+  - [x] Testar regra financeira `FP = RE + CP`.
 
 ### TASK-037: Implementar testes com Testcontainers (excecao de Docker permitida)
 - [ ] `TASK-037` concluida

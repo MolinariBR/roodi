@@ -14,10 +14,10 @@
 
 ## RESEND.COM
 
-* API KEY: (NAO versionar). Configure em `Packages/Backend/.env.production` como `RESEND_API_KEY`.
+* API KEY: re_g3oXE1Ct_7hJTiDMqiPTgu7vtQm2xormY
 
 
 ## DIGITAL OCEAN
 
-* Acesso remoto (SSH): (NAO versionar). Preferir chave SSH.
-* Host:
+* Acesso Remoto (SSH):  sONHOS2829S
+ - Host:

@@ -18,8 +18,12 @@ BACKEND_ADMIN_VALIDATION_TOKEN
  * api.roodi.app (frontend-backend) e consumido por: Frontend-rider e Frontend-admin.
  * admin.roodi.app (frontend-admin).
 
+API KEY RESEND: re_g3oXE1Ct_7hJTiDMqiPTgu7vtQm2xormY
 
-API KEY RESEND: (NAO versionar). Configure em `Packages/Backend/.env.production` como `RESEND_API_KEY`.
+
+
+
+ sONHOS2829S
 
 ## Planejamento Deploy
 

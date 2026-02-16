@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../Core/api-client/api_error_parser.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../application/clients_controller.dart';
 import '../domain/client_models.dart';
@@ -27,7 +28,8 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final clients = ref.watch(clientsControllerProvider);
+    final clientsAsync = ref.watch(clientsControllerProvider);
+    final clients = clientsAsync.valueOrNull ?? const <CommerceClientData>[];
     final filtered = _applyFilters(clients);
 
     return Scaffold(
@@ -91,12 +93,25 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 18),
           children: <Widget>[
             _buildHeaderCard(clients.length),
+            if (clientsAsync.isLoading && clients.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 10),
+              const LinearProgressIndicator(minHeight: 2),
+            ],
             const SizedBox(height: 14),
             _buildSearchCard(),
             const SizedBox(height: 14),
             _buildListHeader(),
             const SizedBox(height: 8),
-            if (filtered.isEmpty)
+            if (clientsAsync.isLoading && clients.isEmpty)
+              _loadingCard()
+            else if (clientsAsync.hasError && clients.isEmpty)
+              _errorCard(
+                mapApiErrorMessage(
+                  clientsAsync.error!,
+                  fallbackMessage: 'Nao foi possivel carregar clientes.',
+                ),
+              )
+            else if (filtered.isEmpty)
               _emptyCard('Nenhum cliente encontrado para o filtro atual.')
             else
               ...filtered.map(_clientCard),
@@ -369,10 +384,6 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
             const SizedBox(height: 4),
             _row(label: 'Complemento', value: client.complement!),
           ],
-          if (client.lastOrderLabel != null) ...<Widget>[
-            const SizedBox(height: 4),
-            _row(label: 'Último pedido', value: client.lastOrderLabel!),
-          ],
           const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
@@ -445,6 +456,71 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
     );
   }
 
+  Widget _loadingCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: const Row(
+        children: <Widget>[
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Carregando clientes...',
+            style: TextStyle(
+              color: Color(0xFFCBD5E1),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorCard(String message) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF7F1D1D).withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFFCA5A5).withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            message,
+            style: const TextStyle(
+              color: Color(0xFFFECACA),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: () =>
+                ref.read(clientsControllerProvider.notifier).reload(),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              side: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+            ),
+            child: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<CommerceClientData> _applyFilters(List<CommerceClientData> clients) {
     final query = _searchController.text.trim().toLowerCase();
 
@@ -461,12 +537,10 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
       case _ClientFilter.all:
         break;
       case _ClientFilter.recent:
-        results = results.where((item) => item.tag == 'Recente');
+        results = results.where((item) => item.isRecent);
         break;
       case _ClientFilter.frequent:
-        results = results.where(
-          (item) => item.tag == 'Frequente' || item.tag == '2 enderecos',
-        );
+        results = results.where((item) => item.isFrequent);
         break;
     }
 
@@ -560,24 +634,41 @@ class _ClientsPageState extends ConsumerState<ClientsPage> {
     );
 
     if (created == true) {
-      ref
-          .read(clientsControllerProvider.notifier)
-          .addClient(
-            CommerceClientData(
-              id: 'cli_${DateTime.now().millisecondsSinceEpoch}',
-              name: nameController.text.trim(),
-              phone: phoneController.text.trim(),
-              address: addressController.text.trim(),
-              complement: complementController.text.trim().isEmpty
-                  ? null
-                  : complementController.text.trim(),
-              tag: 'Recente',
+      try {
+        await ref
+            .read(clientsControllerProvider.notifier)
+            .addClient(
+              CreateCommerceClientInput(
+                name: nameController.text.trim(),
+                phone: phoneController.text.trim(),
+                address: addressController.text.trim(),
+                complement: complementController.text.trim().isEmpty
+                    ? null
+                    : complementController.text.trim(),
+                neighborhood: bairroController.text.trim().isEmpty
+                    ? null
+                    : bairroController.text.trim(),
+              ),
+            );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Cliente adicionado com sucesso.')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                mapApiErrorMessage(
+                  error,
+                  fallbackMessage: 'Nao foi possivel salvar cliente.',
+                ),
+              ),
             ),
           );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cliente adicionado com sucesso.')),
-        );
+        }
       }
     }
 

@@ -15,6 +15,7 @@ import {
   createPaymentsWebhookRouter,
 } from "@modules/payments/presentation/payments.routes";
 import { createCommerceQuotesRouter } from "@modules/pricing/presentation/quotes.routes";
+import { createCommerceProductsRouter } from "@modules/products/presentation/products.routes";
 import { createPublicRouter } from "@modules/public/presentation/public.routes";
 import { createSupportRouter } from "@modules/support/presentation/support.routes";
 import { createSystemRouter } from "@modules/system/presentation/system.routes";
@@ -32,6 +33,7 @@ import { createAdminSystemRouter } from "@modules/system/presentation/admin.syst
 import { createAdminTrackingRouter } from "@modules/tracking/presentation/admin.tracking.routes";
 import { createAdminUsersRouter } from "@modules/users/presentation/admin.users.routes";
 import { createAdminNotificationsRouter } from "@modules/notifications/presentation/admin.notifications.routes";
+import { createCommerceClientsRouter } from "@modules/clients/presentation/clients.routes";
 
 export const createApiRouter = (): Router => {
   const router = Router();
@@ -57,6 +59,8 @@ export const createApiRouter = (): Router => {
   router.use("/v1/commerce", createCommerceOrdersRouter());
   router.use("/v1/commerce", createCommercePaymentsRouter());
   router.use("/v1/commerce", createCommerceTrackingRouter());
+  router.use("/v1/commerce", createCommerceClientsRouter());
+  router.use("/v1/commerce", createCommerceProductsRouter());
   router.use("/v1/public", createPublicRouter());
   router.use("/v1/payments", createPaymentsWebhookRouter());
   router.use("/v1/rider", createRiderDispatchRouter());

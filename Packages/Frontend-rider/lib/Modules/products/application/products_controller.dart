@@ -1,63 +1,74 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/product_models.dart';
+import '../infra/products_repository.dart';
 
 final productsControllerProvider =
-    NotifierProvider<ProductsController, List<CommerceProductData>>(
+    AsyncNotifierProvider<ProductsController, List<CommerceProductData>>(
       ProductsController.new,
     );
 
-class ProductsController extends Notifier<List<CommerceProductData>> {
-  static final List<CommerceProductData> _seedProducts = <CommerceProductData>[
-    const CommerceProductData(
-      id: 'prd_001',
-      name: 'Combo Burger Artesanal',
-      category: 'Lanches',
-      sku: 'BRG-102',
-      priceBrl: 28.90,
-      stock: 37,
-      sales: 124,
-      isActive: true,
-    ),
-    const CommerceProductData(
-      id: 'prd_002',
-      name: 'Cafe Gelado 400ml',
-      category: 'Bebidas',
-      sku: 'CAF-211',
-      priceBrl: 11.50,
-      stock: 4,
-      sales: 78,
-      isActive: true,
-    ),
-    const CommerceProductData(
-      id: 'prd_003',
-      name: 'Milkshake Choco 500ml',
-      category: 'Sobremesas',
-      sku: 'MLK-330',
-      priceBrl: 17.90,
-      stock: 0,
-      sales: 0,
-      isActive: false,
-    ),
-  ];
-
+class ProductsController extends AsyncNotifier<List<CommerceProductData>> {
   @override
-  List<CommerceProductData> build() {
-    return _seedProducts;
+  Future<List<CommerceProductData>> build() async {
+    return _load();
   }
 
-  void addProduct(CommerceProductData product) {
-    state = <CommerceProductData>[product, ...state];
+  Future<void> reload() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_load);
   }
 
-  void toggleStatus(String productId) {
-    state = state
-        .map((item) {
-          if (item.id != productId) {
-            return item;
-          }
-          return item.copyWith(isActive: !item.isActive);
-        })
-        .toList(growable: false);
+  Future<void> addProduct(UpsertCommerceProductInput input) async {
+    final repository = ref.read(productsRepositoryProvider);
+    final created = await repository.create(input);
+    final current = state.valueOrNull ?? const <CommerceProductData>[];
+    state = AsyncData(<CommerceProductData>[created, ...current]);
+  }
+
+  Future<void> updateProduct({
+    required String productId,
+    required UpsertCommerceProductInput input,
+  }) async {
+    final repository = ref.read(productsRepositoryProvider);
+    final updated = await repository.update(productId: productId, input: input);
+    final current = state.valueOrNull ?? const <CommerceProductData>[];
+    state = AsyncData(
+      current
+          .map((item) => item.id == productId ? updated : item)
+          .toList(growable: false),
+    );
+  }
+
+  Future<void> toggleStatus(String productId) async {
+    final current = state.valueOrNull ?? const <CommerceProductData>[];
+    CommerceProductData? target;
+    for (final item in current) {
+      if (item.id == productId) {
+        target = item;
+        break;
+      }
+    }
+    if (target == null) {
+      return;
+    }
+
+    final nextStatus = target.isActive ? 'paused' : 'active';
+    final repository = ref.read(productsRepositoryProvider);
+    final updated = await repository.updateStatus(
+      productId: productId,
+      status: nextStatus,
+    );
+
+    state = AsyncData(
+      current
+          .map((item) => item.id == productId ? updated : item)
+          .toList(growable: false),
+    );
+  }
+
+  Future<List<CommerceProductData>> _load() async {
+    final repository = ref.read(productsRepositoryProvider);
+    return repository.list();
   }
 }

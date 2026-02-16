@@ -71,6 +71,9 @@ Base: `ROODI/Packages/Backend/src/Modules`
 | `notifications` | Eventos de notificacao e leitura | In-app/push por contexto operacional |
 | `support` | Chamados, FAQ e incidentes | Canal de suporte e tratamento de ocorrencias |
 
+Observacao de status (implementacao atual):
+1. `clients` e `products` estao modelados em banco, documentados no OpenAPI e implementados no Backend.
+
 ## 2.2 Frontend-admin
 
 Base: `ROODI/Packages/Frontend-admin/src/Modules`

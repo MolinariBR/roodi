@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../Core/api-client/api_error_parser.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../application/products_controller.dart';
 import '../domain/product_models.dart';
 
-enum _ProductFilter { all, snacks, drinks, desserts, lowStock, inactive }
+enum _ProductFilter { all, active, lowStock, inactive }
 
 class ProductsPage extends ConsumerStatefulWidget {
   const ProductsPage({super.key});
@@ -27,11 +28,14 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final products = ref.watch(productsControllerProvider);
+    final productsAsync = ref.watch(productsControllerProvider);
+    final products = productsAsync.valueOrNull ?? const <CommerceProductData>[];
     final filtered = _filteredProducts(products);
     final activeCount = products.where((item) => item.isActive).length;
     final lowStockCount = products.where((item) => item.lowStock).length;
-    final featuredCount = products.where((item) => item.sales >= 80).length;
+    final featuredCount = products
+        .where((item) => item.isActive && item.stock >= 10)
+        .length;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -98,12 +102,25 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               lowStockCount: lowStockCount,
               featuredCount: featuredCount,
             ),
+            if (productsAsync.isLoading && products.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 10),
+              const LinearProgressIndicator(minHeight: 2),
+            ],
             const SizedBox(height: 14),
             _buildFilterCard(),
             const SizedBox(height: 14),
             _buildSectionHeader(),
             const SizedBox(height: 8),
-            if (filtered.isEmpty)
+            if (productsAsync.isLoading && products.isEmpty)
+              _loadingCard()
+            else if (productsAsync.hasError && products.isEmpty)
+              _errorCard(
+                mapApiErrorMessage(
+                  productsAsync.error!,
+                  fallbackMessage: 'Nao foi possivel carregar produtos.',
+                ),
+              )
+            else if (filtered.isEmpty)
               _emptyCard('Nenhum produto encontrado para o filtro atual.')
             else
               ...filtered.map(_productCard),
@@ -404,7 +421,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
                       ),
                     ),
                     Text(
-                      '${product.category} • SKU ${product.sku}',
+                      product.description ?? 'Sem descricao',
                       style: const TextStyle(
                         color: Color(0xFF94A3B8),
                         fontSize: 12,
@@ -440,7 +457,12 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               const SizedBox(width: 8),
               Expanded(child: _miniInfo('Estoque', '${product.stock} un')),
               const SizedBox(width: 8),
-              Expanded(child: _miniInfo('Vendas', '${product.sales}')),
+              Expanded(
+                child: _miniInfo(
+                  'Criado',
+                  '${product.createdAt.day.toString().padLeft(2, '0')}/${product.createdAt.month.toString().padLeft(2, '0')}',
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -468,9 +490,28 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               const SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => ref
-                      .read(productsControllerProvider.notifier)
-                      .toggleStatus(product.id),
+                  onPressed: () async {
+                    try {
+                      await ref
+                          .read(productsControllerProvider.notifier)
+                          .toggleStatus(product.id);
+                    } catch (error) {
+                      if (!mounted) {
+                        return;
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            mapApiErrorMessage(
+                              error,
+                              fallbackMessage:
+                                  'Nao foi possivel atualizar status do produto.',
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(40),
                     elevation: 0,
@@ -547,6 +588,71 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     );
   }
 
+  Widget _loadingCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: const Row(
+        children: <Widget>[
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Carregando produtos...',
+            style: TextStyle(
+              color: Color(0xFFCBD5E1),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorCard(String message) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF7F1D1D).withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFFCA5A5).withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            message,
+            style: const TextStyle(
+              color: Color(0xFFFECACA),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: () =>
+                ref.read(productsControllerProvider.notifier).reload(),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              side: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+            ),
+            child: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<CommerceProductData> _filteredProducts(
     List<CommerceProductData> products,
   ) {
@@ -556,22 +662,15 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     if (query.isNotEmpty) {
       items = items.where((item) {
         return item.name.toLowerCase().contains(query) ||
-            item.category.toLowerCase().contains(query) ||
-            item.sku.toLowerCase().contains(query);
+            (item.description?.toLowerCase().contains(query) ?? false);
       });
     }
 
     switch (_filter) {
       case _ProductFilter.all:
         break;
-      case _ProductFilter.snacks:
-        items = items.where((item) => item.category == 'Lanches');
-        break;
-      case _ProductFilter.drinks:
-        items = items.where((item) => item.category == 'Bebidas');
-        break;
-      case _ProductFilter.desserts:
-        items = items.where((item) => item.category == 'Sobremesas');
+      case _ProductFilter.active:
+        items = items.where((item) => item.isActive);
         break;
       case _ProductFilter.lowStock:
         items = items.where((item) => item.lowStock || item.outOfStock);
@@ -588,12 +687,8 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     switch (filter) {
       case _ProductFilter.all:
         return 'Todos';
-      case _ProductFilter.snacks:
-        return 'Lanches';
-      case _ProductFilter.drinks:
-        return 'Bebidas';
-      case _ProductFilter.desserts:
-        return 'Sobremesas';
+      case _ProductFilter.active:
+        return 'Ativos';
       case _ProductFilter.lowStock:
         return 'Sem estoque';
       case _ProductFilter.inactive:
@@ -611,10 +706,9 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
 
   Future<void> _openProductSheet({CommerceProductData? product}) async {
     final nameController = TextEditingController(text: product?.name ?? '');
-    final categoryController = TextEditingController(
-      text: product?.category ?? '',
+    final descriptionController = TextEditingController(
+      text: product?.description ?? '',
     );
-    final skuController = TextEditingController(text: product?.sku ?? '');
     final priceController = TextEditingController(
       text: product == null ? '' : product.priceBrl.toStringAsFixed(2),
     );
@@ -652,9 +746,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
               const SizedBox(height: 10),
               _sheetField(nameController, 'Nome'),
               const SizedBox(height: 8),
-              _sheetField(categoryController, 'Categoria'),
-              const SizedBox(height: 8),
-              _sheetField(skuController, 'SKU'),
+              _sheetField(descriptionController, 'Descricao (opcional)'),
               const SizedBox(height: 8),
               _sheetField(
                 priceController,
@@ -681,8 +773,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (nameController.text.trim().isEmpty ||
-                            categoryController.text.trim().isEmpty ||
-                            skuController.text.trim().isEmpty) {
+                            priceController.text.trim().isEmpty) {
                           return;
                         }
                         Navigator.of(context).pop(true);
@@ -699,32 +790,90 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     );
 
     if (created == true && product == null) {
-      final price = double.tryParse(priceController.text.trim()) ?? 0;
+      final price =
+          double.tryParse(priceController.text.trim().replaceAll(',', '.')) ??
+          0;
       final stock = int.tryParse(stockController.text.trim()) ?? 0;
-      ref
-          .read(productsControllerProvider.notifier)
-          .addProduct(
-            CommerceProductData(
-              id: 'prd_${DateTime.now().millisecondsSinceEpoch}',
-              name: nameController.text.trim(),
-              category: categoryController.text.trim(),
-              sku: skuController.text.trim(),
-              priceBrl: price,
-              stock: stock,
-              sales: 0,
-              isActive: true,
+
+      try {
+        await ref
+            .read(productsControllerProvider.notifier)
+            .addProduct(
+              UpsertCommerceProductInput(
+                name: nameController.text.trim(),
+                description: descriptionController.text.trim().isEmpty
+                    ? null
+                    : descriptionController.text.trim(),
+                priceBrl: price,
+                stock: stock,
+              ),
+            );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Produto adicionado com sucesso.')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                mapApiErrorMessage(
+                  error,
+                  fallbackMessage: 'Nao foi possivel salvar produto.',
+                ),
+              ),
             ),
           );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Produto adicionado com sucesso.')),
-        );
+        }
+      }
+    }
+
+    if (created == true && product != null) {
+      final price =
+          double.tryParse(priceController.text.trim().replaceAll(',', '.')) ??
+          product.priceBrl;
+      final stock = int.tryParse(stockController.text.trim()) ?? product.stock;
+
+      try {
+        await ref
+            .read(productsControllerProvider.notifier)
+            .updateProduct(
+              productId: product.id,
+              input: UpsertCommerceProductInput(
+                name: nameController.text.trim(),
+                description: descriptionController.text.trim().isEmpty
+                    ? null
+                    : descriptionController.text.trim(),
+                priceBrl: price,
+                stock: stock,
+              ),
+            );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Produto atualizado com sucesso.')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                mapApiErrorMessage(
+                  error,
+                  fallbackMessage: 'Nao foi possivel atualizar produto.',
+                ),
+              ),
+            ),
+          );
+        }
       }
     }
 
     nameController.dispose();
-    categoryController.dispose();
-    skuController.dispose();
+    descriptionController.dispose();
     priceController.dispose();
     stockController.dispose();
   }

@@ -164,6 +164,11 @@ Profile -> Support
 4. `Products`: gestao de catalogo.
 5. `Profile`: configuracoes da operacao e links rapidos.
 
+### Dependencias de API (Commerce)
+1. `Clients`: `GET/POST /v1/commerce/clients`, `PATCH /v1/commerce/clients/{clientId}`.
+2. `Products`: `GET/POST /v1/commerce/products`, `PATCH /v1/commerce/products/{productId}`, `POST /v1/commerce/products/{productId}/status`.
+3. `Status atual`: contratos e implementacao backend ativos em `Packages/Backend/src/Modules/clients` e `Packages/Backend/src/Modules/products`.
+
 ## 4) Fluxo de notificacoes, suporte e estados globais
 
 ### Telas

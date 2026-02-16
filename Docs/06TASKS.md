@@ -330,6 +330,23 @@ Definir o backlog executavel do projeto Roodi com checklist de tarefas e subtare
   - [x] `GET /v1/rider/orders/active`, `GET /history`, `GET /{orderId}`.
   - [x] `POST /v1/rider/orders/{orderId}/events`.
 
+### TASK-023A: Implementar `clients` e `products` no Backend (Commerce)
+- [ ] `TASK-023A` concluida
+- **Instrucao:** Implementar CRUD operacional de clientes e produtos do comerciante conforme OpenAPI.
+- **Local fisico:** `Packages/Backend/src/Modules/clients/*`, `Packages/Backend/src/Modules/products/*`, `Packages/Backend/src/Core/http/routes.ts`.
+- **Motivo:** Remover estado local no app e sustentar fluxo real de `Commerce/Clients` e `Commerce/Products`.
+- **Fluxo:** `04FLUXOS` secao 3.
+- **Pagina/Tela:** `Commerce/Clients`, `Commerce/Products`, `Commerce/CreateCall`, `Commerce/Profile`.
+- **Subtarefas:**
+  - [ ] `GET /v1/commerce/clients`.
+  - [ ] `POST /v1/commerce/clients`.
+  - [ ] `PATCH /v1/commerce/clients/{clientId}`.
+  - [ ] `GET /v1/commerce/products`.
+  - [ ] `POST /v1/commerce/products`.
+  - [ ] `PATCH /v1/commerce/products/{productId}`.
+  - [ ] `POST /v1/commerce/products/{productId}/status`.
+  - [ ] Cobrir validacao de payload e paginacao conforme `Docs/openapi/roodi.openapi.yaml`.
+
 ### TASK-024: Implementar `credits` + `payments` + webhook InfinitePay
 - [x] `TASK-024` concluida
 - **Instrucao:** Implementar carteira de creditos, compra via InfinitePay e conciliacao. API-INFINITY-PAY.md
@@ -482,6 +499,7 @@ https://www.infinitepay.io/checkout
   - [x] Timeline de tracking e cancelamento.
   - [x] Gestao de clientes e produtos.
   - [x] Saldo/extrato/compra de creditos.
+- **Observacao de integracao:** endpoints de `clients` e `products` ja existem no backend; o app deve consumir estas rotas e remover estado local temporario.
 
 ### TASK-035: Integrar app e painel com usuarios/dados seed de exemplo
 - [ ] `TASK-035` concluida

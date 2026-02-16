@@ -150,9 +150,22 @@ ensure_postgres_db_user() {
   database_url="$(grep -m1 '^DATABASE_URL=' "${env_file}" | cut -d= -f2-)"
   [[ -n "${database_url}" ]] || fail "DATABASE_URL vazio em ${env_file}"
 
+  # Protecao contra placeholders e URLs corrompidas (ja aconteceu na VPS).
+  if [[ "${database_url}" == *"<user>"* || "${database_url}" == *"<password>"* || "${database_url}" == *"<host>"* ]]; then
+    fail "DATABASE_URL ainda contem placeholders (<user>/<password>/<host>) em ${env_file}."
+  fi
+  if [[ "${database_url}" == *"ROODI_DB_PASSWORD="* ]]; then
+    fail "DATABASE_URL parece corrompido (contendo ROODI_DB_PASSWORD=) em ${env_file}. Corrija o arquivo antes de continuar."
+  fi
+
   # Parse robusto do DATABASE_URL (suporta URL encoding).
   local parsed
-  parsed="$(python3 - <<PY
+  if ! command -v python3 >/dev/null 2>&1; then
+    apt-get update -y
+    apt-get install -y python3
+  fi
+
+  parsed="$(python3 - "${database_url}" <<'PY'
 from urllib.parse import urlparse, unquote
 import sys
 u = urlparse(sys.argv[1])
@@ -163,7 +176,7 @@ port = str(u.port or 5432)
 db = (u.path or "").lstrip("/")
 print("|".join([user, pw, host, port, db]))
 PY
-"${database_url}")"
+)"
 
   local db_user db_pass db_host db_port db_name
   IFS='|' read -r db_user db_pass db_host db_port db_name <<< "${parsed}"

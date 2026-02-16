@@ -145,7 +145,7 @@ ensure_postgres_db_user() {
   if [[ -z "${ROODI_DB_PASSWORD}" ]]; then
     local secrets_file="${ROODI_SHARED_DIR}/created-secrets.txt"
     if [[ -f "${secrets_file}" ]]; then
-      ROODI_DB_PASSWORD="$(rg -n '^ROODI_DB_PASSWORD=' "${secrets_file}" | head -n1 | sed 's/^ROODI_DB_PASSWORD=//')"
+      ROODI_DB_PASSWORD="$(grep -m1 '^ROODI_DB_PASSWORD=' "${secrets_file}" | cut -d= -f2-)"
     fi
   fi
 

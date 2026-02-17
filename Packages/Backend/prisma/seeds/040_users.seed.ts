@@ -15,7 +15,8 @@ const USERS: ReadonlyArray<{
     role: "admin",
     name: "Admin Roodi",
     email: "admin@roodi.app",
-    passwordHash: "$2b$12$03I9oAoxrjMoYC78VYBhPuu1VTmz46JmuAGQz0eGCHWq4UihDosym",
+    // Password: Admin@123456
+    passwordHash: "$2b$12$ruuw3QYDJ8VMADBeOSYUKOHQGqP.lPG9AczrAyVbJmq/BTPiuSAsa",
     phone_number: "+559999000001",
     whatsapp: "+559999000001",
   },
@@ -24,7 +25,8 @@ const USERS: ReadonlyArray<{
     role: "commerce",
     name: "Mercado Centro",
     email: "comercio.centro@roodi.app",
-    passwordHash: "$2b$12$wiT6fO/Blqlf02Ov8.ah7uT16wEqXECOr4lzlqyAXfWLdbbOpVJB.",
+    // Password: Commerce@123456
+    passwordHash: "$2b$12$qy.cPg3Z5XIN26zO1CdTaOjlxBecDrkkbd5METU1Puzu6/tWGg24a",
     phone_number: "+559999000201",
     whatsapp: "+559999000201",
   },
@@ -33,7 +35,8 @@ const USERS: ReadonlyArray<{
     role: "commerce",
     name: "Farmacia Imperial",
     email: "comercio.farmacia@roodi.app",
-    passwordHash: "$2b$12$wiT6fO/Blqlf02Ov8.ah7uT16wEqXECOr4lzlqyAXfWLdbbOpVJB.",
+    // Password: Commerce@123456
+    passwordHash: "$2b$12$qy.cPg3Z5XIN26zO1CdTaOjlxBecDrkkbd5METU1Puzu6/tWGg24a",
     phone_number: "+559999000202",
     whatsapp: "+559999000202",
   },
@@ -42,7 +45,8 @@ const USERS: ReadonlyArray<{
     role: "rider",
     name: "Joao Rider",
     email: "rider.joao@roodi.app",
-    passwordHash: "$2b$12$XfVutrQZmcsR.S1AdbqHUOG5/rWmoVqyQxVbDgYwjeoutvlI1F/DO",
+    // Password: Rider@123456
+    passwordHash: "$2b$12$q7M8MqSbE9Vr33k.Iw.lTuRj/HJ1lsIlRomDbi3QxPQBBTR0XlG86",
     phone_number: "+559999000301",
     whatsapp: "+559999000301",
   },
@@ -51,7 +55,8 @@ const USERS: ReadonlyArray<{
     role: "rider",
     name: "Maria Rider",
     email: "rider.maria@roodi.app",
-    passwordHash: "$2b$12$XfVutrQZmcsR.S1AdbqHUOG5/rWmoVqyQxVbDgYwjeoutvlI1F/DO",
+    // Password: Rider@123456
+    passwordHash: "$2b$12$q7M8MqSbE9Vr33k.Iw.lTuRj/HJ1lsIlRomDbi3QxPQBBTR0XlG86",
     phone_number: "+559999000302",
     whatsapp: "+559999000302",
   },
@@ -60,7 +65,8 @@ const USERS: ReadonlyArray<{
     role: "rider",
     name: "Pedro Rider",
     email: "rider.pedro@roodi.app",
-    passwordHash: "$2b$12$XfVutrQZmcsR.S1AdbqHUOG5/rWmoVqyQxVbDgYwjeoutvlI1F/DO",
+    // Password: Rider@123456
+    passwordHash: "$2b$12$q7M8MqSbE9Vr33k.Iw.lTuRj/HJ1lsIlRomDbi3QxPQBBTR0XlG86",
     phone_number: "+559999000303",
     whatsapp: "+559999000303",
   },

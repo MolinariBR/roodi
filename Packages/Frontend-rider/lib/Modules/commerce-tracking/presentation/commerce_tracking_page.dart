@@ -4,21 +4,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../Core/api-client/api_error_parser.dart';
+import '../../../Core/shared/external_url.dart';
+import '../../../Core/shared/infinitepay_redirect.dart';
 import '../../../Core/navigation/app_routes.dart';
 import '../../commerce-home/domain/commerce_models.dart';
 import '../../commerce-home/infra/commerce_repository.dart';
 
 class CommerceTrackingPage extends ConsumerStatefulWidget {
-  const CommerceTrackingPage({super.key, required this.orderId});
+  const CommerceTrackingPage({
+    super.key,
+    required this.orderId,
+    this.autoPay = false,
+  });
 
   final String orderId;
+  final bool autoPay;
 
   @override
   ConsumerState<CommerceTrackingPage> createState() =>
       _CommerceTrackingPageState();
 }
 
-class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
+class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage>
+    with WidgetsBindingObserver {
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -30,7 +38,36 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
   @override
   void initState() {
     super.initState();
-    Future<void>.microtask(_loadData);
+    WidgetsBinding.instance.addObserver(this);
+    Future<void>.microtask(() async {
+      await _loadData();
+      if (!mounted) {
+        return;
+      }
+      if (widget.autoPay) {
+        await _payNow(widget.orderId);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    if (_isPaymentActionLoading) {
+      return;
+    }
+    _loadData();
   }
 
   @override
@@ -961,7 +998,10 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
       if (payment == null || payment.checkoutUrl.trim().isEmpty) {
         await ref
             .read(commerceRepositoryProvider)
-            .createOrderPaymentIntent(orderId: orderId);
+            .createOrderPaymentIntent(
+              orderId: orderId,
+              redirectUrl: buildInfinitePayRedirectUrlForOrderTracking(orderId),
+            );
       }
 
       final status = await ref
@@ -989,6 +1029,17 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
         return;
       }
 
+      final opened = await openExternalUrl(checkoutUrl, preferInApp: true);
+      if (opened) {
+        if (!mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Abrindo checkout...')));
+        return;
+      }
+
       await Clipboard.setData(ClipboardData(text: checkoutUrl));
       if (!mounted) {
         return;
@@ -996,7 +1047,7 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Link de pagamento copiado. Abra no navegador para concluir.',
+            'Não foi possível abrir automaticamente. Link copiado para a área de transferência.',
           ),
         ),
       );

@@ -19,7 +19,6 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
   bool _isLoading = true;
   String? _errorMessage;
 
-  CommerceCreditsBalanceData? _balance;
   List<CommerceOrderData> _orders = const <CommerceOrderData>[];
 
   @override
@@ -590,9 +589,12 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
   }
 
   Widget _buildShortcutsSection() {
-    final balanceLabel = _balance == null
-        ? 'Saldo indisponível'
-        : 'Saldo ${_formatCurrency(_balance!.balanceBrl)}';
+    final pendingPayments = _orders.where(_isPendingPayment).length;
+    final paymentsSubtitle = pendingPayments == 0
+        ? 'Nenhum pagamento pendente'
+        : pendingPayments == 1
+        ? '1 pagamento pendente'
+        : '$pendingPayments pagamentos pendentes';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -614,11 +616,11 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
           onTap: () => context.go(AppRoutes.commerceClients),
         ),
         _shortcutCard(
-          icon: Icons.account_balance_wallet_outlined,
+          icon: Icons.payments_outlined,
           iconColor: const Color(0xFF34D399),
-          title: 'Comprar Créditos',
-          subtitle: balanceLabel,
-          onTap: () => context.go(AppRoutes.commerceCredits),
+          title: 'Pagamentos',
+          subtitle: paymentsSubtitle,
+          onTap: () => context.go(AppRoutes.commercePayments),
         ),
         _shortcutCard(
           icon: Icons.inventory_2_outlined,
@@ -750,6 +752,14 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
     );
   }
 
+  bool _isPendingPayment(CommerceOrderData order) {
+    final required = order.paymentRequired ?? false;
+    if (!required) {
+      return false;
+    }
+    return order.paymentStatus != 'approved';
+  }
+
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -758,18 +768,14 @@ class _CommerceHomePageState extends ConsumerState<CommerceHomePage> {
 
     try {
       final repository = ref.read(commerceRepositoryProvider);
-      final results = await Future.wait<Object>(<Future<Object>>[
-        repository.getCreditsBalance(),
-        repository.getOrders(limit: 20),
-      ]);
+      final result = await repository.getOrders(limit: 20);
 
       if (!mounted) {
         return;
       }
 
       setState(() {
-        _balance = results[0] as CommerceCreditsBalanceData;
-        _orders = (results[1] as CommerceOrderListData).items;
+        _orders = result.items;
       });
     } catch (error) {
       if (!mounted) {

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../Core/api-client/api_error_parser.dart';
 import '../../../Core/design-system/layout/responsive_layout.dart';
 import '../../../Core/navigation/app_routes.dart';
+import '../../../Core/shared/infinitepay_redirect.dart';
 import '../../commerce-home/domain/commerce_models.dart';
 import '../../commerce-home/infra/commerce_repository.dart';
 
@@ -797,6 +798,7 @@ class _CommerceCreateCallPageState
       try {
         paymentIntent = await repository.createOrderPaymentIntent(
           orderId: order.id,
+          redirectUrl: buildInfinitePayRedirectUrlForOrderTracking(order.id),
           customer: <String, dynamic>{
             if (_recipientController.text.trim().isNotEmpty)
               'name': _recipientController.text.trim(),
@@ -829,7 +831,10 @@ class _CommerceCreateCallPageState
           'Chamado criado. Conclua o pagamento para liberar o rider.',
         );
       }
-      context.go(AppRoutes.commerceTrackingByOrderId(order.id));
+      final trackingRoute = AppRoutes.commerceTrackingByOrderId(order.id);
+      final shouldAutoPay =
+          (order.paymentRequired ?? false) || paymentIntent != null;
+      context.go(shouldAutoPay ? '$trackingRoute?auto_pay=1' : trackingRoute);
     } catch (error) {
       if (!mounted) {
         return;

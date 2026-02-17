@@ -27,7 +27,6 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
   String _pickupPriority = 'Padrão';
 
   CommerceProfileData? _profile;
-  CommerceCreditsBalanceData? _balance;
   List<CommerceOrderData> _orders = const <CommerceOrderData>[];
 
   @override
@@ -39,7 +38,6 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
   @override
   Widget build(BuildContext context) {
     final profile = _profile;
-    final balance = _balance;
     final todayOrders = _orders
         .where((item) => _isToday(item.createdAt))
         .toList();
@@ -116,7 +114,7 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
                 const SizedBox(height: 14),
                 _buildPreferencesSection(),
                 const SizedBox(height: 14),
-                _buildAccountSection(balance),
+                _buildAccountSection(),
                 const SizedBox(height: 14),
                 _buildSupportSection(),
                 const SizedBox(height: 14),
@@ -340,11 +338,7 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
     );
   }
 
-  Widget _buildAccountSection(CommerceCreditsBalanceData? balance) {
-    final creditsSubtitle = balance == null
-        ? 'Saldo para chamados'
-        : 'Saldo ${_formatCurrency(balance.availableBrl)}';
-
+  Widget _buildAccountSection() {
     return _section(
       title: 'Conta e Gestão',
       children: <Widget>[
@@ -357,12 +351,12 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
           onTap: () => context.go(AppRoutes.commerceClients),
         ),
         _listCard(
-          icon: Icons.account_balance_wallet_outlined,
-          iconColor: const Color(0xFF86EFAC),
-          title: 'Compra de Créditos',
-          subtitle: creditsSubtitle,
+          icon: Icons.payments_outlined,
+          iconColor: const Color(0xFF34D399),
+          title: 'Pagamentos',
+          subtitle: 'Pedidos pendentes e histórico de pagamento',
           sideLabel: 'Abrir',
-          onTap: () => context.go(AppRoutes.commerceCredits),
+          onTap: () => context.go(AppRoutes.commercePayments),
         ),
         _listCard(
           icon: Icons.inventory_2_outlined,
@@ -614,7 +608,6 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
       final repository = ref.read(commerceRepositoryProvider);
       final result = await Future.wait<Object>(<Future<Object>>[
         repository.getProfile(),
-        repository.getCreditsBalance(),
         repository.getOrders(limit: 30),
       ]);
 
@@ -624,8 +617,7 @@ class _CommerceProfilePageState extends ConsumerState<CommerceProfilePage> {
 
       setState(() {
         _profile = result[0] as CommerceProfileData;
-        _balance = result[1] as CommerceCreditsBalanceData;
-        _orders = (result[2] as CommerceOrderListData).items;
+        _orders = (result[1] as CommerceOrderListData).items;
       });
     } catch (error) {
       if (!mounted) {

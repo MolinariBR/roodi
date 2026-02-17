@@ -39,6 +39,12 @@ Depois faça uma requisição (ex.: `/health`) e veja os logs no terminal.
 
 ## flutter
 
+0. Criar build release para Android (APK):
 flutter build apk --release
 
+1. Criar build release para Android (APK) apontando para o Backend VPS (Digital Ocean):
 flutter build apk --release --dart-define=ROODI_API_BASE_URL=https://api.roodi.app
+
+2. Rodar em modo debug apontado para o Backend VPS (Digital Ocean):
+flutter run --dart-define=ROODI_API_BASE_URL=https://api.roodi.app
+

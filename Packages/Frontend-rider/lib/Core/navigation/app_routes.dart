@@ -23,6 +23,7 @@ class AppRoutes {
   static const commerceHistory = '/commerce/history';
   static const commerceClients = '/commerce/clients';
   static const commerceProducts = '/commerce/products';
+  static const commercePayments = '/commerce/payments';
   static const commerceCredits = '/commerce/credits';
   static const commerceProfile = '/commerce/profile';
   static const notifications = '/notifications';
@@ -47,6 +48,7 @@ class AppRoutes {
     commerceHistory,
     commerceClients,
     commerceProducts,
+    commercePayments,
     commerceCredits,
     commerceProfile,
     notifications,

@@ -12,6 +12,7 @@ import '../../Modules/clients/presentation/clients_page.dart';
 import '../../Modules/commerce-create-call/presentation/commerce_create_call_page.dart';
 import '../../Modules/commerce-history/presentation/commerce_history_page.dart';
 import '../../Modules/commerce-home/presentation/commerce_home_page.dart';
+import '../../Modules/commerce-payments/presentation/commerce_payments_page.dart';
 import '../../Modules/commerce-profile/presentation/commerce_profile_page.dart';
 import '../../Modules/commerce-tracking/presentation/commerce_tracking_page.dart';
 import '../../Modules/credits/presentation/credits_page.dart';
@@ -100,7 +101,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           if (orderId == null || orderId.trim().isEmpty) {
             return const ErrorPage();
           }
-          return CommerceTrackingPage(orderId: orderId);
+          final autoPay = state.uri.queryParameters['auto_pay'] == '1';
+          return CommerceTrackingPage(orderId: orderId, autoPay: autoPay);
         },
       ),
       GoRoute(
@@ -114,6 +116,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.commerceProducts,
         builder: (context, state) => const ProductsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.commercePayments,
+        builder: (context, state) => const CommercePaymentsPage(),
       ),
       GoRoute(
         path: AppRoutes.commerceCredits,

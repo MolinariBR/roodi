@@ -479,13 +479,32 @@ ssl_configure() {
     log "DRY-RUN: certbot --nginx ..."
     return 0
   fi
+
+  # Certbot (HTTP-01) requires DNS for each domain. We treat www.<landing> as optional
+  # because many registrars ship without it by default; the apex domain should be required.
+  local has_dns="false"
+  local www_domain="www.${DOMAIN_LANDING}"
+  if getent ahosts "${www_domain}" >/dev/null 2>&1; then
+    has_dns="true"
+  fi
+
   log "SSL: certbot"
-  run certbot --nginx \
-    -m "${EMAIL}" --agree-tos --non-interactive \
-    -d "${DOMAIN_API}" \
-    -d "${DOMAIN_ADMIN}" \
-    -d "${DOMAIN_LANDING}" \
-    -d "www.${DOMAIN_LANDING}"
+  if [[ "${has_dns}" == "true" ]]; then
+    run certbot --nginx \
+      -m "${EMAIL}" --agree-tos --non-interactive \
+      -d "${DOMAIN_API}" \
+      -d "${DOMAIN_ADMIN}" \
+      -d "${DOMAIN_LANDING}" \
+      -d "${www_domain}"
+  else
+    log "WARN: ${www_domain} sem DNS (NXDOMAIN). Gerando SSL sem o www por enquanto."
+    log "      Crie um registro A para ${www_domain} apontando para esta VPS e rode o script novamente para incluir o www no certificado."
+    run certbot --nginx \
+      -m "${EMAIL}" --agree-tos --non-interactive \
+      -d "${DOMAIN_API}" \
+      -d "${DOMAIN_ADMIN}" \
+      -d "${DOMAIN_LANDING}"
+  fi
   run systemctl enable --now certbot.timer || true
 }
 

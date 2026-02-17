@@ -163,7 +163,9 @@ export class AuthService {
       });
     }
 
-    if (user.role !== input.role || !isLoginAllowedStatus(user.status)) {
+    // Role is optional: mobile/web may pass it to enforce "Rider" vs "Commerce" login UI.
+    // If role is provided and doesn't match, reject.
+    if ((input.role && user.role !== input.role) || !isLoginAllowedStatus(user.status)) {
       throw new AppError({
         code: "UNAUTHORIZED",
         message: "Invalid credentials.",

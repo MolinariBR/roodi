@@ -24,6 +24,19 @@ const withRoleAlias = <Shape extends z.ZodRawShape>(shape: Shape) => {
     }));
 };
 
+const withOptionalRoleAlias = <Shape extends z.ZodRawShape>(shape: Shape) => {
+  return z
+    .object({
+      ...shape,
+      role: userRoleSchema.optional(),
+      context: userRoleSchema.optional(),
+    })
+    .transform(({ context, role, ...rest }) => ({
+      ...rest,
+      role: role ?? context,
+    }));
+};
+
 export const authRegisterRequestSchema = withRoleAlias({
   name: z.string().trim().min(2),
   email: z.string().trim().email(),
@@ -31,7 +44,7 @@ export const authRegisterRequestSchema = withRoleAlias({
   phone_number: z.string().trim().min(8).max(30).optional(),
 });
 
-export const authLoginRequestSchema = withRoleAlias({
+export const authLoginRequestSchema = withOptionalRoleAlias({
   email: z.string().trim().email(),
   password: z.string().min(1),
 });

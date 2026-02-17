@@ -310,7 +310,8 @@ backend_migrate_generate_build() {
   npm_install "${BACKEND_DIR}"
 
   log "Backend: migrate"
-  run ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
+  # `run` executes argv directly; use `env` to set var for the child process.
+  run env ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:migrate
 
   log "Backend: prisma generate"
   run bash -lc "cd \"${BACKEND_DIR}\" && npx prisma generate --schema prisma/schema.prisma"

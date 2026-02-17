@@ -12,6 +12,7 @@
 #   --skip-ufw                Skip firewall changes
 #   --skip-swap               Skip swap creation
 #   --skip-apt                Skip apt install/update (assumes deps already installed)
+#   --seed                    Run Prisma seeds after migrate/generate (demo users/data)
 #   --self-test               Local dry-run test (does NOT touch system)
 #
 set -Eeuo pipefail
@@ -22,6 +23,7 @@ SKIP_SSL="false"
 SKIP_UFW="false"
 SKIP_SWAP="false"
 SKIP_APT="false"
+RUN_SEED="false"
 EMAIL=""
 
 while [[ $# -gt 0 ]]; do
@@ -44,6 +46,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --skip-apt)
       SKIP_APT="true"
+      shift
+      ;;
+    --seed)
+      RUN_SEED="true"
       shift
       ;;
     --self-test)
@@ -315,6 +321,11 @@ backend_migrate_generate_build() {
 
   log "Backend: prisma generate"
   run bash -lc "cd \"${BACKEND_DIR}\" && npx prisma generate --schema prisma/schema.prisma"
+
+  if [[ "${RUN_SEED}" == "true" ]]; then
+    log "Backend: seed"
+    run env ROODI_ENV=production npm --prefix "${BACKEND_DIR}" run db:seed
+  fi
 
   log "Backend: build"
   run npm --prefix "${BACKEND_DIR}" run build

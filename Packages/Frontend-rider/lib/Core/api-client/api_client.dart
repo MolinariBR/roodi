@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth/token_storage.dart';
@@ -9,6 +10,12 @@ final apiBaseUrlProvider = Provider<String>((ref) {
   const configured = String.fromEnvironment('ROODI_API_BASE_URL');
   if (configured.isNotEmpty) {
     return configured;
+  }
+
+  // Release builds must talk to production by default. Dev/debug can override via:
+  // `--dart-define=ROODI_API_BASE_URL=http://127.0.0.1:3333` (with adb reverse).
+  if (kReleaseMode) {
+    return 'https://api.roodi.app';
   }
 
   return 'http://localhost:3333';

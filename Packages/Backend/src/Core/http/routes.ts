@@ -38,6 +38,21 @@ import { createCommerceClientsRouter } from "@modules/clients/presentation/clien
 export const createApiRouter = (): Router => {
   const router = Router();
 
+  router.get("/", (_req, res) => {
+    res.status(200).json({
+      success: true,
+      data: {
+        service: "roodi-api",
+        environment: process.env.NODE_ENV ?? "unknown",
+        app_version: process.env.APP_VERSION ?? null,
+        api_version: process.env.API_VERSION ?? null,
+        endpoints: {
+          health: "/health",
+        },
+      },
+    });
+  });
+
   const adminRouter = Router();
   adminRouter.use(authenticateAccessTokenMiddleware, requireAdminMiddleware);
   adminRouter.use(createAdminSystemRouter());

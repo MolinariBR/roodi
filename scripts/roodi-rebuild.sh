@@ -15,6 +15,7 @@
 #   --admin                 Rebuild frontend-admin and restart PM2
 #   --landing               Rebuild landing (Packages/Roodi) and restart PM2
 #   --all                   Rebuild everything and restart PM2 apps
+#   --seed                  Run backend Prisma seeds (only with --backend/--all)
 #   --skip-install          Skip npm install/ci (faster, use only if deps didn't change)
 #   --pull                  Run `git pull --ff-only` before rebuilding
 #   --self-test             Dry-run (does not execute commands)
@@ -23,6 +24,7 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 
 MODE=""
+RUN_SEED="false"
 SKIP_INSTALL="false"
 DO_PULL="false"
 SELF_TEST="false"
@@ -36,6 +38,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --backend|--admin|--landing|--all)
       MODE="${1#--}"
+      shift
+      ;;
+    --seed)
+      RUN_SEED="true"
       shift
       ;;
     --skip-install)
@@ -237,6 +243,11 @@ rebuild_backend() {
   log "Backend: prisma generate"
   run bash -lc "cd \"${BACKEND_DIR}\" && env ROODI_ENV=\"${ROODI_ENV}\" NODE_ENV=production npx prisma generate --schema prisma/schema.prisma"
 
+  if [[ "${RUN_SEED}" == "true" ]]; then
+    log "Backend: seed"
+    run env ROODI_ENV="${ROODI_ENV}" NODE_ENV=production npm --prefix "${BACKEND_DIR}" run db:seed
+  fi
+
   log "Backend: build"
   run npm --prefix "${BACKEND_DIR}" run build
 
@@ -273,7 +284,7 @@ main() {
   need_cmd npm
 
   log "Repo: ${APP_DIR}"
-  log "Modo: ${MODE} | pull=${DO_PULL} | skip_install=${SKIP_INSTALL}"
+  log "Modo: ${MODE} | pull=${DO_PULL} | skip_install=${SKIP_INSTALL} | seed=${RUN_SEED}"
 
   git_pull_ff_only
   validate_workdir_matches_pm2
@@ -284,9 +295,15 @@ main() {
       rebuild_backend
       ;;
     admin)
+      if [[ "${RUN_SEED}" == "true" ]]; then
+        fail "--seed so faz sentido com --backend ou --all."
+      fi
       rebuild_admin
       ;;
     landing)
+      if [[ "${RUN_SEED}" == "true" ]]; then
+        fail "--seed so faz sentido com --backend ou --all."
+      fi
       rebuild_landing
       ;;
     all)

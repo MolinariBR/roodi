@@ -101,7 +101,9 @@ pm2 save
 3) Frontend-admin (build + restart):
 ```bash
 cd /opt/roodi/app/Packages/Frontend-admin
+pm2 stop roodi-admin || true
 npm ci
+rm -rf .next
 npm run build
 pm2 restart roodi-admin --update-env
 pm2 save
@@ -110,7 +112,9 @@ pm2 save
 4) Landing (build + restart):
 ```bash
 cd /opt/roodi/app/Packages/Roodi
+pm2 stop roodi-landing || true
 npm ci
+rm -rf .next
 npm run build
 pm2 restart roodi-landing --update-env
 pm2 save

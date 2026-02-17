@@ -233,6 +233,19 @@ pm2_restart_app() {
   fail "PM2 app '${app_name}' nao encontrado e ecosystem nao existe: ${ECOSYSTEM_FILE}"
 }
 
+pm2_stop_app_if_exists() {
+  local app_name="$1"
+  if [[ "${SELF_TEST}" == "true" ]]; then
+    log "DRY-RUN: pm2 stop ${app_name}"
+    return 0
+  fi
+
+  need_cmd pm2
+  if pm2 describe "${app_name}" >/dev/null 2>&1; then
+    run pm2 stop "${app_name}" || true
+  fi
+}
+
 rebuild_backend() {
   log "Backend: deps"
   npm_install "${BACKEND_DIR}"
@@ -256,6 +269,10 @@ rebuild_backend() {
 }
 
 rebuild_admin() {
+  # Next.js writes into .next during build. Stopping avoids serving a partially-updated build.
+  log "PM2: stop roodi-admin (safe build)"
+  pm2_stop_app_if_exists "roodi-admin"
+
   log "Frontend-admin: deps"
   npm_install "${ADMIN_DIR}"
 
@@ -267,6 +284,9 @@ rebuild_admin() {
 }
 
 rebuild_landing() {
+  log "PM2: stop roodi-landing (safe build)"
+  pm2_stop_app_if_exists "roodi-landing"
+
   log "Landing: deps"
   npm_install "${LANDING_DIR}"
 

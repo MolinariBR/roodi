@@ -19,5 +19,5 @@
 
 ## DIGITAL OCEAN
 
-* Acesso Remoto (SSH):  sONHOS2829S
+* Acesso Remoto (SSH):  sONHOS2829S+
  - Host:

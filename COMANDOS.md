@@ -34,3 +34,11 @@ cd Packages/Backend
 npm run dev
 ```
 Depois faça uma requisição (ex.: `/health`) e veja os logs no terminal.
+
+
+
+## flutter
+
+flutter build apk --release
+
+flutter build apk --release --dart-define=ROODI_API_BASE_URL=https://api.roodi.app

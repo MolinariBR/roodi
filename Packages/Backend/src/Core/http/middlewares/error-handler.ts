@@ -94,6 +94,7 @@ export const errorHandlerMiddleware: ErrorRequestHandler = (
         path: req.originalUrl,
         status_code: error.statusCode,
         code: error.code,
+        message: error.message,
       },
       "request_handled_error",
     );
@@ -123,4 +124,3 @@ export const errorHandlerMiddleware: ErrorRequestHandler = (
 
   sendErrorResponse(res, 500, payload);
 };
-

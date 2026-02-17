@@ -30,6 +30,20 @@ const generateOrderNsu = (prefix: "CRD" | "ORD"): string => {
   return `${prefix}-${timestamp}-${randomUUID().slice(0, 8)}`;
 };
 
+const withQueryParams = (inputUrl: string, params: Record<string, string>): string => {
+  try {
+    const parsed = new URL(inputUrl);
+    for (const [key, value] of Object.entries(params)) {
+      if (!parsed.searchParams.has(key)) {
+        parsed.searchParams.set(key, value);
+      }
+    }
+    return parsed.toString();
+  } catch {
+    return inputUrl;
+  }
+};
+
 const buildWebhookIdempotencyKey = (payload: InfinitePayWebhookPayload): string => {
   const source = [
     "infinitepay",
@@ -130,7 +144,12 @@ export class PaymentsService {
     }
 
     const orderNsu = generateOrderNsu("CRD");
-    const redirectUrl = input.payload.redirect_url;
+    const redirectUrl = input.payload.redirect_url
+      ? withQueryParams(input.payload.redirect_url, {
+          // InfinitePay não devolve o handle no redirect. Incluímos para o app poder chamar o /check.
+          handle: env.infinitePayHandle,
+        })
+      : undefined;
     const webhookUrl = input.payload.webhook_url ?? env.infinitePayWebhookUrl;
 
     const paymentIntent = await this.paymentsRepository.createPaymentIntent({
@@ -280,7 +299,12 @@ export class PaymentsService {
     }
 
     const orderNsu = generateOrderNsu("ORD");
-    const redirectUrl = input.payload.redirect_url;
+    const redirectUrl = input.payload.redirect_url
+      ? withQueryParams(input.payload.redirect_url, {
+          // InfinitePay não devolve o handle no redirect. Incluímos para o app poder chamar o /check.
+          handle: env.infinitePayHandle,
+        })
+      : undefined;
     const webhookUrl = input.payload.webhook_url ?? env.infinitePayWebhookUrl;
 
     const paymentIntent = await this.paymentsRepository.createPaymentIntent({

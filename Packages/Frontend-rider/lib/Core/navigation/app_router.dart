@@ -101,8 +101,34 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           if (orderId == null || orderId.trim().isEmpty) {
             return const ErrorPage();
           }
-          final autoPay = state.uri.queryParameters['auto_pay'] == '1';
-          return CommerceTrackingPage(orderId: orderId, autoPay: autoPay);
+          final query = state.uri.queryParameters;
+          final autoPay = query['auto_pay'] == '1';
+
+          CommercePaymentReturnParams? paymentReturn;
+          if (query['payment_return'] == '1') {
+            final handle = query['handle']?.trim() ?? '';
+            final orderNsu = query['order_nsu']?.trim() ?? '';
+            final transactionNsu = query['transaction_nsu']?.trim() ?? '';
+            final slug = query['slug']?.trim() ?? '';
+
+            if (handle.isNotEmpty &&
+                orderNsu.isNotEmpty &&
+                transactionNsu.isNotEmpty &&
+                slug.isNotEmpty) {
+              paymentReturn = CommercePaymentReturnParams(
+                handle: handle,
+                orderNsu: orderNsu,
+                transactionNsu: transactionNsu,
+                slug: slug,
+              );
+            }
+          }
+
+          return CommerceTrackingPage(
+            orderId: orderId,
+            autoPay: autoPay,
+            paymentReturn: paymentReturn,
+          );
         },
       ),
       GoRoute(

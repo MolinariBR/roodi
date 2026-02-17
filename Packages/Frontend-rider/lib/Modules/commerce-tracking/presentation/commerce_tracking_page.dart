@@ -10,15 +10,31 @@ import '../../../Core/navigation/app_routes.dart';
 import '../../commerce-home/domain/commerce_models.dart';
 import '../../commerce-home/infra/commerce_repository.dart';
 
+class CommercePaymentReturnParams {
+  const CommercePaymentReturnParams({
+    required this.handle,
+    required this.orderNsu,
+    required this.transactionNsu,
+    required this.slug,
+  });
+
+  final String handle;
+  final String orderNsu;
+  final String transactionNsu;
+  final String slug;
+}
+
 class CommerceTrackingPage extends ConsumerStatefulWidget {
   const CommerceTrackingPage({
     super.key,
     required this.orderId,
     this.autoPay = false,
+    this.paymentReturn,
   });
 
   final String orderId;
   final bool autoPay;
+  final CommercePaymentReturnParams? paymentReturn;
 
   @override
   ConsumerState<CommerceTrackingPage> createState() =>
@@ -34,6 +50,7 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage>
   List<CommerceTrackingEventData> _events = const <CommerceTrackingEventData>[];
   CommerceOrderPaymentStatusData? _paymentStatus;
   bool _isPaymentActionLoading = false;
+  bool _didProcessPaymentReturn = false;
 
   @override
   void initState() {
@@ -47,6 +64,10 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage>
       if (widget.autoPay) {
         await _payNow(widget.orderId);
       }
+      if (!mounted) {
+        return;
+      }
+      await _processPaymentReturnIfNeeded();
     });
   }
 
@@ -68,6 +89,78 @@ class _CommerceTrackingPageState extends ConsumerState<CommerceTrackingPage>
       return;
     }
     _loadData();
+  }
+
+  Future<void> _processPaymentReturnIfNeeded() async {
+    if (_didProcessPaymentReturn) {
+      return;
+    }
+
+    final params = widget.paymentReturn;
+    if (params == null) {
+      return;
+    }
+
+    _didProcessPaymentReturn = true;
+
+    final payment = _paymentStatus?.payment;
+    if (payment == null || payment.paymentId.trim().isEmpty) {
+      return;
+    }
+
+    if (_paymentStatus?.paid == true) {
+      return;
+    }
+
+    setState(() {
+      _isPaymentActionLoading = true;
+    });
+
+    try {
+      final result = await ref
+          .read(commerceRepositoryProvider)
+          .checkPayment(
+            paymentId: payment.paymentId,
+            handle: params.handle,
+            orderNsu: params.orderNsu,
+            transactionNsu: params.transactionNsu,
+            slug: params.slug,
+          );
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result.paid ? 'Pagamento confirmado.' : 'Pagamento ainda pendente.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            mapApiErrorMessage(
+              error,
+              fallbackMessage: 'Não foi possível confirmar o pagamento.',
+            ),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPaymentActionLoading = false;
+        });
+      }
+    }
+
+    await _loadData();
   }
 
   @override

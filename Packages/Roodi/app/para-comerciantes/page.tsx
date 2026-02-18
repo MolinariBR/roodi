@@ -8,9 +8,10 @@ export const metadata = {
 export default function ParaComerciantesPage() {
   return (
     <div className="w-full">
-      <section className="relative overflow-hidden border-b border-border bg-surface-1">
+      <section className="relative overflow-hidden border-b border-border bg-background roodi-noise">
         <div className="absolute inset-0 roodi-hero-bg" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
+        <div className="absolute inset-0 roodi-grid" aria-hidden="true" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div className="space-y-5">
               <p className="inline-flex w-fit items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-muted shadow-sm">
@@ -21,19 +22,19 @@ export default function ParaComerciantesPage() {
               </h1>
               <p className="max-w-xl text-base text-muted md:text-lg">
                 Abra um chamado em segundos, pague por entrega e acompanhe a timeline operacional. Roodi evita estados
-                ambíguos e reduz friccao na operacao do dia a dia.
+                ambiguos e reduz friccao na operacao do dia a dia.
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/contato?type=commerce"
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
                 >
                   Quero usar no meu negocio
                 </Link>
                 <Link
                   href="/como-funciona"
-                  className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
                 >
                   Entender o fluxo
                 </Link>
@@ -58,7 +59,7 @@ export default function ParaComerciantesPage() {
                     "Clientes e produtos organizados para acelerar novos chamados e reduzir erros.",
                 },
               ].map((card) => (
-                <article key={card.title} className="rounded-2xl border border-border bg-background p-5 shadow-sm">
+                <article key={card.title} className="roodi-panel rounded-3xl p-6">
                   <h2 className="text-base font-bold tracking-tight text-foreground">{card.title}</h2>
                   <p className="mt-2 text-sm text-muted">{card.description}</p>
                 </article>
@@ -93,7 +94,7 @@ export default function ParaComerciantesPage() {
               description: "Regras admin_only para zona, urgencia e acrescimos (peak, clima, etc).",
             },
           ].map((item) => (
-            <article key={item.title} className="rounded-2xl border border-border bg-surface-1 p-6 shadow-sm">
+            <article key={item.title} className="roodi-panel rounded-3xl p-6">
               <h3 className="text-base font-bold tracking-tight text-foreground">{item.title}</h3>
               <p className="mt-2 text-sm text-muted">{item.description}</p>
             </article>
@@ -103,7 +104,7 @@ export default function ParaComerciantesPage() {
 
       <section className="border-t border-border bg-surface-1">
         <div className="mx-auto w-full max-w-6xl px-4 py-14">
-          <div className="grid gap-6 rounded-3xl border border-border bg-background p-8 shadow-sm md:grid-cols-2 md:items-center">
+          <div className="roodi-panel grid gap-6 rounded-[28px] p-8 md:grid-cols-2 md:items-center">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Pronto para testar?</p>
               <p className="text-2xl font-black tracking-tight text-foreground">Fale com o time e entre no piloto.</p>
@@ -115,13 +116,13 @@ export default function ParaComerciantesPage() {
             <div className="flex flex-wrap gap-3 md:justify-end">
               <Link
                 href="/contato?type=commerce"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+                className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
               >
                 Entrar em contato
               </Link>
               <Link
                 href="/para-entregadores"
-                className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+                className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
               >
                 Ver para entregadores
               </Link>
@@ -132,4 +133,3 @@ export default function ParaComerciantesPage() {
     </div>
   );
 }
-

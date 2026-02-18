@@ -46,6 +46,77 @@
     text-wrap: balance;
   }
 
+  .roodi-glass {
+    background-color: color-mix(in srgb, var(--color-bg) 76%, transparent);
+  }
+
+  .roodi-grid {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-border) 55%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-border) 55%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse at 50% 20%, black 42%, transparent 78%);
+  }
+
+  .roodi-noise {
+    position: relative;
+  }
+
+  .roodi-noise::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.055;
+    mix-blend-mode: overlay;
+  }
+
+  :root[data-theme="dark"] .roodi-noise::before {
+    opacity: 0.08;
+    mix-blend-mode: screen;
+  }
+
+  .roodi-panel {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-1) 92%, transparent),
+        var(--color-surface-1)
+      );
+    border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--color-surface-1) 55%, transparent) inset,
+      var(--shadow-sm);
+  }
+
+  :root[data-theme="dark"] .roodi-panel {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-1) 92%, transparent),
+        var(--color-surface-2)
+      );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      var(--shadow-sm);
+  }
+
+  .roodi-focus-ring:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
   .roodi-hero-bg {
     background:
       radial-gradient(

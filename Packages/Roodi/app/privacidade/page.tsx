@@ -14,7 +14,7 @@ export default function PrivacidadePage() {
           </p>
         </header>
 
-        <article className="rounded-2xl border border-border bg-surface-1 p-6 text-sm text-foreground shadow-sm">
+        <article className="roodi-panel rounded-3xl p-6 text-sm text-foreground">
           <p>
             Dados coletados sao utilizados para autenticacao, operacao de entrega, suporte e conformidade regulatoria.
           </p>

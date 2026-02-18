@@ -8,9 +8,10 @@ export const metadata = {
 export default function ParaEntregadoresPage() {
   return (
     <div className="w-full">
-      <section className="relative overflow-hidden border-b border-border bg-surface-1">
+      <section className="relative overflow-hidden border-b border-border bg-background roodi-noise">
         <div className="absolute inset-0 roodi-hero-bg" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
+        <div className="absolute inset-0 roodi-grid" aria-hidden="true" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div className="space-y-5">
               <p className="inline-flex w-fit items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-muted shadow-sm">
@@ -27,13 +28,13 @@ export default function ParaEntregadoresPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/contato?type=rider"
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
                 >
                   Quero ser rider
                 </Link>
                 <Link
                   href="/como-funciona"
-                  className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
                 >
                   Entender o fluxo
                 </Link>
@@ -55,7 +56,7 @@ export default function ParaEntregadoresPage() {
                   description: "Codigo de confirmacao e evento de conclusao registrados para auditoria.",
                 },
               ].map((card) => (
-                <article key={card.title} className="rounded-2xl border border-border bg-background p-5 shadow-sm">
+                <article key={card.title} className="roodi-panel rounded-3xl p-6">
                   <h2 className="text-base font-bold tracking-tight text-foreground">{card.title}</h2>
                   <p className="mt-2 text-sm text-muted">{card.description}</p>
                 </article>
@@ -90,7 +91,7 @@ export default function ParaEntregadoresPage() {
               description: "Codigo de confirmacao e finalizacao. O historico fica disponivel no app.",
             },
           ].map((item) => (
-            <li key={item.title} className="rounded-2xl border border-border bg-surface-1 p-6 shadow-sm">
+            <li key={item.title} className="roodi-panel rounded-3xl p-6">
               <p className="text-sm font-bold text-foreground">{item.title}</p>
               <p className="mt-2 text-sm text-muted">{item.description}</p>
             </li>
@@ -100,7 +101,7 @@ export default function ParaEntregadoresPage() {
 
       <section className="border-t border-border bg-surface-1">
         <div className="mx-auto w-full max-w-6xl px-4 py-14">
-          <div className="grid gap-6 rounded-3xl border border-border bg-background p-8 shadow-sm md:grid-cols-2 md:items-center">
+          <div className="roodi-panel grid gap-6 rounded-[28px] p-8 md:grid-cols-2 md:items-center">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Pronto para entrar?</p>
               <p className="text-2xl font-black tracking-tight text-foreground">Deixe um contato.</p>
@@ -109,13 +110,13 @@ export default function ParaEntregadoresPage() {
             <div className="flex flex-wrap gap-3 md:justify-end">
               <Link
                 href="/contato?type=rider"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+                className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
               >
                 Entrar em contato
               </Link>
               <Link
                 href="/para-comerciantes"
-                className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+                className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
               >
                 Ver para comerciantes
               </Link>
@@ -126,4 +127,3 @@ export default function ParaEntregadoresPage() {
     </div>
   );
 }
-

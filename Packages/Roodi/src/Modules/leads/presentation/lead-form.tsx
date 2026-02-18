@@ -118,13 +118,13 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
       {status === "success" ? (
-        <div className="rounded-2xl border border-border bg-surface-1 p-6 shadow-sm">
+        <div className="roodi-panel rounded-3xl p-6">
           <p className="text-base font-bold text-foreground">Recebido.</p>
           <p className="mt-2 text-sm text-muted">
             Seu contato foi enviado. Em breve retornamos com os proximos passos.
           </p>
           <button
-            className="mt-4 inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+            className="roodi-focus-ring mt-4 inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
             type="button"
             onClick={() => {
               setStatus("idle");
@@ -141,40 +141,42 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
       ) : (
         <>
           {errorMessage ? (
-            <p className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-danger">
+            <p className="roodi-panel rounded-2xl px-4 py-3 text-sm text-danger">
               {errorMessage}
             </p>
           ) : null}
 
-          <div className="grid gap-4 rounded-2xl border border-border bg-surface-1 p-6 shadow-sm md:grid-cols-2">
+          <div className="roodi-panel grid gap-4 rounded-3xl p-6 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-foreground">
               Nome
               <input
-                className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
                 name="name"
                 placeholder="Seu nome"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 required
+                autoComplete="name"
               />
             </label>
 
             <label className="grid gap-2 text-sm font-semibold text-foreground">
               Contato (email ou WhatsApp)
               <input
-                className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
                 name="contact"
                 placeholder="voce@empresa.com ou +55 11 99999-9999"
                 value={contact}
                 onChange={(event) => setContact(event.target.value)}
                 required
+                autoComplete="email"
               />
             </label>
 
             <label className="grid gap-2 text-sm font-semibold text-foreground md:col-span-2">
               Perfil
               <select
-                className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
                 name="lead_type"
                 value={leadType}
                 onChange={(event) => setLeadType(resolveDefaultLeadType(event.target.value))}
@@ -189,7 +191,7 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
             <label className="grid gap-2 text-sm font-semibold text-foreground md:col-span-2">
               Mensagem (opcional)
               <textarea
-                className="min-h-28 resize-y rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className="roodi-focus-ring min-h-28 resize-y rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
                 name="message"
                 placeholder="Conte brevemente seu cenario (cidade, volume, necessidade)."
                 value={message}
@@ -200,7 +202,7 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
             <div className="flex flex-wrap items-center justify-between gap-3 md:col-span-2">
               <p className="text-xs text-muted">Ao enviar, voce concorda em ser contatado pelo time Roodi.</p>
               <button
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90 disabled:opacity-60"
+                className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90 disabled:opacity-60"
                 type="submit"
                 disabled={status === "submitting"}
               >

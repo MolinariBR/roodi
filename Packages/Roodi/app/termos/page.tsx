@@ -14,7 +14,7 @@ export default function TermosPage() {
           </p>
         </header>
 
-        <article className="rounded-2xl border border-border bg-surface-1 p-6 text-sm text-foreground shadow-sm">
+        <article className="roodi-panel rounded-3xl p-6 text-sm text-foreground">
           <p>
             Ao utilizar a plataforma, o usuario concorda com as regras operacionais e financeiras vigentes no Roodi.
           </p>

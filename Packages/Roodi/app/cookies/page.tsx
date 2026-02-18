@@ -16,7 +16,7 @@ export default function CookiesPage() {
           </p>
         </header>
 
-        <article className="rounded-2xl border border-border bg-surface-1 p-6 text-sm text-foreground shadow-sm">
+        <article className="roodi-panel rounded-3xl p-6 text-sm text-foreground">
           <p>Cookies essenciais podem ser utilizados para experiencia de navegacao e medicoes agregadas de uso.</p>
         </article>
       </section>

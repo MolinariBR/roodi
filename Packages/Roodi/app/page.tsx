@@ -1,10 +1,63 @@
 import Link from "next/link";
 
+const trustPillars = [
+  {
+    title: "Regras publicas",
+    description: "Rodizio por zona, elegibilidade e efeitos operacionais registrados em log.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path
+          d="M7 7h10M7 12h10M7 17h7"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Tracking por estados",
+    description: "Timeline de eventos, sem depender de GPS continuo no fluxo principal.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path
+          d="M12 22s7-4.4 7-12a7 7 0 1 0-14 0c0 7.6 7 12 7 12Z"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" strokeWidth="2" />
+      </svg>
+    ),
+  },
+  {
+    title: "Financeiro rastreavel",
+    description: "Pagamento por chamado + webhook, com regra matematica: FP = RE + CP.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path
+          d="M4 7h16M4 12h10M4 17h16"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+];
+
+const howItWorks = [
+  { title: "1) Criar chamado", description: "Cliente, destino e urgencia. Cotacao com preco e ETA." },
+  { title: "2) Confirmar pagamento", description: "Checkout gerado. Webhook confirma e libera o dispatch." },
+  { title: "3) Execucao por estados", description: "Rider opera com estados claros, sem ruido e sem salto invalido." },
+  { title: "4) Fechamento e auditoria", description: "Historico, tracking e financeiro com trilha auditavel." },
+];
+
 export default function HomePage() {
   return (
     <div className="w-full">
-      <section className="relative overflow-hidden border-b border-border bg-surface-1">
+      <section className="relative overflow-hidden border-b border-border bg-background roodi-noise">
         <div className="absolute inset-0 roodi-hero-bg" aria-hidden="true" />
+        <div className="absolute inset-0 roodi-grid" aria-hidden="true" />
         <div
           className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full bg-primary-soft blur-3xl animate-roodi-float"
           aria-hidden="true"
@@ -14,33 +67,43 @@ export default function HomePage() {
           aria-hidden="true"
         />
 
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-14 md:py-24">
-          <div className="grid gap-10 md:grid-cols-2 md:items-center">
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 md:py-24">
+          <div className="grid gap-12 md:grid-cols-2 md:items-center">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-                Em breve: Roodi tambem tera delivery
+              <div className="flex flex-wrap gap-2">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
+                  <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+                  Uma guilda que funciona: regras claras, log de tudo.
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
+                  <span className="h-2 w-2 rounded-full bg-warning" aria-hidden="true" />
+                  Em breve: Roodi tambem tera delivery
+                </div>
               </div>
 
               <h1 className="text-balance text-4xl font-black tracking-tight text-foreground md:text-6xl">
-                Entregas sob demanda para comercio local, com operacao simples e previsivel.
+                Entregas sob demanda com{" "}
+                <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                  confianca operacional
+                </span>
+                .
               </h1>
 
               <p className="max-w-xl text-base text-muted md:text-lg">
-                O comerciante cria o chamado, paga por entrega e acompanha o tracking por estados. O rider executa o
-                fluxo operacional com clareza. O admin audita, ajusta regras e governa a plataforma.
+                O comercio cria o chamado, paga por entrega e acompanha uma timeline de eventos. O rider opera por
+                estados claros e ve valor antes do aceite. O admin governa precos e audita logs, sem algoritmo secreto.
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/para-comerciantes"
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
                 >
                   Sou comerciante
                 </Link>
                 <Link
                   href="/para-entregadores"
-                  className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors duration-fast hover:bg-surface-2"
+                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors duration-fast hover:bg-surface-2"
                 >
                   Sou entregador
                 </Link>
@@ -53,20 +116,21 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-wrap gap-2 text-xs text-muted">
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Cotacao por bairros</span>
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Tracking por estados</span>
+                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Sem GPS continuo</span>
+                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Rodizio por zona</span>
                 <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Pagamento por chamado</span>
+                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Logs auditaveis</span>
               </div>
             </div>
 
             <div className="grid gap-4">
-              <div className="grid gap-4 rounded-2xl border border-border bg-surface-1 p-5 shadow-sm">
+              <div className="roodi-panel grid gap-4 rounded-3xl p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted">Roodi</p>
-                    <p className="mt-1 text-lg font-bold tracking-tight text-foreground">Operacao por estado</p>
+                    <p className="mt-1 text-lg font-bold tracking-tight text-foreground">Operacao por estados</p>
                     <p className="mt-1 text-sm text-muted">
-                      Sem depender de GPS continuo no fluxo principal. O tracking e uma timeline clara de eventos.
+                      Timeline de eventos: cada etapa tem dono, momento e efeito operacional.
                     </p>
                   </div>
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
@@ -94,10 +158,7 @@ export default function HomePage() {
                   ].map((item) => (
                     <div key={item.label} className="flex items-center gap-3">
                       <span
-                        className={[
-                          "h-2.5 w-2.5 rounded-full",
-                          item.active ? "bg-success" : "bg-border",
-                        ].join(" ")}
+                        className={["h-2.5 w-2.5 rounded-full", item.active ? "bg-success" : "bg-border"].join(" ")}
                         aria-hidden="true"
                       />
                       <p className="text-sm text-foreground">{item.label}</p>
@@ -106,18 +167,18 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 rounded-2xl border border-border bg-surface-1 p-5 shadow-sm">
+              <div className="roodi-panel grid gap-4 rounded-3xl p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-lg font-bold tracking-tight text-foreground">Cotacao previsivel</p>
+                    <p className="text-lg font-bold tracking-tight text-foreground">Justica na alocacao</p>
                     <p className="mt-1 text-sm text-muted">
-                      Matriz de bairros + fallback deterministico para distancia/tempo e politica clara de precificacao.
+                      Oferta em lotes (Top 3/5) com janela curta. Sem dedo rapido, sem panelinha.
                     </p>
                   </div>
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
                       <path
-                        d="M5 12h14M5 7h14M5 17h14"
+                        d="M4 12h16M7 7h10M7 17h10"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
@@ -127,9 +188,9 @@ export default function HomePage() {
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { label: "Preco", value: "R$ 12,90" },
-                    { label: "ETA", value: "18 min" },
-                    { label: "Zona", value: "3" },
+                    { label: "Zona", value: "Fila justa" },
+                    { label: "Janela", value: "12-15s" },
+                    { label: "Desempate", value: "Posicao" },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-border bg-surface-2 p-3">
                       <p className="text-xs text-muted">{item.label}</p>
@@ -138,7 +199,31 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
+
+              <div className="roodi-panel grid gap-3 rounded-3xl p-6">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Regra financeira</p>
+                <p className="text-lg font-bold tracking-tight text-foreground">FP = RE + CP</p>
+                <p className="text-sm text-muted">
+                  O comercio paga o frete da plataforma (FP). O rider recebe o repasse (RE). A plataforma retém a comissao (CP).
+                </p>
+              </div>
             </div>
+          </div>
+
+          <div className="mt-10 grid gap-3 md:grid-cols-3">
+            {trustPillars.map((item) => (
+              <div key={item.title} className="roodi-panel rounded-3xl p-6">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+                    {item.icon}
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold text-foreground">{item.title}</p>
+                    <p className="text-sm text-muted">{item.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -148,36 +233,35 @@ export default function HomePage() {
           <header className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">Por que Roodi</p>
             <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
-              Menos friccao na operacao. Mais controle no financeiro.
+              Menos atrito na operacao. Mais previsibilidade para todos.
             </h2>
             <p className="max-w-xl text-base text-muted">
-              Roodi foi desenhado para reduzir estados ambíguos: o que esta acontecendo agora, o que vem depois e o que
-              pode dar errado.
+              O objetivo e eliminar duvida e discussao: fila e regras visiveis, tracking por estados e auditoria de ponta a ponta.
             </p>
           </header>
 
           <div className="grid gap-4 md:grid-cols-2">
             {[
               {
-                title: "Tracking por estados",
-                description: "Timeline operacional. Cada evento tem dono, momento e efeito auditavel.",
+                title: "Sem algoritmo secreto",
+                description: "Regras publicas, operacao rastreavel e decisao explicavel.",
               },
               {
-                title: "Cotacao deterministica",
-                description: "Matriz local de bairros + provedores de fallback quando necessario.",
+                title: "Privacidade por design",
+                description: "Nao depende de GPS continuo no fluxo principal. O tracking e por eventos.",
               },
               {
-                title: "Pagamento por chamado",
-                description: "Geracao de checkout e conciliacao por webhook, com idempotencia e retry.",
+                title: "Justica na oferta",
+                description: "Rodizio + aptidao. Recusa e direito, abuso tem custo numerico.",
               },
               {
-                title: "Governanca no admin",
-                description: "Regras de preco admin_only, auditoria e operacao centralizada.",
+                title: "Governanca real",
+                description: "Preco e admin_only. Logs e auditoria sustentam suporte e disputa.",
               },
             ].map((item) => (
               <article
                 key={item.title}
-                className="rounded-2xl border border-border bg-surface-1 p-5 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
+                className="roodi-panel rounded-3xl p-6 transition-transform duration-fast hover:-translate-y-0.5"
               >
                 <h3 className="text-base font-bold tracking-tight text-foreground">{item.title}</h3>
                 <p className="mt-2 text-sm text-muted">{item.description}</p>
@@ -201,25 +285,8 @@ export default function HomePage() {
           </header>
 
           <ol className="mt-8 grid gap-4 md:grid-cols-4">
-            {[
-              {
-                title: "1) Criar chamado",
-                description: "Cliente, destino e urgencia. Cotacao com preco e ETA.",
-              },
-              {
-                title: "2) Confirmar pagamento",
-                description: "Checkout gerado. Webhook confirma e libera o dispatch.",
-              },
-              {
-                title: "3) Execucao por estados",
-                description: "Rider segue o fluxo operacional ate a entrega.",
-              },
-              {
-                title: "4) Fechamento e auditoria",
-                description: "Financeiro registra e o admin consegue auditar a trilha.",
-              },
-            ].map((step) => (
-              <li key={step.title} className="rounded-2xl border border-border bg-background p-5 shadow-sm">
+            {howItWorks.map((step) => (
+              <li key={step.title} className="roodi-panel rounded-3xl p-6">
                 <p className="text-sm font-bold text-foreground">{step.title}</p>
                 <p className="mt-2 text-sm text-muted">{step.description}</p>
               </li>
@@ -229,13 +296,13 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/como-funciona"
-              className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+              className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
             >
               Ver detalhes do fluxo
             </Link>
             <Link
               href="/contato"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+              className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
             >
               Quero conversar
             </Link>
@@ -258,9 +325,9 @@ export default function HomePage() {
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <Link
             href="/para-comerciantes"
-            className="group relative overflow-hidden rounded-2xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
+            className="group relative overflow-hidden rounded-3xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft/60 via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-60" />
             <div className="relative space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">Comercio</p>
               <p className="text-xl font-black tracking-tight text-foreground">Chame um rider quando precisar.</p>
@@ -273,9 +340,9 @@ export default function HomePage() {
 
           <Link
             href="/para-entregadores"
-            className="group relative overflow-hidden rounded-2xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
+            className="group relative overflow-hidden rounded-3xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft/60 via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-60" />
             <div className="relative space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">Rider</p>
               <p className="text-xl font-black tracking-tight text-foreground">Execute corridas com clareza.</p>
@@ -290,7 +357,7 @@ export default function HomePage() {
 
       <section className="border-t border-border bg-surface-1">
         <div className="mx-auto w-full max-w-6xl px-4 py-14">
-          <div className="grid gap-6 rounded-3xl border border-border bg-background p-8 shadow-sm md:grid-cols-2 md:items-center">
+          <div className="roodi-panel grid gap-6 rounded-[28px] p-8 md:grid-cols-2 md:items-center">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Em breve</p>
               <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
@@ -307,7 +374,7 @@ export default function HomePage() {
                 "Pagamento no checkout e confirmacao automatica",
                 "Acompanhamento por estados e comprovante",
               ].map((line) => (
-                <div key={line} className="flex items-start gap-3 rounded-2xl border border-border bg-surface-1 p-4">
+                <div key={line} className="roodi-panel flex items-start gap-3 rounded-2xl p-4">
                   <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
                   <p className="text-sm text-muted">{line}</p>
                 </div>
@@ -315,14 +382,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface-1 p-6">
+          <div className="roodi-panel mt-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl p-6">
             <div className="space-y-1">
               <p className="text-base font-bold text-foreground">Quer participar do piloto?</p>
               <p className="text-sm text-muted">Deixe um contato e o time chama voce.</p>
             </div>
             <Link
               href="/contato"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+              className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
             >
               Entrar em contato
             </Link>

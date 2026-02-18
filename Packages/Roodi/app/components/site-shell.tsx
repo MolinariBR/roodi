@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "./theme-toggle";
 
 type SiteShellProps = Readonly<{
   children: React.ReactNode;
@@ -14,11 +15,12 @@ const navItems = [
 export function SiteShell({ children }: SiteShellProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-border roodi-glass backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4">
           <Link href="/" className="group flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-sm font-black text-primary-foreground shadow-sm transition-transform duration-fast group-hover:-translate-y-0.5">
-              R
+            <span className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-xl bg-primary text-sm font-black text-primary-foreground shadow-sm transition-transform duration-fast group-hover:-translate-y-0.5">
+              <span className="absolute inset-0 bg-gradient-to-br from-primary to-success opacity-60" aria-hidden="true" />
+              <span className="relative">R</span>
             </span>
             <div className="leading-tight">
               <p className="text-sm font-semibold tracking-tight">Roodi</p>
@@ -31,7 +33,7 @@ export function SiteShell({ children }: SiteShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-md border border-transparent px-3 py-2 transition-colors duration-fast hover:border-border hover:bg-surface-2 hover:text-foreground"
+                className="roodi-focus-ring rounded-md border border-transparent px-3 py-2 transition-colors duration-fast hover:border-border hover:bg-surface-2 hover:text-foreground"
               >
                 {item.label}
               </Link>
@@ -39,15 +41,16 @@ export function SiteShell({ children }: SiteShellProps) {
           </nav>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Link
               href="/contato"
-              className="hidden rounded-md border border-border bg-surface-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2 sm:inline-flex"
+              className="roodi-focus-ring hidden rounded-md border border-border bg-surface-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2 sm:inline-flex"
             >
               Falar com o time
             </Link>
 
             <details className="relative md:hidden">
-              <summary className="cursor-pointer select-none rounded-md border border-border bg-surface-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2">
+              <summary className="roodi-focus-ring cursor-pointer select-none rounded-md border border-border bg-surface-1 px-3 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2">
                 Menu
               </summary>
               <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-surface-1 shadow-md">
@@ -56,7 +59,7 @@ export function SiteShell({ children }: SiteShellProps) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="px-4 py-3 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
+                      className="roodi-focus-ring px-4 py-3 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
                     >
                       {item.label}
                     </Link>

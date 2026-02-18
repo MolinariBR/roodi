@@ -1,36 +1,51 @@
-export default function ContatoPage() {
-  return (
-    <section className="space-y-6">
-      <header className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Contato</h2>
-        <p className="max-w-3xl text-base text-muted">Deixe seus dados para o time comercial retornar.</p>
-      </header>
+import { LeadForm } from "@modules/leads/presentation/lead-form";
 
-      <form className="grid gap-3 rounded-lg border border-border bg-surface-1 p-4 md:max-w-2xl">
-        <label className="grid gap-2 text-sm font-medium">
-          Nome
-          <input className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm outline-none focus:border-primary" placeholder="Seu nome" />
-        </label>
-        <label className="grid gap-2 text-sm font-medium">
-          Email
-          <input
-            type="email"
-            className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm outline-none focus:border-primary"
-            placeholder="voce@empresa.com"
-          />
-        </label>
-        <label className="grid gap-2 text-sm font-medium">
-          Mensagem
-          <textarea
-            rows={4}
-            className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm outline-none focus:border-primary"
-            placeholder="Conte brevemente seu cenário"
-          />
-        </label>
-        <button type="button" className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-          Enviar
-        </button>
-      </form>
-    </section>
+export const metadata = {
+  title: "Contato",
+  description: "Fale com o time Roodi para entrar no piloto (comercio, rider ou parcerias).",
+};
+
+type ContatoPageProps = {
+  searchParams?: {
+    type?: string;
+  };
+};
+
+const resolveLeadType = (value: string | undefined) => {
+  return value === "commerce" || value === "rider" || value === "partnership" || value === "other"
+    ? value
+    : undefined;
+};
+
+export default function ContatoPage({ searchParams }: ContatoPageProps) {
+  const defaultLeadType = resolveLeadType(searchParams?.type);
+
+  return (
+    <div className="mx-auto w-full max-w-6xl px-4 py-14">
+      <section className="grid gap-10 md:grid-cols-2 md:items-start">
+        <header className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Contato</p>
+          <h1 className="text-balance text-4xl font-black tracking-tight text-foreground md:text-5xl">
+            Vamos conversar sobre sua operacao.
+          </h1>
+          <p className="max-w-xl text-base text-muted md:text-lg">
+            Deixe um contato e uma breve mensagem. O time retorna com orientacao e proximos passos para entrar no piloto.
+          </p>
+
+          <div className="grid gap-3 rounded-2xl border border-border bg-surface-1 p-6 shadow-sm">
+            <p className="text-sm font-bold text-foreground">Sugestoes de mensagem</p>
+            <ul className="grid gap-2 text-sm text-muted">
+              <li>Comercio: cidade, volume diario e janela de pico.</li>
+              <li>Rider: cidade e disponibilidade.</li>
+              <li>Parcerias: integracao, operacao ou novos bairros/cidades.</li>
+            </ul>
+          </div>
+        </header>
+
+        <div>
+          <LeadForm defaultLeadType={defaultLeadType} />
+        </div>
+      </section>
+    </div>
   );
 }

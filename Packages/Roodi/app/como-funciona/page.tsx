@@ -1,28 +1,69 @@
+import Link from "next/link";
+
 const steps = [
-  "Comerciante cria o chamado com dados do cliente e tipo de urgencia.",
-  "Rider recebe e aceita a solicitacao no fluxo operacional por estados.",
-  "Comerciante acompanha timeline da entrega e status de confirmacao.",
-  "Financeiro registra debito de creditos e repasse conforme regra da plataforma.",
+  {
+    title: "1) Criar chamado",
+    description: "Comerciante cria o chamado (cliente, destino e urgencia) e recebe cotacao com preco e ETA.",
+  },
+  {
+    title: "2) Gerar checkout",
+    description: "Pagamento por chamado: checkout e gerado e a confirmacao chega por webhook/consulta.",
+  },
+  {
+    title: "3) Dispatch e execucao",
+    description: "Rider recebe oferta, aceita/recusa e executa o fluxo operacional por estados.",
+  },
+  {
+    title: "4) Tracking e fechamento",
+    description: "Commerce acompanha timeline, confirmacao e historico. Admin audita eventos e financeiro.",
+  },
 ];
 
 export default function ComoFuncionaPage() {
   return (
-    <section className="space-y-6">
-      <header className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Como funciona</h2>
-        <p className="max-w-3xl text-base text-muted">Fluxo operacional orientado por estado, com baixo atrito para comercio e rider.</p>
-      </header>
+    <div className="mx-auto w-full max-w-6xl px-4 py-14">
+      <section className="space-y-8">
+        <header className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Como funciona</p>
+          <h1 className="text-balance text-4xl font-black tracking-tight text-foreground md:text-5xl">
+            Um fluxo unico: chamado, pagamento, execucao e comprovante.
+          </h1>
+          <p className="max-w-3xl text-base text-muted md:text-lg">
+            O app mobile e orientado por estados operacionais. O backend centraliza regras, auditoria e integracoes (pagamentos,
+            webhooks e politicas de cotacao).
+          </p>
+        </header>
 
-      <ol className="space-y-3">
-        {steps.map((step, index) => (
-          <li key={step} className="flex gap-3 rounded-lg border border-border bg-surface-1 p-4">
-            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-              {index + 1}
-            </span>
-            <p className="text-sm text-foreground">{step}</p>
-          </li>
-        ))}
-      </ol>
-    </section>
+        <ol className="grid gap-4 md:grid-cols-2">
+          {steps.map((step) => (
+            <li key={step.title} className="rounded-2xl border border-border bg-surface-1 p-6 shadow-sm">
+              <p className="text-sm font-bold text-foreground">{step.title}</p>
+              <p className="mt-2 text-sm text-muted">{step.description}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/para-comerciantes"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+          >
+            Ver para comerciantes
+          </Link>
+          <Link
+            href="/para-entregadores"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+          >
+            Ver para entregadores
+          </Link>
+          <Link
+            href="/contato"
+            className="inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-muted transition-colors duration-fast hover:border-border hover:bg-surface-1 hover:text-foreground"
+          >
+            Falar com o time
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     "",
     "/como-funciona",
+    "/para-comerciantes",
+    "/para-entregadores",
     "/contato",
     "/termos",
     "/privacidade",

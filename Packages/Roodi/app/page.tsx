@@ -1,398 +1,670 @@
 import Link from "next/link";
 
-const trustPillars = [
+/* ═══════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════ */
+
+const features = [
   {
-    title: "Regras publicas",
-    description: "Rodizio por zona, elegibilidade e efeitos operacionais registrados em log.",
+    title: "Sem algoritmo secreto",
+    description:
+      "Regras públicas, rodízio por zona e decisões explicáveis. Tudo registrado em log.",
     icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-        <path
-          d="M7 7h10M7 12h10M7 17h7"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+        <path d="m9 12 2 2 4-4" />
       </svg>
     ),
   },
   {
     title: "Tracking por estados",
-    description: "Timeline de eventos, sem depender de GPS continuo no fluxo principal.",
+    description:
+      "Timeline de eventos reais. Cada etapa tem dono, momento e efeito operacional claro.",
     icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-        <path
-          d="M12 22s7-4.4 7-12a7 7 0 1 0-14 0c0 7.6 7 12 7 12Z"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" strokeWidth="2" />
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
     ),
   },
   {
-    title: "Financeiro rastreavel",
-    description: "Pagamento por chamado + webhook, com regra matematica: FP = RE + CP.",
+    title: "Privacidade por design",
+    description:
+      "Sem GPS contínuo no fluxo principal. O tracking é por eventos, não por localização.",
     icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-        <path
-          d="M4 7h16M4 12h10M4 17h16"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+    ),
+  },
+  {
+    title: "Justiça na alocação",
+    description:
+      "Oferta em lotes com janela curta. Rodízio + aptidão. Recusa é direito, abuso tem custo.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+      </svg>
+    ),
+  },
+  {
+    title: "Financeiro rastreável",
+    description:
+      "Pagamento por chamado, webhook confirmado. O comércio sabe quanto paga, o rider sabe quanto recebe.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23" />
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      </svg>
+    ),
+  },
+  {
+    title: "Governança real",
+    description:
+      "Preço é admin_only. Logs e auditoria sustentam suporte, disputa e evolução da plataforma.",
+    icon: (
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
   },
 ];
 
-const howItWorks = [
-  { title: "1) Criar chamado", description: "Cliente, destino e urgencia. Cotacao com preco e ETA." },
-  { title: "2) Confirmar pagamento", description: "Checkout gerado. Webhook confirma e libera o dispatch." },
-  { title: "3) Execucao por estados", description: "Rider opera com estados claros, sem ruido e sem salto invalido." },
-  { title: "4) Fechamento e auditoria", description: "Historico, tracking e financeiro com trilha auditavel." },
+const steps = [
+  {
+    number: "01",
+    title: "Criação do chamado",
+    description:
+      "O comércio informa o cliente, destino e urgência. A cotação retorna preço e tempo estimado em segundos.",
+  },
+  {
+    number: "02",
+    title: "Confirmação de pagamento",
+    description:
+      "Checkout gerado automaticamente. O webhook confirma o pagamento e libera o dispatch para os riders.",
+  },
+  {
+    number: "03",
+    title: "Execução por estados",
+    description:
+      "O rider aceita, segue a timeline de estados operacionais e finaliza com código de confirmação.",
+  },
+  {
+    number: "04",
+    title: "Fechamento e auditoria",
+    description:
+      "Histórico completo, tracking por eventos e financeiro com trilha auditável de ponta a ponta.",
+  },
 ];
+
+const metrics = [
+  { value: "< 30s", label: "Cotação" },
+  { value: "12–15s", label: "Janela de oferta" },
+  { value: "R$ 7+", label: "Preço mínimo" },
+  { value: "100%", label: "Auditável" },
+];
+
+/* ═══════════════════════════════════════════════
+   PAGE
+   ═══════════════════════════════════════════════ */
 
 export default function HomePage() {
   return (
     <div className="w-full">
-      <section className="relative overflow-hidden border-b border-border bg-background roodi-noise">
-        <div className="absolute inset-0 roodi-hero-bg" aria-hidden="true" />
-        <div className="absolute inset-0 roodi-grid" aria-hidden="true" />
-        <div
-          className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full bg-primary-soft blur-3xl animate-roodi-float"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute -left-24 bottom-10 h-72 w-72 rounded-full bg-surface-3 blur-3xl animate-roodi-float"
-          aria-hidden="true"
-        />
+      {/* ─── HERO ──────────────────────────────── */}
+      <section className="relative overflow-hidden noise-overlay hero-glow">
+        <div className="absolute inset-0 dot-grid" aria-hidden="true" />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 md:py-24">
-          <div className="grid gap-12 md:grid-cols-2 md:items-center">
-            <div className="space-y-6">
-              <div className="flex flex-wrap gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
-                  <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-                  Uma guilda que funciona: regras claras, log de tudo.
-                </div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
-                  <span className="h-2 w-2 rounded-full bg-warning" aria-hidden="true" />
-                  Em breve: Roodi tambem tera delivery
-                </div>
-              </div>
-
-              <h1 className="text-balance text-4xl font-black tracking-tight text-foreground md:text-6xl">
-                Entregas sob demanda com{" "}
-                <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-                  confianca operacional
-                </span>
-                .
-              </h1>
-
-              <p className="max-w-xl text-base text-muted md:text-lg">
-                O comercio cria o chamado, paga por entrega e acompanha uma timeline de eventos. O rider opera por
-                estados claros e ve valor antes do aceite. O admin governa precos e audita logs, sem algoritmo secreto.
-              </p>
-
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/para-comerciantes"
-                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
-                >
-                  Sou comerciante
-                </Link>
-                <Link
-                  href="/para-entregadores"
-                  className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors duration-fast hover:bg-surface-2"
-                >
-                  Sou entregador
-                </Link>
-                <Link
-                  href="/como-funciona"
-                  className="inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-muted transition-colors duration-fast hover:border-border hover:bg-surface-1 hover:text-foreground"
-                >
-                  Ver como funciona
-                </Link>
-              </div>
-
-              <div className="flex flex-wrap gap-2 text-xs text-muted">
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Sem GPS continuo</span>
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Rodizio por zona</span>
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Pagamento por chamado</span>
-                <span className="rounded-full border border-border bg-surface-1 px-3 py-1">Logs auditaveis</span>
-              </div>
+        <div className="container-main relative z-10 section-spacing" style={{ paddingTop: 'clamp(100px, 14vw, 180px)', paddingBottom: 'clamp(80px, 10vw, 140px)' }}>
+          <div className="mx-auto" style={{ maxWidth: 840 }}>
+            {/* Tags */}
+            <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in">
+              <span className="tag">
+                <span className="tag-dot animate-pulse-dot" style={{ background: 'var(--color-success)' }} />
+                Plataforma operacional
+              </span>
+              <span className="tag">
+                <span className="tag-dot" style={{ background: 'var(--color-warning)' }} />
+                Delivery em breve
+              </span>
             </div>
 
-            <div className="grid gap-4">
-              <div className="roodi-panel grid gap-4 rounded-3xl p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted">Roodi</p>
-                    <p className="mt-1 text-lg font-bold tracking-tight text-foreground">Operacao por estados</p>
-                    <p className="mt-1 text-sm text-muted">
-                      Timeline de eventos: cada etapa tem dono, momento e efeito operacional.
-                    </p>
-                  </div>
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-                      <path
-                        d="M12 22s7-4.4 7-12a7 7 0 1 0-14 0c0 7.6 7 12 7 12Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </span>
-                </div>
-
-                <div className="grid gap-3">
-                  {[
-                    { label: "Chamado criado", active: true },
-                    { label: "Pagamento confirmado", active: true },
-                    { label: "Rider a caminho", active: true },
-                    { label: "Entrega concluida", active: false },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center gap-3">
-                      <span
-                        className={["h-2.5 w-2.5 rounded-full", item.active ? "bg-success" : "bg-border"].join(" ")}
-                        aria-hidden="true"
-                      />
-                      <p className="text-sm text-foreground">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="roodi-panel grid gap-4 rounded-3xl p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-lg font-bold tracking-tight text-foreground">Justica na alocacao</p>
-                    <p className="mt-1 text-sm text-muted">
-                      Oferta em lotes (Top 3/5) com janela curta. Sem dedo rapido, sem panelinha.
-                    </p>
-                  </div>
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-                      <path
-                        d="M4 12h16M7 7h10M7 17h10"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Zona", value: "Fila justa" },
-                    { label: "Janela", value: "12-15s" },
-                    { label: "Desempate", value: "Posicao" },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-xl border border-border bg-surface-2 p-3">
-                      <p className="text-xs text-muted">{item.label}</p>
-                      <p className="mt-1 text-sm font-semibold text-foreground">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="roodi-panel grid gap-3 rounded-3xl p-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Regra financeira</p>
-                <p className="text-lg font-bold tracking-tight text-foreground">FP = RE + CP</p>
-                <p className="text-sm text-muted">
-                  O comercio paga o frete da plataforma (FP). O rider recebe o repasse (RE). A plataforma retém a comissao (CP).
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 grid gap-3 md:grid-cols-3">
-            {trustPillars.map((item) => (
-              <div key={item.title} className="roodi-panel rounded-3xl p-6">
-                <div className="flex items-start gap-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
-                    {item.icon}
-                  </span>
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-foreground">{item.title}</p>
-                    <p className="text-sm text-muted">{item.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-4 py-14">
-        <div className="grid gap-10 md:grid-cols-2 md:items-start">
-          <header className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">Por que Roodi</p>
-            <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
-              Menos atrito na operacao. Mais previsibilidade para todos.
-            </h2>
-            <p className="max-w-xl text-base text-muted">
-              O objetivo e eliminar duvida e discussao: fila e regras visiveis, tracking por estados e auditoria de ponta a ponta.
-            </p>
-          </header>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              {
-                title: "Sem algoritmo secreto",
-                description: "Regras publicas, operacao rastreavel e decisao explicavel.",
-              },
-              {
-                title: "Privacidade por design",
-                description: "Nao depende de GPS continuo no fluxo principal. O tracking e por eventos.",
-              },
-              {
-                title: "Justica na oferta",
-                description: "Rodizio + aptidao. Recusa e direito, abuso tem custo numerico.",
-              },
-              {
-                title: "Governanca real",
-                description: "Preco e admin_only. Logs e auditoria sustentam suporte e disputa.",
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="roodi-panel rounded-3xl p-6 transition-transform duration-fast hover:-translate-y-0.5"
-              >
-                <h3 className="text-base font-bold tracking-tight text-foreground">{item.title}</h3>
-                <p className="mt-2 text-sm text-muted">{item.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-border bg-surface-1">
-        <div className="mx-auto w-full max-w-6xl px-4 py-14">
-          <header className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">Como funciona</p>
-            <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
-              Um fluxo unico do chamado ao comprovante.
-            </h2>
-            <p className="max-w-3xl text-base text-muted">
-              Do lado do comerciante, a prioridade e velocidade e previsibilidade. Do lado do rider, clareza de estado e
-              execucao sem ruído.
-            </p>
-          </header>
-
-          <ol className="mt-8 grid gap-4 md:grid-cols-4">
-            {howItWorks.map((step) => (
-              <li key={step.title} className="roodi-panel rounded-3xl p-6">
-                <p className="text-sm font-bold text-foreground">{step.title}</p>
-                <p className="mt-2 text-sm text-muted">{step.description}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/como-funciona"
-              className="roodi-focus-ring inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+            {/* Headline */}
+            <h1
+              className="text-balance animate-fade-in-up delay-100"
+              style={{
+                marginTop: 32,
+                fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)',
+                fontWeight: 800,
+                lineHeight: 1.08,
+                letterSpacing: '-0.04em',
+                textAlign: 'center',
+              }}
             >
-              Ver detalhes do fluxo
-            </Link>
-            <Link
-              href="/contato"
-              className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+              Entregas sob demanda{' '}
+              <span className="gradient-text">com transparência total</span>.
+            </h1>
+
+            {/* Sub-headline */}
+            <p
+              className="animate-fade-in-up delay-200"
+              style={{
+                marginTop: 24,
+                maxWidth: 600,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                textAlign: 'center',
+                fontSize: 'clamp(1rem, 1.5vw, 1.175rem)',
+                lineHeight: 1.7,
+                color: 'var(--color-muted)',
+              }}
             >
-              Quero conversar
-            </Link>
-          </div>
-        </div>
-      </section>
+              Comércio cria o chamado e acompanha cada etapa. Rider recebe ofertas justas e opera com clareza. Sem algoritmo secreto.
+            </p>
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-14">
-        <header className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Para quem</p>
-          <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
-            Dois perfis. Um app. Uma operacao.
-          </h2>
-          <p className="max-w-3xl text-base text-muted">
-            O app mobile e unico, com contexto de uso para comercio e rider. O painel web organiza governanca e
-            auditoria.
-          </p>
-        </header>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <Link
-            href="/para-comerciantes"
-            className="group relative overflow-hidden rounded-3xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-60" />
-            <div className="relative space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Comercio</p>
-              <p className="text-xl font-black tracking-tight text-foreground">Chame um rider quando precisar.</p>
-              <p className="text-sm text-muted">
-                Abra chamado em segundos, acompanhe timeline e mantenha clientes e produtos organizados.
-              </p>
-              <p className="pt-2 text-sm font-semibold text-primary">Ver beneficios</p>
+            {/* CTAs */}
+            <div
+              className="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up delay-300"
+              style={{ marginTop: 40 }}
+            >
+              <Link href="/para-comerciantes" className="btn-primary">
+                Sou comerciante
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link href="/para-entregadores" className="btn-secondary">
+                Sou entregador
+              </Link>
             </div>
-          </Link>
 
-          <Link
-            href="/para-entregadores"
-            className="group relative overflow-hidden rounded-3xl border border-border bg-surface-1 p-6 shadow-sm transition-transform duration-fast hover:-translate-y-0.5"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-soft via-transparent to-transparent opacity-0 transition-opacity duration-fast group-hover:opacity-60" />
-            <div className="relative space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Rider</p>
-              <p className="text-xl font-black tracking-tight text-foreground">Execute corridas com clareza.</p>
-              <p className="text-sm text-muted">
-                Receba ofertas, aceite, siga estados operacionais e finalize com confirmacao.
-              </p>
-              <p className="pt-2 text-sm font-semibold text-primary">Ver beneficios</p>
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      <section className="border-t border-border bg-surface-1">
-        <div className="mx-auto w-full max-w-6xl px-4 py-14">
-          <div className="roodi-panel grid gap-6 rounded-[28px] p-8 md:grid-cols-2 md:items-center">
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Em breve</p>
-              <h2 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
-                Roodi tambem tera delivery.
-              </h2>
-              <p className="text-base text-muted">
-                Alem do chamado do comercio, estamos preparando uma experiencia completa de delivery para o cliente final
-                (pedido, pagamento e acompanhamento).
-              </p>
-            </div>
-            <div className="grid gap-3">
-              {[
-                "Cardapio e vitrine do comercio",
-                "Pagamento no checkout e confirmacao automatica",
-                "Acompanhamento por estados e comprovante",
-              ].map((line) => (
-                <div key={line} className="roodi-panel flex items-start gap-3 rounded-2xl p-4">
-                  <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-                  <p className="text-sm text-muted">{line}</p>
+            {/* Metrics strip */}
+            <div
+              className="flex flex-wrap items-center justify-center gap-6 md:gap-10 animate-fade-in-up delay-400"
+              style={{ marginTop: 56 }}
+            >
+              {metrics.map((m, i) => (
+                <div key={m.label} className="text-center">
+                  <p
+                    className="gradient-text"
+                    style={{
+                      fontSize: 'clamp(1.25rem, 2vw, 1.75rem)',
+                      fontWeight: 800,
+                      letterSpacing: '-0.03em',
+                    }}
+                  >
+                    {m.value}
+                  </p>
+                  <p
+                    style={{
+                      marginTop: 4,
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      color: 'var(--color-muted)',
+                      letterSpacing: '0.03em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {m.label}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="roodi-panel mt-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl p-6">
-            <div className="space-y-1">
-              <p className="text-base font-bold text-foreground">Quer participar do piloto?</p>
-              <p className="text-sm text-muted">Deixe um contato e o time chama voce.</p>
-            </div>
-            <Link
-              href="/contato"
-              className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90"
+      <div className="section-divider" />
+
+      {/* ─── FEATURES ──────────────────────────── */}
+      <section className="section-spacing noise-overlay">
+        <div className="container-main">
+          {/* Section header */}
+          <div className="mx-auto animate-fade-in-up" style={{ maxWidth: 600, textAlign: 'center' }}>
+            <p
+              className="gradient-text"
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
             >
-              Entrar em contato
+              Por que Roodi
+            </p>
+            <h2
+              style={{
+                marginTop: 16,
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+                fontWeight: 800,
+                lineHeight: 1.15,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              Menos atrito.{' '}
+              <span style={{ color: 'var(--color-muted)' }}>Mais previsibilidade.</span>
+            </h2>
+            <p
+              style={{
+                marginTop: 16,
+                fontSize: '1rem',
+                lineHeight: 1.7,
+                color: 'var(--color-muted)',
+              }}
+            >
+              Fila e regras visíveis, tracking por estados e auditoria de ponta a ponta.
+            </p>
+          </div>
+
+          {/* Feature grid */}
+          <div
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+            style={{ marginTop: 56 }}
+          >
+            {features.map((f, i) => (
+              <div
+                key={f.title}
+                className={`feature-card animate-fade-in-up delay-${(i + 1) * 100}`}
+              >
+                <div className="icon-box">{f.icon}</div>
+                <h3
+                  style={{
+                    marginTop: 20,
+                    fontSize: '1.0625rem',
+                    fontWeight: 700,
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {f.title}
+                </h3>
+                <p
+                  style={{
+                    marginTop: 8,
+                    fontSize: '0.875rem',
+                    lineHeight: 1.7,
+                    color: 'var(--color-muted)',
+                  }}
+                >
+                  {f.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      {/* ─── HOW IT WORKS ──────────────────────── */}
+      <section className="section-spacing noise-overlay">
+        <div className="container-main">
+          <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+            {/* Left: header */}
+            <div className="animate-fade-in-up" style={{ maxWidth: 480 }}>
+              <p
+                className="gradient-text"
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Como funciona
+              </p>
+              <h2
+                style={{
+                  marginTop: 16,
+                  fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+                  fontWeight: 800,
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                Do chamado ao{' '}
+                <span style={{ color: 'var(--color-muted)' }}>comprovante</span>.
+              </h2>
+              <p
+                style={{
+                  marginTop: 16,
+                  fontSize: '1rem',
+                  lineHeight: 1.7,
+                  color: 'var(--color-muted)',
+                }}
+              >
+                Velocidade e previsibilidade para o comércio. Clareza de estado e execução sem ruído para o rider.
+              </p>
+              <div style={{ marginTop: 32 }} className="flex flex-wrap gap-3">
+                <Link href="/como-funciona" className="btn-secondary" style={{ padding: '12px 24px', fontSize: '13px' }}>
+                  Ver fluxo completo
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: steps */}
+            <div className="grid gap-6">
+              {steps.map((s, i) => (
+                <div
+                  key={s.number}
+                  className={`feature-card flex gap-5 animate-fade-in-up delay-${(i + 1) * 100}`}
+                  style={{ padding: 24 }}
+                >
+                  <span className="step-number">{s.number}</span>
+                  <div>
+                    <h3
+                      style={{
+                        fontSize: '0.9375rem',
+                        fontWeight: 700,
+                        letterSpacing: '-0.01em',
+                      }}
+                    >
+                      {s.title}
+                    </h3>
+                    <p
+                      style={{
+                        marginTop: 6,
+                        fontSize: '0.8125rem',
+                        lineHeight: 1.7,
+                        color: 'var(--color-muted)',
+                      }}
+                    >
+                      {s.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      {/* ─── FOR WHO ───────────────────────────── */}
+      <section className="section-spacing noise-overlay">
+        <div className="container-main">
+          {/* Section header */}
+          <div className="mx-auto animate-fade-in-up" style={{ maxWidth: 600, textAlign: 'center' }}>
+            <p
+              className="gradient-text"
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Para quem
+            </p>
+            <h2
+              style={{
+                marginTop: 16,
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+                fontWeight: 800,
+                lineHeight: 1.15,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              Dois perfis.{' '}
+              <span style={{ color: 'var(--color-muted)' }}>Uma operação.</span>
+            </h2>
+          </div>
+
+          {/* Cards */}
+          <div
+            className="grid gap-5 md:grid-cols-2"
+            style={{ marginTop: 48 }}
+          >
+            {/* Commerce card */}
+            <Link
+              href="/para-comerciantes"
+              className="group feature-card animate-fade-in-up delay-100"
+              style={{ padding: '40px 36px' }}
+            >
+              <div
+                className="icon-box"
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 16,
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+              </div>
+              <p
+                style={{
+                  marginTop: 28,
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-muted)',
+                }}
+              >
+                Comércio
+              </p>
+              <h3
+                style={{
+                  marginTop: 8,
+                  fontSize: 'clamp(1.25rem, 2.5vw, 1.5rem)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                Chame um rider quando precisar.
+              </h3>
+              <p
+                style={{
+                  marginTop: 12,
+                  fontSize: '0.875rem',
+                  lineHeight: 1.7,
+                  color: 'var(--color-muted)',
+                }}
+              >
+                Abra chamado em segundos, acompanhe a timeline de estados e mantenha clientes e produtos organizados.
+              </p>
+              <span
+                className="inline-flex items-center gap-2 transition-all duration-300 group-hover:gap-3"
+                style={{
+                  marginTop: 20,
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                Ver benefícios
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </span>
             </Link>
+
+            {/* Rider card */}
+            <Link
+              href="/para-entregadores"
+              className="group feature-card animate-fade-in-up delay-200"
+              style={{ padding: '40px 36px' }}
+            >
+              <div
+                className="icon-box"
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 16,
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              </div>
+              <p
+                style={{
+                  marginTop: 28,
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-muted)',
+                }}
+              >
+                Rider
+              </p>
+              <h3
+                style={{
+                  marginTop: 8,
+                  fontSize: 'clamp(1.25rem, 2.5vw, 1.5rem)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                Execute corridas com clareza.
+              </h3>
+              <p
+                style={{
+                  marginTop: 12,
+                  fontSize: '0.875rem',
+                  lineHeight: 1.7,
+                  color: 'var(--color-muted)',
+                }}
+              >
+                Receba ofertas justas, aceite, siga estados operacionais claros e finalize com código de confirmação.
+              </p>
+              <span
+                className="inline-flex items-center gap-2 transition-all duration-300 group-hover:gap-3"
+                style={{
+                  marginTop: 20,
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                Ver benefícios
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      {/* ─── COMING SOON ───────────────────────── */}
+      <section className="section-spacing noise-overlay">
+        <div className="container-main">
+          <div
+            className="cta-card animate-fade-in-up"
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="grid gap-10 md:grid-cols-2 md:items-center">
+              <div>
+                <span className="tag" style={{ marginBottom: 20 }}>
+                  <span className="tag-dot" style={{ background: 'var(--color-warning)' }} />
+                  Em breve
+                </span>
+                <h2
+                  style={{
+                    marginTop: 16,
+                    fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                    fontWeight: 800,
+                    lineHeight: 1.15,
+                    letterSpacing: '-0.03em',
+                  }}
+                >
+                  Roodi também terá{' '}
+                  <span className="gradient-text">delivery</span>.
+                </h2>
+                <p
+                  style={{
+                    marginTop: 16,
+                    fontSize: '0.9375rem',
+                    lineHeight: 1.7,
+                    color: 'var(--color-muted)',
+                    maxWidth: 440,
+                  }}
+                >
+                  Além do chamado do comércio, estamos preparando uma experiência completa de delivery para o cliente final.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  "Cardápio e vitrine do comércio",
+                  "Pagamento no checkout e confirmação automática",
+                  "Acompanhamento por estados e comprovante",
+                ].map((line, i) => (
+                  <div
+                    key={line}
+                    className={`feature-card flex items-center gap-4 animate-fade-in-up delay-${(i + 1) * 100}`}
+                    style={{ padding: '18px 20px' }}
+                  >
+                    <span
+                      className="tag-dot"
+                      style={{
+                        background: 'var(--color-primary)',
+                        width: 8,
+                        height: 8,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)' }}>
+                      {line}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      {/* ─── FINAL CTA ─────────────────────────── */}
+      <section className="section-spacing noise-overlay hero-glow">
+        <div className="container-main">
+          <div
+            className="mx-auto animate-fade-in-up"
+            style={{ maxWidth: 640, textAlign: 'center' }}
+          >
+            <h2
+              style={{
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+                fontWeight: 800,
+                lineHeight: 1.15,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              Quer participar{' '}
+              <span className="gradient-text">do piloto</span>?
+            </h2>
+            <p
+              style={{
+                marginTop: 16,
+                fontSize: '1rem',
+                lineHeight: 1.7,
+                color: 'var(--color-muted)',
+              }}
+            >
+              Deixe um contato e o time entra em contato. Sem compromisso, sem spam.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4" style={{ marginTop: 32 }}>
+              <Link href="/contato" className="btn-primary">
+                Entrar em contato
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link href="/como-funciona" className="btn-secondary" style={{ padding: '14px 28px' }}>
+                Ver como funciona
+              </Link>
+            </div>
           </div>
         </div>
       </section>

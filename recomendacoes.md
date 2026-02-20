@@ -64,3 +64,46 @@ admin.roodi.app = Frontend-admin
 
 
 teste
+
+# IMPORTANTE
+
+Esses erros de Next (`Failed to find Server Action`, `digest`, `workers`) quase sempre são **build “misturado”**: você rebuildou enquanto o `next start` ainda estava servindo e o `.next` foi sobrescrito no meio (ou você está buildando em um diretório diferente do `cwd` que o PM2 usa).
+
+## Corrigir agora (VPS)
+1) Descubra onde o PM2 está rodando:
+```bash
+pm2 describe roodi-admin | rg -n "exec cwd|pm_exec_path|script args" || pm2 describe roodi-admin | sed -n '1,120p'
+pm2 describe roodi-landing | rg -n "exec cwd|pm_exec_path|script args" || pm2 describe roodi-landing | sed -n '1,120p'
+```
+
+2) No **mesmo repo/cwd** que aparecer (ex.: `/root/roodi`), rode:
+```bash
+cd /root/roodi   # troque pelo exec cwd real que apareceu acima
+git pull
+
+pm2 stop roodi-admin || true
+pm2 stop roodi-landing || true
+
+cd Packages/Frontend-admin
+rm -rf .next
+npm ci
+npm run build
+
+cd ../Roodi
+rm -rf .next
+npm ci
+npm run build
+
+pm2 restart roodi-admin --update-env
+pm2 restart roodi-landing --update-env
+pm2 save
+```
+
+3) Depois faça **hard refresh** no browser (Ctrl+F5) em `admin.roodi.app` e `roodi.app`.
+
+## Para não acontecer de novo
+Eu atualizei o `scripts/roodi-rebuild.sh` para **parar os apps Next antes do build** (evita sobrescrever `.next` com o servidor rodando). Então, após `git pull`, prefira:
+```bash
+sudo bash scripts/roodi-rebuild.sh --admin
+sudo bash scripts/roodi-rebuild.sh --landing
+```

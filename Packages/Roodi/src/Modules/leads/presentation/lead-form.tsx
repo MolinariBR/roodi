@@ -69,13 +69,13 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
 
     if (!parsed.success) {
       setStatus("error");
-      setErrorMessage("Preencha os campos obrigatorios para enviar.");
+      setErrorMessage("Preencha os campos obrigatórios para enviar.");
       return;
     }
 
     if (!apiBaseUrl) {
       setStatus("error");
-      setErrorMessage("Configuracao de API ausente. Tente novamente em instantes.");
+      setErrorMessage("Configuração de API ausente. Tente novamente em instantes.");
       return;
     }
 
@@ -84,7 +84,7 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
       endpoint = new URL("/v1/public/leads", apiBaseUrl).toString();
     } catch {
       setStatus("error");
-      setErrorMessage("API invalida. Tente novamente em instantes.");
+      setErrorMessage("API inválida. Tente novamente em instantes.");
       return;
     }
 
@@ -111,20 +111,30 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
       setStatus("success");
     } catch {
       setStatus("error");
-      setErrorMessage("Nao foi possivel enviar agora. Verifique sua conexao e tente novamente.");
+      setErrorMessage("Não foi possível enviar agora. Verifique sua conexão e tente novamente.");
     }
   };
+
+  const inputClasses =
+    "w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-muted/50 focus:border-[var(--color-primary)]/50 focus:ring-2 focus:ring-[var(--color-primary)]/10";
+
+  const labelClasses = "grid gap-2 text-sm font-semibold text-foreground";
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
       {status === "success" ? (
-        <div className="roodi-panel rounded-3xl p-6">
-          <p className="text-base font-bold text-foreground">Recebido.</p>
+        <div className="glass-panel rounded-2xl p-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary)]/10">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <p className="text-xl font-bold text-foreground">Mensagem enviada!</p>
           <p className="mt-2 text-sm text-muted">
-            Seu contato foi enviado. Em breve retornamos com os proximos passos.
+            Seu contato foi recebido. Em breve retornamos com os próximos passos.
           </p>
           <button
-            className="roodi-focus-ring mt-4 inline-flex items-center justify-center rounded-md border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground transition-colors duration-fast hover:bg-surface-2"
+            className="btn-secondary mt-6"
             type="button"
             onClick={() => {
               setStatus("idle");
@@ -141,72 +151,91 @@ export function LeadForm({ defaultLeadType }: LeadFormProps) {
       ) : (
         <>
           {errorMessage ? (
-            <p className="roodi-panel rounded-2xl px-4 py-3 text-sm text-danger">
-              {errorMessage}
-            </p>
+            <div className="flex items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-red-400">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+              <p className="text-sm text-red-300">{errorMessage}</p>
+            </div>
           ) : null}
 
-          <div className="roodi-panel grid gap-4 rounded-3xl p-6 md:grid-cols-2">
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              Nome
-              <input
-                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
-                name="name"
-                placeholder="Seu nome"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                required
-                autoComplete="name"
-              />
-            </label>
+          <div className="glass-panel grid gap-5 rounded-2xl p-8">
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className={labelClasses}>
+                Nome
+                <input
+                  className={inputClasses}
+                  name="name"
+                  placeholder="Seu nome"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  required
+                  autoComplete="name"
+                />
+              </label>
 
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              Contato (email ou WhatsApp)
-              <input
-                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
-                name="contact"
-                placeholder="voce@empresa.com ou +55 11 99999-9999"
-                value={contact}
-                onChange={(event) => setContact(event.target.value)}
-                required
-                autoComplete="email"
-              />
-            </label>
+              <label className={labelClasses}>
+                Contato (email ou WhatsApp)
+                <input
+                  className={inputClasses}
+                  name="contact"
+                  placeholder="voce@empresa.com ou +55 11 99999-9999"
+                  value={contact}
+                  onChange={(event) => setContact(event.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </label>
+            </div>
 
-            <label className="grid gap-2 text-sm font-semibold text-foreground md:col-span-2">
+            <label className={labelClasses}>
               Perfil
               <select
-                className="roodi-focus-ring rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className={inputClasses}
                 name="lead_type"
                 value={leadType}
                 onChange={(event) => setLeadType(resolveDefaultLeadType(event.target.value))}
               >
-                <option value="commerce">Comercio</option>
-                <option value="rider">Rider</option>
+                <option value="commerce">Comércio</option>
+                <option value="rider">Rider (entregador)</option>
                 <option value="partnership">Parceria</option>
                 <option value="other">Outro</option>
               </select>
             </label>
 
-            <label className="grid gap-2 text-sm font-semibold text-foreground md:col-span-2">
+            <label className={labelClasses}>
               Mensagem (opcional)
               <textarea
-                className="roodi-focus-ring min-h-28 resize-y rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none transition-colors duration-fast focus:border-primary"
+                className={`${inputClasses} min-h-28 resize-y`}
                 name="message"
-                placeholder="Conte brevemente seu cenario (cidade, volume, necessidade)."
+                placeholder="Conte brevemente seu cenário (cidade, volume, necessidade)."
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
               />
             </label>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 md:col-span-2">
-              <p className="text-xs text-muted">Ao enviar, voce concorda em ser contatado pelo time Roodi.</p>
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+              <p className="text-xs text-muted/60">
+                Ao enviar, você concorda em ser contatado pelo time Roodi.
+              </p>
               <button
-                className="roodi-focus-ring inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity duration-fast hover:opacity-90 disabled:opacity-60"
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={status === "submitting"}
               >
-                {status === "submitting" ? "Enviando..." : "Enviar"}
+                {status === "submitting" ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Enviando...
+                  </span>
+                ) : (
+                  "Enviar mensagem →"
+                )}
               </button>
             </div>
           </div>
